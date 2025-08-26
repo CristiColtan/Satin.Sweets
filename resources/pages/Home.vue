@@ -1,9 +1,10 @@
 <script setup>
-
 </script>
 
 <template>
-<div class="">Home</div>
+    <div class="">
+        <app-button :icon="'icon-link'" :tooltip="'caca'"></app-button>
+    </div>
 </template>
 
 <style scoped>

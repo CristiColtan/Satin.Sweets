@@ -1,10 +1,10 @@
-<script setup lang="ts">
+<script setup>
 
 </script>
 
 <template>
     <div class="container">
-        Login
+        Login hrhfrhgf
     </div>
 </template>
 

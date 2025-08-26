@@ -1,5 +1,5 @@
-const HomePage = () => import ('../pages/Home.vue')
-const Login = () => import ('../pages/Login.vue')
+const HomePage = () => import ('@/pages/Home.vue')
+const Login = () => import ('@/pages/Login.vue')
 export const routes = [
     {
         path: '/',
