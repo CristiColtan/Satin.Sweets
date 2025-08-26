@@ -1,0 +1,26 @@
+{
+    "root": true,
+    "parserOptions": {
+        "parser": "babel-eslint",
+        "ecmaVersion": 2017,
+        "sourceType": "module"
+    },
+    "extends": [
+        "plugin:vue/recommended"
+    ],
+    "plugins": [
+        "vue"
+    ],
+    "rules": {
+        "vue/max-attributes-per-line": "off",
+        "no-unused-vars": "off"
+    },
+    "globals": {
+        "_": false
+        //tells eslint that this variable is defined globally and it will not emit any no-undef errors for this variable
+    },
+    "env": {
+        "browser": 1
+        //The browser environment stops ESLint from giving errors about things like XMLHttpRequest, FormData or window
+    }
+}
