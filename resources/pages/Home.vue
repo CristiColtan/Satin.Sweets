@@ -1,12 +1,5 @@
-<script setup>
-</script>
+<script setup></script>
 
-<template>
-    <div class="">
-        <app-button :icon="'icon-link'" :tooltip="'caca'"></app-button>
-    </div>
-</template>
+<template></template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

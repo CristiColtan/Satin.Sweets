@@ -15,10 +15,13 @@
         "vite": "^7.0.4"
     },
     "dependencies": {
+        "@heroicons/vue": "^2.2.0",
         "@sts/funky-ui-kit": "1.11.35",
         "@vitejs/plugin-vue": "^6.0.1",
         "@vueuse/core": "^13.7.0",
         "pinia": "^3.0.3",
+        "prettier": "^3.6.2",
+        "prettier-plugin-tailwindcss": "^0.6.14",
         "vue": "^3.5.19",
         "vue-router": "^4.5.1"
     }

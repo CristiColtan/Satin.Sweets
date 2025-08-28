@@ -7,5 +7,49 @@
 
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --color-rosegold-900: #8C5A58;
+    --color-rosegold-700: #B87E7A; /* primar */
+    --color-rosegold-500: #D6A6A3;
+    --color-rosegold-300: #E9C9CC;
+
+    --color-beige: #DCCBC4;
+    --color-bgrose: #F7EEF1;
+    --color-ink: #2B2A2A;
+    --color-muted: #7C6F72;
+}
+
+input[type="text"]:hover {
+    -webkit-appearance: none;
+}
+
+.link-terms {
+    color: #B87E7A;
+    text-decoration: none;
+}
+
+.link-terms:hover,
+.link-terms:focus {
+    color: #8C5A58;
+    text-decoration: underline;
+}
+
+.link-terms:visited {
+    color: #8C5A58;
+}
+
+:root {
+    --rg-900: #8C5A58;
+    --rg-700: #B87E7A;
+    --rg-500: #D6A6A3;
+    --rg-300: #E9C9CC;
+    --beige: #DCCBC4;
+    --bg: #F7EEF1;
+    --ink: #2B2A2A;
+    --muted: #7C6F72;
+}
+
+.rose-gradient {
+    background: linear-gradient(90deg, #8C5A58, #C89A94, #F1D4CF, #C89A94, #8C5A58);
 }
