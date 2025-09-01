@@ -1,12 +1,14 @@
 <script setup>
 import '../css/app.css'
+
+const emit = defineEmits(['submit'])
 </script>
 
 <template>
     <div
         class="flex min-h-screen flex-col items-center justify-center bg-[#f3f3f3] p-6 sm:p-14"
     >
-        <form @submit.prevent>
+        <form method="POST" @submit.prevent="emit('submit')">
             <div class="space-y-4">
                 <div class="border-b border-gray-900/10 pb-4">
                     <h2 class="text-base/7 font-semibold text-gray-900">
