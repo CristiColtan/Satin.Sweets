@@ -5,11 +5,32 @@ const ResetPassword = () => import('@/pages/ResetPassword.vue')
 const Profile = () => import('@/pages/Profile.vue')
 const ProfileData = () => import('@/pages/ProfileData.vue')
 const NotFound = () => import('@/pages/NotFound.vue')
+const AppLayout = () => import('@/components/AppLayout.vue')
+const BucheteDeFlori = () => import('@/pages/BucheteDeFlori.vue')
+const TablouriPersonalizate = () => import('@/pages/TablouriPersonalizate.vue')
 export const routes = [
     {
         path: '/',
-        name: 'home',
-        component: HomePage,
+        name: 'app',
+        component: AppLayout,
+        redirect: '/app/home',
+        children: [
+            {
+                path: 'home',
+                name: 'app.home',
+                component: HomePage,
+            },
+            {
+                path: 'buchete-de-flori',
+                name: 'app.buchete-de-flori',
+                component: BucheteDeFlori,
+            },
+            {
+                path: 'tablouri-personalizate',
+                name: 'app.tablouri-personalizate',
+                component: TablouriPersonalizate,
+            },
+        ],
     },
     {
         path: '/profile',

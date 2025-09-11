@@ -1,10 +1,52 @@
-<script setup></script>
+<script setup>
+import { router } from '../router/index.js'
+import { reactive, ref } from 'vue'
+import { useAppStore } from '../store/index.js'
+
+const emit = defineEmits(['submit'])
+
+const store = useAppStore()
+const userData = reactive({ email: '', password: '' })
+
+const loading = ref(false)
+const errorMsg = ref('')
+
+/*watch(
+    userData,
+    () => {
+        console.log(
+            'USER:',
+            userData,
+            // userData.value.email,
+            // userData.value.password,
+        )
+    },
+    // { deep: true },
+)*/
+
+function login() {
+    loading.value = true
+    store
+        .login(userData)
+        .then(() => {
+            loading.value = false
+            router.push({ name: 'app.home' })
+        })
+        .catch((err) => {
+            loading.value = false
+            errorMsg.value =
+                err?.response?.data?.message ||
+                err?.message ||
+                'Eroare la autentificare'
+        })
+}
+</script>
 
 <template>
     <div
         class="flex min-h-screen flex-col items-center justify-center bg-[#f3f3f3] p-6 sm:p-14"
     >
-        <form class="w-full max-w-md">
+        <form class="w-full max-w-md" @submit.prevent="login">
             <div class="space-y-4">
                 <div class="border-b border-gray-900/10 pb-4">
                     <h2 class="text-base/7 font-semibold text-gray-900">
@@ -32,6 +74,7 @@
                                 >
                                     <input
                                         id="email"
+                                        v-model="userData.email"
                                         class="block min-w-0 grow bg-white py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
                                         name="email"
                                         placeholder="popescu.vasile@yahoo.com"
@@ -54,6 +97,7 @@
                                 >
                                     <input
                                         id="password"
+                                        v-model="userData.password"
                                         class="block min-w-0 grow bg-white py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
                                         name="password"
                                         placeholder="********"
@@ -62,6 +106,9 @@
                                 </div>
                             </div>
                         </div>
+                        <p v-if="errorMsg" class="text-red-600">
+                            {{ errorMsg }}
+                        </p>
                     </div>
                 </div>
             </div>
@@ -75,10 +122,11 @@
                     >
                 </p>
                 <button
+                    :disabled="loading"
                     class="bg-rosegold-700 hover:bg-rosegold-500 focus-visible:outline-rosegold-700 rounded-md px-10 py-2 text-sm font-semibold text-white shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2"
                     type="submit"
                 >
-                    Login
+                    {{ loading ? 'Loading...' : 'Login' }}
                 </button>
             </div>
         </form>
