@@ -30,7 +30,8 @@ function login() {
         .login(userData)
         .then(() => {
             loading.value = false
-            router.push({ name: 'app.home' })
+            if (!store.user.data.is_admin) router.push({ name: 'app.home' })
+            else router.push({ name: 'admin' })
         })
         .catch((err) => {
             loading.value = false

@@ -35,62 +35,25 @@
                         />
                     </div>
                 </div>
+
                 <div
                     class="inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0"
                 >
-                    <button
-                        :class="[
-                            store.user?.data?.is_admin ? 'block' : 'hidden',
-                            'relative rounded-full p-1 text-black transition-transform duration-200 hover:-translate-y-1 focus:outline-2 focus:outline-offset-2',
-                        ]"
-                        type="button"
-                        @click="redirectAdmin"
+                    <p
+                        class="mr-10 flex translate-y-1.5 items-center text-lg font-medium text-black md:text-2xl"
                     >
-                        <span class="absolute -inset-1.5" />
-                        <span class="sr-only">View notifications</span>
-                        <WrenchScrewdriverIcon
-                            aria-hidden="true"
-                            class="size-8"
-                        />
-                        <span
-                            class="absolute -top-1 -right-1 flex items-center justify-center rounded-full bg-white px-1 text-[10px] font-bold text-red-600"
-                        >
-                            ADMIN
-                        </span>
-                    </button>
-                    <button
-                        class="relative rounded-full p-1 text-black transition-transform duration-200 hover:-translate-y-1 focus:outline-2 focus:outline-offset-2"
-                        type="button"
-                    >
-                        <span class="absolute -inset-1.5" />
-                        <span class="sr-only">View notifications</span>
-                        <HeartIcon aria-hidden="true" class="size-8" />
-                        <span
-                            class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-white text-[12px] font-bold text-black"
-                        >
-                            3
-                        </span>
-                    </button>
-                    <button
-                        class="relative rounded-full p-1 text-black transition-transform duration-200 hover:-translate-y-1 focus:outline-2 focus:outline-offset-2"
-                        type="button"
-                    >
-                        <span class="absolute -inset-1.5" />
-                        <span class="sr-only">View notifications</span>
-                        <ShoppingBagIcon aria-hidden="true" class="size-8" />
-                        <span
-                            class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-white text-[12px] font-bold text-black"
-                        >
-                            3
-                        </span>
-                    </button>
+                        ADMIN PANEL
+                    </p>
                     <button
                         class="relative rounded-full p-1 text-black transition-transform duration-200 hover:-translate-y-1 hover:text-white focus:outline-2 focus:outline-offset-2"
                         type="button"
                     >
                         <span class="absolute -inset-1.5" />
                         <span class="sr-only">View notifications</span>
-                        <UserIcon aria-hidden="true" class="size-8" />
+                        <ArrowLeftStartOnRectangleIcon
+                            aria-hidden="true"
+                            class="size-8"
+                        />
                     </button>
                 </div>
             </div>
@@ -143,39 +106,26 @@
 <script setup>
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
-import {
-    Bars3Icon,
-    HeartIcon,
-    ShoppingBagIcon,
-    UserIcon,
-    WrenchScrewdriverIcon,
-    XMarkIcon,
-} from '@heroicons/vue/24/outline'
+import { ArrowLeftStartOnRectangleIcon, Bars3Icon, XMarkIcon } from '@heroicons/vue/24/outline'
 
 import logo from '@/assets/logo4.png'
-import { useAppStore } from '../store/index.js'
 
 const route = useRoute()
 const router = useRouter()
-const store = useAppStore()
 
 const navigation = [
     {
-        name: 'Buchete de flori',
-        to: { name: 'app.buchete-de-flori' },
+        name: 'Dashboard',
+        to: { name: 'admin.dashboard' },
     },
     {
-        name: 'Tablouri personalizate',
-        to: { name: 'app.tablouri-personalizate' },
+        name: 'Products',
+        to: { name: 'admin.products' },
     },
 ]
 
 function redirectHome() {
     router.push({ name: 'app.home' })
-}
-
-function redirectAdmin() {
-    router.push({ name: 'admin' })
 }
 const isActive = (item) => route.name === item.to?.name
 </script>

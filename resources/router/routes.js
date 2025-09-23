@@ -8,7 +8,32 @@ const NotFound = () => import('@/pages/NotFound.vue')
 const AppLayout = () => import('@/components/AppLayout.vue')
 const BucheteDeFlori = () => import('@/pages/BucheteDeFlori.vue')
 const TablouriPersonalizate = () => import('@/pages/TablouriPersonalizate.vue')
+const AdminLayout = () => import('@/components/AdminLayout.vue')
+const AdminDashboard = () => import('@/pages/admin/AdminDashboard.vue')
+const AdminProducts = () => import('@/pages/admin/AdminProducts.vue')
 export const routes = [
+    {
+        path: '/admin',
+        name: 'admin',
+        component: AdminLayout,
+        meta: {
+            requiresAuth: true,
+            isAdmin: true,
+        },
+        redirect: '/admin/dashboard',
+        children: [
+            {
+                path: 'dashboard',
+                name: 'admin.dashboard',
+                component: AdminDashboard,
+            },
+            {
+                path: 'products',
+                name: 'admin.products',
+                component: AdminProducts,
+            },
+        ],
+    },
     {
         path: '/',
         name: 'app',

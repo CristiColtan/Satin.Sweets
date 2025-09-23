@@ -1,5 +1,11 @@
 <template>
-    <div>buchete-de-flori</div>
+    <div>
+        {{ store.user.data }}
+    </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { useAppStore } from '../store/index.js'
+
+const store = useAppStore()
+</script>

@@ -15,7 +15,7 @@ class Product extends Model
     use SoftDeletes;
 
     protected $fillable = ['title', 'description', 'price', 'created_by', 'updated_by', 'deleted_by'];
-
+    
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
@@ -35,6 +35,11 @@ class Product extends Model
 
     public function getRouteKeyName()
     {
-        return 'slug';
+        return 'id';
+    }
+
+    public function scopeName($query, $value)
+    {
+        return $query->where('title', 'like', "%$value%");
     }
 }

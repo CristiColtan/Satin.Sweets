@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 
+@plugin '@tailwindcss/forms';
+
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
@@ -18,6 +20,19 @@
     --color-bgrose: #F7EEF1;
     --color-ink: #2B2A2A;
     --color-muted: #7C6F72;
+
+    --animate-fade-in-down: fade-in-down 0.2s ease-in-out both;
+
+    @keyframes fade-in-down {
+        from {
+            transform: translateY(-0.75rem);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0rem);
+            opacity: 1;
+        }
+    }
 }
 
 input[type="text"]:hover {
@@ -51,5 +66,7 @@ input[type="text"]:hover {
 }
 
 .rose-gradient {
-    background: linear-gradient(90deg, #8C5A58, #C89A94, #F1D4CF, #C89A94, #8C5A58);
+    background: linear-gradient(90deg, #8C5A58, saddlebrown, #8C5A58, saddlebrown, #8C5A58);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
