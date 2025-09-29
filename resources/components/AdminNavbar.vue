@@ -106,7 +106,11 @@
 <script setup>
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
-import { ArrowLeftStartOnRectangleIcon, Bars3Icon, XMarkIcon } from '@heroicons/vue/24/outline'
+import {
+    ArrowLeftStartOnRectangleIcon,
+    Bars3Icon,
+    XMarkIcon,
+} from '@heroicons/vue/24/outline'
 
 import logo from '@/assets/logo4.png'
 

@@ -51,12 +51,12 @@ async function getProducts({
         const responseData = response.data
 
         this.products.data = responseData.data
-        this.products.links = responseData.meta.links
-        this.products.from = responseData.meta.from
-        this.products.to = responseData.meta.to
-        this.products.page = responseData.meta.current_page
-        this.products.limit = responseData.meta.per_page
-        this.products.total = responseData.meta.total
+        this.products.links = responseData.links
+        this.products.from = responseData.from
+        this.products.to = responseData.to
+        this.products.page = responseData.current_page
+        this.products.limit = responseData.per_page
+        this.products.total = responseData.total
     } catch (error) {
         console.error('Error loading products:', error)
     } finally {
@@ -82,7 +82,7 @@ async function deleteProduct(id) {
     }
 }
 
-async function createProduct(product) {
+async function createProduct(product, newImages = []) {
     try {
         const form = new FormData()
 
@@ -91,11 +91,9 @@ async function createProduct(product) {
         form.append('published', product.published ? 1 : 0)
         form.append('price', product.price)
 
-        if (Array.isArray(product.images)) {
-            product.images.forEach((img, index) => {
-                form.append('images[]', img)
-            })
-        }
+        newImages.forEach((img) => {
+            form.append('images[]', img)
+        })
 
         return await axiosClient.post('/products', form, {
             headers: { 'Content-Type': 'multipart/form-data' },
@@ -105,14 +103,24 @@ async function createProduct(product) {
     }
 }
 
-async function updateProduct(product) {
+async function updateProduct(product, newImages, removedImageIds) {
+    console.log('🔹 updateProduct() a primit:', {
+        product,
+        newImages,
+        removedImageIds,
+    })
+
     try {
         const id = product.id
 
         let payload
         let headers = {}
 
-        if (Array.isArray(product.images) && product.images.length > 0) {
+        if (
+            (Array.isArray(product.images) && product.images.length > 0) ||
+            (Array.isArray(removedImageIds) && removedImageIds.length > 0) ||
+            (Array.isArray(newImages) && newImages.length > 0)
+        ) {
             const form = new FormData()
 
             form.append('id', product.id)
@@ -121,16 +129,29 @@ async function updateProduct(product) {
             form.append('published', product.published ? 1 : 0)
             form.append('price', product.price)
 
-            form.append('_method', 'PUT')
-
-            product.images.forEach((img, index) => {
+            newImages.forEach((img, index) => {
                 form.append(`images[]`, img)
             })
+
+            removedImageIds.forEach((id) => {
+                form.append(`remove_image_ids[]`, id)
+            })
+
+            form.append('_method', 'PUT')
 
             payload = form
             headers['Content-Type'] = 'multipart/form-data'
         } else {
             payload = product
+        }
+
+        if (payload instanceof FormData) {
+            console.log('🔹 Payload (FormData):')
+            for (let [key, value] of payload.entries()) {
+                console.log(`${key}:`, value)
+            }
+        } else {
+            console.log('🔹 Payload (JSON):', payload)
         }
 
         return axiosClient.post(`/products/${id}`, payload, { headers })

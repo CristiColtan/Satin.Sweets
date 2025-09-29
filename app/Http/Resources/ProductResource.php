@@ -21,6 +21,7 @@ class ProductResource extends JsonResource
             'description' => $this->description,
             'image_url' => $this->mainImage()?->url,
             'images' => $this->media->map(fn($m) => [
+                'id' => $m->id,
                 'url' => $m->url,
                 'alt_text' => $m->alt_text,
                 'role' => $m->pivot->role,

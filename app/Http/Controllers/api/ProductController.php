@@ -10,16 +10,20 @@ use App\Models\Media;
 use App\Models\Product;
 use Exception;
 use GuzzleHttp\Psr7\UploadedFile;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
+use Meilisearch\Client;
 
 class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    //index v1
+    /*public function index()
     {
         $perPage = request('per_page', 10);
         $search = request('search', '');
@@ -32,12 +36,68 @@ class ProductController extends Controller
         //   ->get();
 
         return ProductListResource::collection($query);
+    }*/
+    public function index()
+    {
+        $perPage = (int)request('per_page', 10);
+        $page = (int)request('page', 1);
+        $search = request('search', '');
+        $sortField = request('sort_field', 'created_at');
+        $sortDirection = request('sort_direction', 'desc');
+
+        $client = new Client(
+            config('scout.meilisearch.host'),
+            config('scout.meilisearch.key')
+        );
+        $index = $client->index('products');
+
+        $sortable = $index->getSortableAttributes();
+        if (!in_array($sortField, $sortable)) {
+            $newSortables = array_unique(array_merge($sortable, [$sortField]));
+            $index->updateSortableAttributes($newSortables);
+        }
+
+        $offset = ($page - 1) * $perPage;
+
+        $result = $index->search($search, [
+            'limit' => $perPage,
+            'offset' => $offset,
+            'sort' => ["{$sortField}:{$sortDirection}"],
+            'attributesToHighlight' => ['title', 'description'],
+            'highlightPreTag' => '<mark>',
+            'highlightPostTag' => '</mark>',
+        ]);
+
+        $hits = $result->getHits();
+        $ids = collect($hits)->pluck('id');
+        $total = $result->getEstimatedTotalHits();
+
+        $products = Product::whereIn('id', $ids)
+            ->with('media')
+            ->get()
+            ->keyBy('id');
+
+        $items = collect($hits)->map(function ($hit) use ($products) {
+            $product = $products->get($hit['id']);
+            if (!$product) {
+                return null;
+            }
+
+            $resource = (new ProductListResource($product))->toArray(request());
+            $resource['_formatted'] = $hit['_formatted'] ?? [];
+
+            return $resource;
+        })->filter();
+
+        return new LengthAwarePaginator(
+            $items,
+            $total,
+            $perPage,
+            $page,
+            ['path' => url()->current()]
+        );
     }
 
-
-    /**
-     * Display the specified resource.
-     */
     public function show($product)
     {
         $product = Product::where('id', $product)->orWhere('slug', $product)->firstOrFail();
@@ -51,34 +111,56 @@ class ProductController extends Controller
     {
         $data = $request->validated();
         $data['updated_by'] = $request->user()->id;
-
         unset($data['image'], $data['images']);
 
-        $product->update($data);
+        DB::transaction(function () use ($request, $data, $product) {
+            $product->update($data);
+            $removeIds = (array)$request->input('remove_image_ids', []);
 
-        if ($request->hasFile('images')) {
-            // 1. Ștergem toate imaginile vechi
-            foreach ($product->media as $oldMedia) {
-                Storage::delete(
-                    str_replace('/storage/', 'public/', parse_url($oldMedia->url, PHP_URL_PATH))
-                );
-                $product->media()->detach($oldMedia->id);
-                $oldMedia->delete();
+            if (!empty($removeIds)) {
+                $toRemove = $product->media()->whereIn('media.id', $removeIds)->get();
+
+                foreach ($toRemove as $media) {
+                    $publicPath = $this->publicPathFromUrl($media->url);
+                    if ($publicPath && Storage::exists($publicPath)) {
+                        Storage::disk('public')->delete($publicPath);
+                    }
+
+                    $product->media()->detach($media->id);
+                    $media->delete();
+                }
             }
+            if ($request->hasFile('images')) {
+                //if ($request->hasFile('images')) {
+                // 1. Ștergem toate imaginile vechi
+                //foreach ($product->media as $oldMedia) {
+                //Storage::delete(
+                //    str_replace('/storage/', 'public/', parse_url($oldMedia->url, PHP_URL_PATH))
+                //);
+                //$product->media()->detach($oldMedia->id);
+                //$oldMedia->delete();
+                // }
 
-            // 2. Salvăm noile imagini
-            foreach ($request->file('images') as $image) {
-                $relativePath = $image->store('products', 'public');
+                // 2. Salvăm noile imagini
+                foreach ($request->file('images') as $image) {
+                    $relativePath = $image->store('products', 'public');
 
-                $media = Media::create([
-                    'url' => URL::to(Storage::url($relativePath)),
-                    'alt_text' => $product->title,
-                ]);
+                    $media = Media::create([
+                        'url' => URL::to(Storage::url($relativePath)),
+                        'alt_text' => $product->title,
+                    ]);
 
-                $product->media()->attach($media->id, ['role' => 'gallery']);
+                    $product->media()->attach($media->id, ['role' => 'gallery']);
+                }
             }
-        }
+        });
         return new ProductResource($product->load('media'));
+    }
+
+    private function publicPathFromUrl(string $url): string
+    {
+        $path = parse_url($url, PHP_URL_PATH) ?? '';
+        return ltrim(str_replace('/storage/', '', $path), '/');
     }
 
     /**
@@ -90,7 +172,7 @@ class ProductController extends Controller
         $data['created_by'] = $request->user()->id;
         $data['updated_by'] = $request->user()->id;
 
-        unset($data['image'], $data['images']);
+        unset($data['image'], $data['images'], $data['remove_image_ids']);
 
         $product = Product::create($data);
 

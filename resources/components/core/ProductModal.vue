@@ -87,26 +87,74 @@
                                         type="number"
                                     />
                                     <MyInput
-                                        v-model="product.images"
+                                        v-model="newImages"
                                         class="mb-3"
                                         label="Imagini"
                                         type="file"
+                                        @change="onFilesChange"
                                     />
+                                    <!-- PREVIEW: Imagini EXISTENTE -->
                                     <div
-                                        v-if="product.images.length"
-                                        class="mt-3 flex flex-wrap gap-3"
+                                        v-if="existingImages.length"
+                                        class="mt-3"
                                     >
-                                        <div
-                                            v-for="(img, i) in product.images"
-                                            :key="i"
-                                            class="h-24 w-24 overflow-hidden rounded-lg border border-gray-300"
+                                        <h4
+                                            class="mb-2 text-sm font-medium text-gray-700"
                                         >
-                                            <img
-                                                v-if="getImageSrc(img)"
-                                                :src="getImageSrc(img)"
-                                                alt="Preview"
-                                                class="h-full w-full object-cover"
-                                            />
+                                            Imagini existente
+                                        </h4>
+                                        <div class="flex flex-wrap gap-3">
+                                            <div
+                                                v-for="img in existingImages"
+                                                :key="img.id"
+                                                class="relative h-24 w-24 overflow-hidden rounded-lg border border-gray-300"
+                                            >
+                                                <img
+                                                    :src="getImageSrc(img)"
+                                                    alt=""
+                                                    class="h-full w-full object-cover"
+                                                />
+                                                <button
+                                                    class="absolute top-1 right-1 rounded bg-black/60 px-1.5 py-0.5 text-xs text-white"
+                                                    title="Șterge imaginea"
+                                                    type="button"
+                                                    @click="
+                                                        removeExisting(img.id)
+                                                    "
+                                                >
+                                                    ✕
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- PREVIEW: Imagini NOI -->
+                                    <div v-if="newImages.length" class="mt-4">
+                                        <h4
+                                            class="mb-2 text-sm font-medium text-gray-700"
+                                        >
+                                            Imagini noi
+                                        </h4>
+                                        <div class="flex flex-wrap gap-3">
+                                            <div
+                                                v-for="(img, i) in newImages"
+                                                :key="i"
+                                                class="relative h-24 w-24 overflow-hidden rounded-lg border border-gray-300"
+                                            >
+                                                <img
+                                                    :src="getImageSrc(img)"
+                                                    alt=""
+                                                    class="h-full w-full object-cover"
+                                                />
+                                                <button
+                                                    class="absolute top-1 right-1 rounded bg-black/60 px-1.5 py-0.5 text-xs text-white"
+                                                    title="Elimină din selecția nouă"
+                                                    type="button"
+                                                    @click="removeNew(i)"
+                                                >
+                                                    ✕
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                     <MyInput
@@ -165,6 +213,22 @@ const props = defineProps({
     },
 })
 
+function removeExisting(id) {
+    existingImages.value = existingImages.value.filter((img) => img.id !== id)
+    if (!removedImageIds.value.includes(id)) {
+        removedImageIds.value.push(id)
+    }
+}
+
+function removeNew(idx) {
+    newImages.value.splice(idx, 1)
+}
+
+function onFilesChange(filesArray) {
+    const files = (filesArray || []).filter((file) => file instanceof File)
+    if (files.length) newImages.value.push(...files)
+}
+
 function getImageSrc(img) {
     // dacă e fișier uploadat
     if (img instanceof File) {
@@ -183,6 +247,10 @@ const show = computed({
     set: (value) => emit('update:modelValue', value),
 })
 
+const existingImages = ref([])
+const newImages = ref([])
+const removedImageIds = ref([])
+
 const product = ref({
     id: props.product.id,
     title: props.product.title,
@@ -196,16 +264,42 @@ watch(
     () => props.product,
     (newVal) => {
         if (newVal) {
+            console.log(
+                'Produs nou:',
+                newVal,
+                existingImages.value,
+                newImages.value,
+                removedImageIds.value,
+            )
             product.value = { ...newVal }
+            existingImages.value = Array.isArray(newVal.images)
+                ? [...newVal.images]
+                : []
+            newImages.value = []
+            removedImageIds.value = []
         }
     },
     { deep: true, immediate: true },
 )
-// monitorizare modificari pe produsul local
+
+watch(
+    removedImageIds,
+    (newVal) => {
+        console.log('Removed image ids:', newVal)
+    },
+    { deep: true, immediate: true },
+)
+
 watch(
     product,
     (newVal) => {
-        console.log('Produs modificat:', newVal)
+        console.log(
+            'Produs modificat:',
+            newVal,
+            existingImages.value,
+            newImages.value,
+            removedImageIds.value,
+        )
     },
     { deep: true },
 )
@@ -218,15 +312,21 @@ function closeModal() {
 function onSubmit() {
     loading.value = true
     if (product.value.id) {
-        store.updateProduct(product.value).then((response) => {
-            loading.value = false
-            console.log('Produs actualizat:', response.data)
-            store.getProducts()
-            closeModal()
-        })
+        store
+            .updateProduct(
+                product.value,
+                newImages.value,
+                removedImageIds.value,
+            )
+            .then((response) => {
+                loading.value = false
+                console.log('Produs actualizat:', response.data)
+                store.getProducts()
+                closeModal()
+            })
     } else {
         store
-            .createProduct(product.value)
+            .createProduct(product.value, newImages.value)
             .then((response) => {
                 loading.value = false
                 console.log('Produs creat:', response.data)

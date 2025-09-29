@@ -108,9 +108,8 @@
 
                     <td
                         class="max-w-[200px] overflow-hidden border-b p-2 text-ellipsis whitespace-nowrap"
-                    >
-                        {{ product.title }}
-                    </td>
+                        v-html="product._formatted?.title || product.title"
+                    ></td>
 
                     <td class="border-black p-2">
                         {{ product.price }}
@@ -235,11 +234,7 @@ import { useAppStore } from '../store/index.js'
 import { PRODUCTS_PER_PAGE } from '../js/constants.js'
 import Spinner from './core/Spinner.vue'
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
-import {
-    EllipsisVerticalIcon,
-    PencilIcon,
-    TrashIcon,
-} from '@heroicons/vue/24/outline'
+import { EllipsisVerticalIcon, PencilIcon, TrashIcon } from '@heroicons/vue/24/outline'
 
 const store = useAppStore()
 
