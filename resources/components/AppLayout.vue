@@ -2,7 +2,7 @@
     <div class="min-h-full bg-[#f3f3f3]">
         <div>
             <Navbar></Navbar>
-            <div class="px-14">
+            <div class="">
                 <router-view></router-view>
             </div>
         </div>

@@ -1,6 +1,6 @@
 <template>
     <Disclosure v-slot="{ open }" as="nav" class="bg-rosegold-500">
-        <div class="mx-auto max-w-10/12 px-2 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-10/12">
             <div class="relative flex h-24 items-center justify-between">
                 <div
                     class="absolute inset-y-0 left-0 flex items-center sm:hidden"
@@ -117,7 +117,7 @@
         v-slot="{ open }"
         as="nav"
         class="bg-rosegold-700 hidden sm:block"
-        ><div class="mx-auto max-w-10/12 px-2 sm:px-6 lg:px-8">
+        ><div class="mx-auto max-w-10/12">
             <div class="relative flex h-14 items-center justify-between">
                 <div class="hidden sm:ml-6 sm:block">
                     <div class="flex -translate-y-0.5 space-x-4">
