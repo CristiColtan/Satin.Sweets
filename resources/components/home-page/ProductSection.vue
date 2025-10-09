@@ -39,18 +39,20 @@
                     :key="i"
                     class="product-card bg-card overflow-hidden rounded-2xl border-0"
                 >
-                    <div class="relative overflow-hidden">
+                    <div class="relative aspect-square overflow-hidden">
                         <img
                             :src="product.img"
                             alt=""
-                            class="max-h-72 w-auto rounded-md object-cover"
+                            class="w-auto rounded-md object-cover"
                         />
-                    </div>
 
-                    <div v-if="product.badge" class="absolute top-4 left-4">
-                        {{ product.badge }}
+                        <div
+                            v-if="product.badge"
+                            class="bg-rosegold-500 absolute top-4 left-4 rounded-full px-2 py-1"
+                        >
+                            {{ product.badge }}
+                        </div>
                     </div>
-
                     <h3 class="mt-4 text-center font-medium">
                         {{ product.name }}
                     </h3>
