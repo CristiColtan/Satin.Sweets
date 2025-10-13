@@ -33,6 +33,7 @@ const DEFAULT_PRODUCT = {
     price: '',
     published: false,
     images: [],
+    categories: [],
 }
 
 const products = computed(() => store.products)

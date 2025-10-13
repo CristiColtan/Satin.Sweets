@@ -83,6 +83,11 @@ async function deleteProduct(id) {
 }
 
 async function createProduct(product, newImages = []) {
+    console.log('🔹 createProduct() a primit:', {
+        product,
+        newImages,
+    })
+
     try {
         const form = new FormData()
 
@@ -90,6 +95,11 @@ async function createProduct(product, newImages = []) {
         form.append('description', product.description || '')
         form.append('published', product.published ? 1 : 0)
         form.append('price', product.price)
+
+        if (Array.isArray(product.categories) && product.categories.length > 0)
+            product.categories.forEach((catId) => {
+                form.append('categories[]', catId)
+            })
 
         newImages.forEach((img) => {
             form.append('images[]', img)
@@ -129,6 +139,14 @@ async function updateProduct(product, newImages, removedImageIds) {
             form.append('published', product.published ? 1 : 0)
             form.append('price', product.price)
 
+            if (
+                Array.isArray(product.categories) &&
+                product.categories.length > 0
+            )
+                product.categories.forEach((catId) => {
+                    form.append('categories[]', catId)
+                })
+
             newImages.forEach((img, index) => {
                 form.append(`images[]`, img)
             })
@@ -154,7 +172,9 @@ async function updateProduct(product, newImages, removedImageIds) {
             console.log('🔹 Payload (JSON):', payload)
         }
 
-        return axiosClient.post(`/products/${id}`, payload, { headers })
+        if (payload instanceof FormData) {
+            return axiosClient.post(`/products/${id}`, payload, { headers })
+        } else return axiosClient.put(`/products/${id}`, payload)
     } catch (error) {
         console.error('Error updating product:', error)
         throw error

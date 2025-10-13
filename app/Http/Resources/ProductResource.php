@@ -26,6 +26,12 @@ class ProductResource extends JsonResource
                 'alt_text' => $m->alt_text,
                 'role' => $m->pivot->role,
             ]),
+            'categories' => $this->categories->map(function ($category) {
+                return [
+                    'id' => $category->id,
+                    'name' => $category->name,
+                ];
+            }),
             'price' => $this->price,
             'published' => (bool)$this->published,
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),

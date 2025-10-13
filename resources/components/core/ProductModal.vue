@@ -163,6 +163,19 @@
                                         label="Publicat"
                                         type="checkbox"
                                     />
+                                    <label class="sr-only">Categorii</label>
+                                    <Multiselect
+                                        v-model="product.categories"
+                                        :clear-on-select="false"
+                                        :close-on-select="false"
+                                        :multiple="true"
+                                        :options="allCategories"
+                                        :preserve-search="true"
+                                        class="rounded"
+                                        label="name"
+                                        placeholder="Selectează categoriile..."
+                                        track-by="id"
+                                    />
                                 </div>
                                 <footer
                                     class="gap-3 bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6"
@@ -174,11 +187,14 @@
                                     </button>
                                     <button
                                         ref="cancelButtonRef"
-                                        class="focus:ring-rosegold-500 mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-lg font-medium text-gray-700 shadow-sm hover:bg-gray-200 focus:ring-2 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto"
+                                        class="group focus:ring-rosegold-500 mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-lg font-medium text-gray-700 shadow-sm hover:bg-gray-200 focus:ring-2 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto"
                                         type="button"
                                         @click="closeModal"
                                     >
-                                        <span class="text-lg">Anuleaza</span>
+                                        <span
+                                            class="text-lg group-hover:text-gray-600"
+                                            >Anuleaza</span
+                                        >
                                     </button>
                                 </footer>
                             </form>
@@ -199,9 +215,12 @@ import {
     TransitionRoot,
 } from '@headlessui/vue'
 import Spinner from './Spinner.vue'
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import MyInput from './MyInput.vue'
 import { useAppStore } from '../../store/index.js'
+import axiosClient from '../../js/axios.js'
+import 'vue-multiselect/dist/vue-multiselect.css'
+import Multiselect from 'vue-multiselect'
 
 const store = useAppStore()
 const loading = ref(false)
@@ -251,6 +270,17 @@ const existingImages = ref([])
 const newImages = ref([])
 const removedImageIds = ref([])
 
+const allCategories = ref([])
+
+onMounted(async () => {
+    try {
+        const res = await axiosClient.get('/categories')
+        allCategories.value = res.data
+    } catch (err) {
+        console.log('Eroare fetch categorii din baza de date: ', err)
+    }
+})
+
 const product = ref({
     id: props.product.id,
     title: props.product.title,
@@ -258,6 +288,7 @@ const product = ref({
     price: props.product.price,
     published: props.product.published,
     images: [],
+    categories: [],
 })
 
 watch(
@@ -270,11 +301,13 @@ watch(
                 existingImages.value,
                 newImages.value,
                 removedImageIds.value,
+                allCategories.value,
             )
             product.value = { ...newVal }
             existingImages.value = Array.isArray(newVal.images)
                 ? [...newVal.images]
                 : []
+
             newImages.value = []
             removedImageIds.value = []
         }
@@ -311,13 +344,13 @@ function closeModal() {
 
 function onSubmit() {
     loading.value = true
+    const payload = {
+        ...product.value,
+        categories: product.value.categories.map((cat) => cat.id),
+    }
     if (product.value.id) {
         store
-            .updateProduct(
-                product.value,
-                newImages.value,
-                removedImageIds.value,
-            )
+            .updateProduct(payload, newImages.value, removedImageIds.value)
             .then((response) => {
                 loading.value = false
                 console.log('Produs actualizat:', response.data)
@@ -326,7 +359,7 @@ function onSubmit() {
             })
     } else {
         store
-            .createProduct(product.value, newImages.value)
+            .createProduct(payload, newImages.value)
             .then((response) => {
                 loading.value = false
                 console.log('Produs creat:', response.data)
@@ -335,8 +368,14 @@ function onSubmit() {
             })
             .catch((err) => {
                 loading.value = false
-                debugger
+                console.group('🛑 Create product error')
+                console.log('err:', err)
+                console.log('status:', err?.response?.status)
+                console.log('data:', err?.response?.data)
+                console.groupEnd()
             })
     }
 }
 </script>
+
+<style scoped></style>

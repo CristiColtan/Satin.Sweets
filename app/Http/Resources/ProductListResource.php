@@ -26,6 +26,12 @@ class ProductListResource extends JsonResource
                     'alt_text' => $media->alt_text,
                 ];
             }),
+            'categories' => $this->categories->map(function ($category) {
+                return [
+                    'id' => $category->id,
+                    'name' => $category->name,
+                ];
+            }),
             'updated_at' => (new DateTime($this->updated_at))->format('Y-m-d H:i:s'),
         ];
     }

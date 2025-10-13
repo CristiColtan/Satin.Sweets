@@ -74,6 +74,7 @@ class ProductController extends Controller
 
         $products = Product::whereIn('id', $ids)
             ->with('media')
+            ->with('categories')
             ->get()
             ->keyBy('id');
 
@@ -111,10 +112,16 @@ class ProductController extends Controller
     {
         $data = $request->validated();
         $data['updated_by'] = $request->user()->id;
-        unset($data['image'], $data['images']);
+        unset($data['image'], $data['images'], $data['remove_image_ids'], $data['categories']);
 
         DB::transaction(function () use ($request, $data, $product) {
             $product->update($data);
+
+            $categories = (array)$request->input('categories', []);
+            if (!empty($categories)) {
+                $product->categories()->sync($categories);
+            }
+
             $removeIds = (array)$request->input('remove_image_ids', []);
 
             if (!empty($removeIds)) {
@@ -131,17 +138,6 @@ class ProductController extends Controller
                 }
             }
             if ($request->hasFile('images')) {
-                //if ($request->hasFile('images')) {
-                // 1. Ștergem toate imaginile vechi
-                //foreach ($product->media as $oldMedia) {
-                //Storage::delete(
-                //    str_replace('/storage/', 'public/', parse_url($oldMedia->url, PHP_URL_PATH))
-                //);
-                //$product->media()->detach($oldMedia->id);
-                //$oldMedia->delete();
-                // }
-
-                // 2. Salvăm noile imagini
                 foreach ($request->file('images') as $image) {
                     $relativePath = $image->store('products', 'public');
 
@@ -154,7 +150,7 @@ class ProductController extends Controller
                 }
             }
         });
-        return new ProductResource($product->load('media'));
+        return new ProductResource($product->load('media', 'categories'));
     }
 
     private function publicPathFromUrl(string $url): string
@@ -172,23 +168,33 @@ class ProductController extends Controller
         $data['created_by'] = $request->user()->id;
         $data['updated_by'] = $request->user()->id;
 
-        unset($data['image'], $data['images'], $data['remove_image_ids']);
+        unset($data['image'], $data['images'], $data['remove_image_ids'], $data['categories']);
 
-        $product = Product::create($data);
+        $product = DB::transaction(function () use ($request, $data) {
+            $product = Product::create($data);
 
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
-                $relativePath = $image->store('products', 'public');
-                $media = Media::create([
-                    'url' => URL::to(Storage::url($relativePath)),
-                    'alt_text' => $product->title,
-                ]);
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $image) {
+                    $relativePath = $image->store('products', 'public');
+                    $media = Media::create([
+                        'url' => URL::to(Storage::url($relativePath)),
+                        'alt_text' => $product->title,
+                    ]);
 
-                $product->media()->attach($media->id, ['role' => 'gallery']);
+                    $product->media()->attach($media->id, ['role' => 'gallery']);
+                }
             }
-        }
 
-        return new ProductResource($product->load('media'));
+            $categories = (array)$request->input('categories', []);
+
+            if (!empty($categories)) {
+                $product->categories()->sync($categories);
+            }
+
+            return $product;
+        });
+
+        return new ProductResource($product->load('media', 'categories'));
     }
 
     /**

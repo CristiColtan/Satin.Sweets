@@ -38,7 +38,7 @@ export const routes = [
         path: '/',
         name: 'app',
         component: AppLayout,
-        redirect: '/app/home',
+        redirect: '/home',
         children: [
             {
                 path: 'home',

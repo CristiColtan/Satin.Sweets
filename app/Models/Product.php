@@ -44,6 +44,11 @@ class Product extends Model
         return $this->belongsToMany(Media::class, 'products_media')->withPivot('role')->withTimestamps();
     }
 
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'categories_products');
+    }
+
     public function getRouteKeyName()
     {
         return 'id';

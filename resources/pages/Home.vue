@@ -5,7 +5,8 @@ import { router } from '../router/index.js'
 import Banner1 from '../components/home-page/Banner1.vue'
 
 import Slide1 from '../assets/Slide1.png'
-import ProductSection from '../components/home-page/ProductSection.vue'
+import ProductSectionType1 from '../components/home-page/ProductSectionType1.vue'
+import ProductSectionType2 from '../components/home-page/ProductSectionType2.vue'
 import MyCarouselV2 from '../components/home-page/MyCarouselV2.vue'
 import BenefitsSectionV2 from '../components/home-page/BenefitsSectionV2.vue'
 
@@ -25,6 +26,15 @@ function logout() {
         })
 }
 
+const categories = [
+    {
+        name: 'Pentru Mama',
+    },
+    {
+        name: 'Pentru Bunica',
+    },
+]
+
 const produse = [
     {
         img: Slide1,
@@ -37,7 +47,11 @@ const produse = [
         name: 'Aranjament Floral Majesty',
         price: '239 RON - 339 RON',
     },
-    { img: Slide1, name: 'Buchet Burgundy', price: '299 RON - 449 RON' },
+    {
+        img: Slide1,
+        name: 'Buchet Burgundy',
+        price: '299 RON - 449 RON',
+    },
 ]
 </script>
 
@@ -47,11 +61,21 @@ const produse = [
             <MyCarouselV2 />
             <BenefitsSectionV2 />
             <Banner1 :img="Slide1" to="/buchete-de-flori" />
-            <ProductSection
+            <ProductSectionType1
+                :has-tablouri="true"
                 :products="produse"
+                background=""
                 description="Alege un buchet cu flori de toamnă – culori calde, texturi inspirate din natură. Comandă flori online cu livrare în 2–4 ore."
                 link="/toamna"
                 title="Tablouri Cartoon"
+            /><ProductSectionType2
+                :categories="categories"
+                :has-tablouri="false"
+                :products="produse"
+                background=""
+                description="Alege un buchet cu flori de toamnă – culori calde, texturi inspirate din natură. Comandă flori online cu livrare în 2–4 ore."
+                link="/toamna"
+                title="Buchete din satin"
             />
         </div>
     </div>
