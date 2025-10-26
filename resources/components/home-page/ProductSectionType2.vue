@@ -126,3 +126,26 @@ defineProps({
     categories: Array,
 })
 </script>
+
+<style scoped>
+.modal-text {
+    text-align: justify;
+    text-justify: inter-word;
+}
+
+:deep(.swiper-pagination-bullet-active) {
+    background: rosybrown; /* activ */
+    opacity: 1;
+}
+
+.product-card {
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.product-card:hover {
+    box-shadow:
+        0 20px 25px -5px rgba(0, 0, 0, 0.1),
+        0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+</style>

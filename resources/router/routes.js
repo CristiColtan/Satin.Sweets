@@ -11,6 +11,11 @@ const TablouriPersonalizate = () => import('@/pages/TablouriPersonalizate.vue')
 const AdminLayout = () => import('@/components/AdminLayout.vue')
 const AdminDashboard = () => import('@/pages/admin/AdminDashboard.vue')
 const AdminProducts = () => import('@/pages/admin/AdminProducts.vue')
+
+const AdminGlitter = () => import('@/pages/admin/AdminGlitter.vue')
+
+const AdminPlushies = () => import('@/pages/admin/AdminPlushies.vue')
+const Product = () => import('@/pages/Product.vue')
 export const routes = [
     {
         path: '/admin',
@@ -31,6 +36,16 @@ export const routes = [
                 path: 'products',
                 name: 'admin.products',
                 component: AdminProducts,
+            },
+            {
+                path: 'glitter',
+                name: 'admin.glitter',
+                component: AdminGlitter,
+            },
+            {
+                path: 'plushies',
+                name: 'admin.plushies',
+                component: AdminPlushies,
             },
         ],
     },
@@ -54,6 +69,12 @@ export const routes = [
                 path: 'tablouri-personalizate',
                 name: 'app.tablouri-personalizate',
                 component: TablouriPersonalizate,
+            },
+            {
+                path: 'produs/:slug',
+                name: 'app.product',
+                component: Product,
+                props: true,
             },
         ],
     },

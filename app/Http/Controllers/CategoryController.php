@@ -10,4 +10,9 @@ class CategoryController extends Controller
     {
         return Category::select('id', 'name', 'parent_id')->with('children:id,name,parent_id')->get();
     }
+
+    public function getParentCategories()
+    {
+        return Category::select('id', 'name', 'parent_id')->whereNull('parent_id')->get();
+    }
 }

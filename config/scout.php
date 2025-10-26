@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\Addon;
+use App\Models\Product;
+
 return [
     'driver' => env('SCOUT_DRIVER', 'meilisearch'),
 
@@ -8,18 +11,56 @@ return [
         'key' => env('MEILISEARCH_KEY', null),
     ],
     'index-settings' => [
-        'typoTolerance' => [
-            'enabled' => true,
-            'minWordSizeForTypos' => [
-                'oneTypo' => 4,
-                'twoTypos' => 7
+        Product::class => [
+            'typoTolerance' => [
+                'enabled' => true,
+                'minWordSizeForTypos' => [
+                    'oneTypo' => 4,
+                    'twoTypos' => 7
+                ],
+                'disableOnWords' => [],
+                'disableOnAttributes' => []
             ],
-            'disableOnWords' => [],
-            'disableOnAttributes' => []
+            'searchableAttributes' => [
+                'title',
+                'description',
+            ],
+            'filterableAttributes' => [
+                'category_id',
+                'created_at',
+                'updated_at',
+            ],
+            'sortableAttributes' => [
+                'price',
+                'created_at',
+                'updated_at',
+            ],
         ],
-        'searchableAttributes' => [
-            'title',
-            'description',
-        ],
+        Addon::class => [
+            'typoTolerance' => [
+                'enabled' => true,
+                'minWordSizeForTypos' => [
+                    'oneTypo' => 4,
+                    'twoTypos' => 7
+                ],
+                'disableOnWords' => [],
+                'disableOnAttributes' => []
+            ],
+            'searchableAttributes' => [
+                'name',
+                'description',
+            ],
+            'filterableAttributes' => [
+                'type',
+                'is_active',
+                'created_at',
+                'updated_at',
+            ],
+            'sortableAttributes' => [
+                'price',
+                'created_at',
+                'updated_at',
+            ],
+        ]
     ]
 ];

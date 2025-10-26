@@ -45,6 +45,14 @@ class ProductController extends Controller
         $sortField = request('sort_field', 'created_at');
         $sortDirection = request('sort_direction', 'desc');
 
+        if ($search === '') {
+            $query = Product::query()
+                ->with(['media', 'categories'])
+                ->orderBy($sortField, $sortDirection);
+
+            return $query->paginate($perPage);
+        }
+
         $client = new Client(
             config('scout.meilisearch.host'),
             config('scout.meilisearch.key')
@@ -102,6 +110,15 @@ class ProductController extends Controller
     public function show($product)
     {
         $product = Product::where('id', $product)->orWhere('slug', $product)->firstOrFail();
+        return new ProductResource($product);
+    }
+
+    public function showSlug($slug)
+    {
+        $product = Product::with([
+            'categories.parent.parent.parent',
+            'media'
+        ])->where('slug', $slug)->firstOrFail();
         return new ProductResource($product);
     }
 

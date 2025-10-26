@@ -32,6 +32,23 @@ class ProductResource extends JsonResource
                     'name' => $category->name,
                 ];
             }),
+            'parent_categories' => $this->categories
+                ->map(fn($category) => $category->allParents()->map(fn($parent) => [
+                    'id' => $parent->id,
+                    'name' => $parent->name,
+                ])
+                )
+                ->flatten(1)        // aplatizeaza array-ul de array-uri
+                ->unique('id')      // elimina duplicatele
+                ->values(),         // reindex
+            'top_parent_categories' => $this->categories
+                ->map(fn($category) => $category->topParent())
+                ->unique('id')
+                ->map(fn($parent) => [
+                    'id' => $parent->id,
+                    'name' => $parent->name,
+                ])
+                ->values(),
             'price' => $this->price,
             'published' => (bool)$this->published,
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),

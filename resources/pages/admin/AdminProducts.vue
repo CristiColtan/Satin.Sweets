@@ -19,8 +19,8 @@
 </template>
 
 <script setup>
-import ProductsTable from '../../components/ProductsTable.vue'
-import ProductModal from '../../components/core/ProductModal.vue'
+import ProductsTable from '../../components/tables/ProductsTable.vue'
+import ProductModal from '../../components/core/modals/ProductModal.vue'
 import { useAppStore } from '../../store/index.js'
 import { computed, ref } from 'vue'
 

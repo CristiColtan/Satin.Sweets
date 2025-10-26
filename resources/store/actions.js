@@ -50,13 +50,25 @@ async function getProducts({
 
         const responseData = response.data
 
-        this.products.data = responseData.data
+        Object.assign(this.products, {
+            data: Array.isArray(responseData.data)
+                ? responseData.data
+                : Object.values(responseData.data),
+            links: responseData.links,
+            from: responseData.from,
+            to: responseData.to,
+            page: responseData.current_page,
+            limit: responseData.per_page,
+            total: responseData.total,
+        })
+
+        /*this.products.data = responseData.data
         this.products.links = responseData.links
         this.products.from = responseData.from
         this.products.to = responseData.to
         this.products.page = responseData.current_page
         this.products.limit = responseData.per_page
-        this.products.total = responseData.total
+        this.products.total = responseData.total*/
     } catch (error) {
         console.error('Error loading products:', error)
     } finally {
@@ -180,6 +192,148 @@ async function updateProduct(product, newImages, removedImageIds) {
         throw error
     }
 }
+
+async function getAddons({
+    url = null,
+    search = '',
+    per_page,
+    sort_field,
+    sort_direction,
+    type = 'glitters',
+} = {}) {
+    if (!this.addons[type]) {
+        console.warn(`Unknown addon type: ${type}`)
+        return
+    }
+    const addonState = this.addons[type]
+    addonState.loading = true
+    url = url || '/addons'
+
+    try {
+        const response = await axiosClient.get(url, {
+            params: {
+                per_page: per_page ?? addonState.limit,
+                search,
+                sort_field,
+                sort_direction,
+                type,
+            },
+        })
+        const responseData = response.data
+
+        Object.assign(addonState, {
+            data: Array.isArray(responseData.data)
+                ? responseData.data
+                : Object.values(responseData.data),
+            links: responseData.links,
+            from: responseData.from,
+            to: responseData.to,
+            page: responseData.current_page,
+            limit: responseData.per_page,
+            total: responseData.total,
+        })
+
+        /*addonState.data = responseData.data
+        addonState.links = responseData.links
+        addonState.from = responseData.from
+        addonState.to = responseData.to
+        addonState.page = responseData.current_page
+        addonState.limit = responseData.per_page
+        addonState.total = responseData.total*/
+    } catch (error) {
+        console.error('Error loading products:', error)
+    } finally {
+        addonState.loading = false
+    }
+}
+
+async function getAddon(id) {
+    try {
+        return axiosClient.get(`/addons/${id}`)
+    } catch (error) {
+        console.error('Error fetching addon:', error)
+        throw error
+    }
+}
+
+async function deleteAddon(id) {
+    try {
+        return axiosClient.delete(`/addons/${id}`)
+    } catch (error) {
+        console.error('Error deleting addon:', error)
+    }
+}
+
+async function createAddon(addon, newImages) {
+    console.log('Create Addon a primit:', addon)
+
+    try {
+        const form = new FormData()
+
+        form.append('name', addon.name)
+        form.append('description', addon.description || '')
+        form.append('hex_code', addon.hex_code)
+        form.append('price', addon.price)
+        form.append('type', addon.type)
+        form.append('is_active', addon.is_active ? 1 : 0)
+
+        if (Array.isArray(newImages) && newImages.length > 0) {
+            newImages.forEach((img) => {
+                form.append('images[]', img)
+            })
+        }
+
+        if (Array.isArray(addon.categories) && addon.categories.length > 0)
+            addon.categories.forEach((cat, i) => {
+                const id = typeof cat === 'object' ? cat.id : cat
+                form.append(`categories[${i}]`, id)
+            })
+
+        return await axiosClient.post('/addons', form, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        })
+    } catch (error) {
+        console.error('Error creating addon:', error)
+    }
+}
+
+async function updateAddon(addon, newImages) {
+    console.log('Update Addon a primit:', addon)
+    try {
+        const id = addon.id
+        let payload
+        let headers = {}
+
+        const form = new FormData()
+        form.append('name', addon.name)
+        form.append('description', addon.description || '')
+        form.append('hex_code', addon.hex_code)
+        form.append('price', addon.price)
+        form.append('type', addon.type)
+        form.append('is_active', addon.is_active ? 1 : 0)
+
+        if (Array.isArray(newImages) && newImages.length > 0) {
+            newImages.forEach((img) => {
+                form.append('images[]', img)
+            })
+        }
+
+        if (Array.isArray(addon.categories) && addon.categories.length > 0)
+            addon.categories.forEach((cat, i) => {
+                const id = typeof cat === 'object' ? cat.id : cat
+                form.append(`categories[${i}]`, id)
+            })
+
+        form.append('_method', 'PUT')
+        payload = form
+        headers['Content-Type'] = 'multipart/form-data'
+
+        return await axiosClient.post(`/addons/${id}`, payload, { headers })
+    } catch (error) {
+        console.error('Error updating addon:', error)
+        throw error
+    }
+}
 export default {
     getProduct,
     getProducts,
@@ -187,6 +341,11 @@ export default {
     updateProduct,
     createProduct,
     getUser,
+    getAddon,
+    getAddons,
+    deleteAddon,
+    createAddon,
+    updateAddon,
     login,
     logout,
 }

@@ -126,6 +126,14 @@ const navigation = [
         name: 'Products',
         to: { name: 'admin.products' },
     },
+    {
+        name: 'Glitter',
+        to: { name: 'admin.glitter' },
+    },
+    {
+        name: 'Plushies',
+        to: { name: 'admin.plushies' },
+    },
 ]
 
 function redirectHome() {

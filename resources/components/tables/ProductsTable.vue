@@ -93,12 +93,22 @@
                     <td class="border-b p-2">
                         <img
                             v-if="
-                                Array.isArray(product.images) &&
-                                product.images.length > 0 &&
-                                product.images[0].url
+                                (Array.isArray(product.media) &&
+                                    product.media.length > 0 &&
+                                    product.media[0].full_url) ||
+                                (Array.isArray(product.images) &&
+                                    product.images.length > 0 &&
+                                    product.images[0].url)
                             "
-                            :alt="product.images[0].alt_text || product.title"
-                            :src="product.images[0].url"
+                            :alt="
+                                product.media?.[0]?.alt_text ||
+                                product.images?.[0]?.alt_text ||
+                                product.title
+                            "
+                            :src="
+                                product.media?.[0]?.full_url ||
+                                product.images?.[0]?.url
+                            "
                             class="h-24 w-24 object-cover"
                         />
                         <span v-else class="text-gray-400 italic"
@@ -230,11 +240,15 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
 import TableHeaderCell from '@/components/core/MyTableHeaderCell.vue'
-import { useAppStore } from '../store/index.js'
-import { PRODUCTS_PER_PAGE } from '../js/constants.js'
-import Spinner from './core/Spinner.vue'
+import { useAppStore } from '../../store/index.js'
+import { PRODUCTS_PER_PAGE } from '../../js/constants.js'
+import Spinner from '../core/Spinner.vue'
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
-import { EllipsisVerticalIcon, PencilIcon, TrashIcon } from '@heroicons/vue/24/outline'
+import {
+    EllipsisVerticalIcon,
+    PencilIcon,
+    TrashIcon,
+} from '@heroicons/vue/24/outline'
 
 const store = useAppStore()
 
@@ -242,12 +256,9 @@ const perPage = ref(PRODUCTS_PER_PAGE)
 const search = ref('')
 const sortField = ref('updated_at')
 const sortDirection = ref('desc')
-const product = ref({})
 
 const products = computed(() => store.products)
 const emit = defineEmits(['clickEdit'])
-
-const showProductModal = ref(false)
 
 watch(search, () => {
     getProducts()
@@ -286,16 +297,17 @@ function sortProducts(field) {
     getProducts()
 }
 
-function deleteProduct(p) {
+async function deleteProduct(p) {
     if (!confirm('Esti sigur ca vrei sa stergi acest produs?')) return
-    store.deleteProduct(p.id).then((res) => {
-        store.getProducts()
+    await store.deleteProduct(p.id)
+    await store.getProducts({
+        search: search.value,
+        per_page: perPage.value,
+        sort_field: sortField.value,
+        sort_direction: sortDirection.value,
     })
 }
 
-function showAddNewModal() {
-    showProductModal.value = true
-}
 function editProduct(p) {
     emit('clickEdit', p)
 }

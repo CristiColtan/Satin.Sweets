@@ -4,7 +4,17 @@ export default () => ({
         data: {},
     },
     isSidebarOpen: false,
-    products: {
+    products: createTableState(),
+    addons: {
+        glitters: createTableState(),
+        plushies: createTableState(),
+        photos: createTableState(),
+        ribbons: createTableState(),
+    },
+})
+
+function createTableState() {
+    return {
         loading: false,
         data: [],
         links: [],
@@ -13,5 +23,5 @@ export default () => ({
         page: 1,
         limit: null,
         total: null,
-    },
-})
+    }
+}

@@ -214,11 +214,11 @@ import {
     TransitionChild,
     TransitionRoot,
 } from '@headlessui/vue'
-import Spinner from './Spinner.vue'
+import Spinner from '../Spinner.vue'
 import { computed, onMounted, ref, watch } from 'vue'
-import MyInput from './MyInput.vue'
-import { useAppStore } from '../../store/index.js'
-import axiosClient from '../../js/axios.js'
+import MyInput from '../MyInput.vue'
+import { useAppStore } from '../../../store/index.js'
+import axiosClient from '../../../js/axios.js'
 import 'vue-multiselect/dist/vue-multiselect.css'
 import Multiselect from 'vue-multiselect'
 
@@ -342,38 +342,39 @@ function closeModal() {
     emit('close')
 }
 
-function onSubmit() {
+async function onSubmit() {
     loading.value = true
-    const payload = {
-        ...product.value,
-        categories: product.value.categories.map((cat) => cat.id),
-    }
-    if (product.value.id) {
-        store
-            .updateProduct(payload, newImages.value, removedImageIds.value)
-            .then((response) => {
-                loading.value = false
-                console.log('Produs actualizat:', response.data)
-                store.getProducts()
-                closeModal()
-            })
-    } else {
-        store
-            .createProduct(payload, newImages.value)
-            .then((response) => {
-                loading.value = false
-                console.log('Produs creat:', response.data)
-                store.getProducts()
-                closeModal()
-            })
-            .catch((err) => {
-                loading.value = false
-                console.group('🛑 Create product error')
-                console.log('err:', err)
-                console.log('status:', err?.response?.status)
-                console.log('data:', err?.response?.data)
-                console.groupEnd()
-            })
+    try {
+        const payload = {
+            ...product.value,
+            categories: product.value.categories.map((cat) => cat.id),
+        }
+        if (product.value.id) {
+            await store.updateProduct(
+                payload,
+                newImages.value,
+                removedImageIds.value,
+            )
+
+            loading.value = false
+
+            await store.getProducts()
+            closeModal()
+        } else {
+            await store.createProduct(payload, newImages.value)
+
+            loading.value = false
+            await store.getProducts()
+            closeModal()
+        }
+    } catch (error) {
+        console.group('🛑 Save product error')
+        console.log('err:', err)
+        console.log('status:', err?.response?.status)
+        console.log('data:', err?.response?.data)
+        console.groupEnd()
+    } finally {
+        loading.value = false
     }
 }
 </script>
