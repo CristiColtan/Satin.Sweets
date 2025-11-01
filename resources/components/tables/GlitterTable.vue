@@ -39,14 +39,14 @@
                         :sort-field="sortField"
                         field="id"
                         @click="sortGlitters('id')"
-                        >ID</TableHeaderCell
+                        >ID </TableHeaderCell
                     ><TableHeaderCell
                         :sort-direction="sortDirection"
                         :sort-field="sortField"
                         field="name"
                         @click="sortGlitters('name')"
-                        >Nume</TableHeaderCell
-                    >
+                        >Nume
+                    </TableHeaderCell>
                     <TableHeaderCell
                         :sort-direction="sortDirection"
                         :sort-field:="sortField"
@@ -86,7 +86,10 @@
                             v-if="glitters.loading"
                             :text="'Se incarca...'"
                         />
-                        <p v-else class="py-8 text-center text-gray-700">
+                        <p
+                            v-else
+                            class="py-8 text-center text-lg font-bold text-gray-700"
+                        >
                             Nu exista produse inregistrate!
                         </p>
                     </td>
@@ -234,6 +237,7 @@
                 </a>
             </nav>
         </div>
+        <ErrorAlert :message="listTableError" :message2="deleteGlitterError" />
     </div>
 </template>
 
@@ -249,6 +253,8 @@ import {
     PencilIcon,
     TrashIcon,
 } from '@heroicons/vue/24/outline/index.js'
+import ErrorAlert from '../core/ErrorAlert.vue'
+import { extractApiError } from '../../utils/apiError.js'
 
 const store = useAppStore()
 
@@ -259,8 +265,10 @@ const sortDirection = ref('desc')
 
 const glitters = computed(() => store.addons.glitters)
 const emit = defineEmits(['clickEdit'])
+const listTableError = ref(null)
+const deleteGlitterError = ref(null)
 
-watch(search, () => {
+watch([search, perPage], () => {
     getGlitters()
 })
 
@@ -274,15 +282,23 @@ function getForPage(ev, link) {
     getGlitters(link.url)
 }
 
-function getGlitters(url = null) {
-    store.getAddons({
-        url,
-        search: search.value,
-        per_page: perPage.value,
-        sort_field: sortField.value,
-        sort_direction: sortDirection.value,
-        type: 'glitters',
-    })
+async function getGlitters(url = null) {
+    listTableError.value = null
+    try {
+        await store.getAddons({
+            url,
+            search: search.value,
+            per_page: perPage.value,
+            sort_field: sortField.value,
+            sort_direction: sortDirection.value,
+            type: 'glitters',
+        })
+    } catch (err) {
+        const { message, status } = extractApiError(err, {
+            defaultMessage: 'Nu s-a putut obtine lista cu sclipici.',
+        })
+        listTableError.value = message
+    }
 }
 
 function sortGlitters(field) {
@@ -301,15 +317,23 @@ function sortGlitters(field) {
 }
 
 async function deleteGlitter(glitter) {
+    deleteGlitterError.value = null
     if (!confirm('Esti sigur ca vrei sa stergi acest sclipici?')) return
-    await store.deleteAddon(glitter.id)
-    await store.getAddons({
-        search: search.value,
-        per_page: perPage.value,
-        sort_field: sortField.value,
-        sort_direction: sortDirection.value,
-        type: 'glitters',
-    })
+    try {
+        await store.deleteAddon(glitter.id)
+        await store.getAddons({
+            search: search.value,
+            per_page: perPage.value,
+            sort_field: sortField.value,
+            sort_direction: sortDirection.value,
+            type: 'glitters',
+        })
+    } catch (err) {
+        const { message, status } = extractApiError(err, {
+            defaultMessage: 'Nu s-a putut sterge sclipiciul.',
+        })
+        deleteGlitterError.value = message
+    }
 }
 
 function editGlitter(glitter) {

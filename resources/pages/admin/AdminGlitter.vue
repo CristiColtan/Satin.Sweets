@@ -15,6 +15,7 @@
             :glitter_addon="glitterModel"
             @close="onModalClose"
         />
+        <ErrorAlert :message="pageError" />
     </div>
 </template>
 
@@ -23,6 +24,8 @@ import GlitterTable from '../../components/tables/GlitterTable.vue'
 import GlitterModal from '../../components/core/modals/GlitterModal.vue'
 import { ref } from 'vue'
 import { useAppStore } from '../../store/index.js'
+import { extractApiError } from '../../utils/apiError.js'
+import ErrorAlert from '../../components/core/ErrorAlert.vue'
 
 const store = useAppStore()
 
@@ -38,16 +41,24 @@ const DEFAULT_GLITTER_ADDON = {
 
 const glitterModel = ref({ ...DEFAULT_GLITTER_ADDON })
 const showGlitterModal = ref(false)
+const pageError = ref(null)
 
 function showAddNewGlitterModal() {
     showGlitterModal.value = true
 }
 
-function editGlitter(g) {
-    store.getAddon(g.id).then(({ data }) => {
+async function editGlitter(g) {
+    pageError.value = null
+    try {
+        const { data } = await store.getAddon(g.id)
         glitterModel.value = data.data
         showAddNewGlitterModal()
-    })
+    } catch (err) {
+        const { message } = extractApiError(err, {
+            defaultMessage: 'Nu s-a putut obtine sclipiciul.',
+        })
+        pageError.value = message
+    }
 }
 
 function onModalClose() {

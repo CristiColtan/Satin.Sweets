@@ -41,6 +41,7 @@
                                 v-if="loading"
                                 class="absolute top-0 right-0 bottom-0 left-0 flex items-center justify-center bg-white"
                             ></Spinner>
+
                             <header
                                 class="flex items-center justify-between px-4 py-3"
                             >
@@ -49,9 +50,9 @@
                                     class="line-clamp-2 text-lg leading-6 font-medium text-gray-900"
                                 >
                                     {{
-                                        glitter_addon.id
-                                            ? `Actualizeaza sclipiciul: "${props.glitter_addon.name}"`
-                                            : 'Adauga un sclipici'
+                                        bouquet_accessory_addon.id
+                                            ? `Actualizeaza accesoriul: "${props.bouquet_accessory_addon.name}"`
+                                            : 'Adauga un accesoriu'
                                     }}
                                 </DialogTitle>
                                 <button
@@ -77,11 +78,13 @@
 
                             <form @submit.prevent="onSubmit">
                                 <div class="px-4 sm:p-6">
-                                    <label class="text-lg">Nume sclipici</label>
+                                    <label class="text-lg"
+                                        >Nume accesoriu</label
+                                    >
                                     <MyInput
-                                        v-model="glitter.name"
+                                        v-model="bouquet_accessory.name"
                                         class="mb-3"
-                                        label="Nume sclipici"
+                                        label="Nume accesoriu"
                                         @input="formErrors.name = null"
                                     />
                                     <p
@@ -91,24 +94,81 @@
                                         {{ formErrors.name }}
                                     </p>
 
+                                    <label class="text-lg">Imagini</label>
+                                    <MyInput
+                                        v-model="newImages"
+                                        class="mb-3"
+                                        label="Imagini"
+                                        type="file"
+                                        @change="onFilesChange"
+                                    />
+                                    <!-- PREVIEW: Imagini EXISTENTE -->
+                                    <div
+                                        v-if="existingImages.length"
+                                        class="mt-3"
+                                    >
+                                        <h4
+                                            class="mb-2 text-sm font-medium text-gray-700"
+                                        >
+                                            Imagine existenta
+                                        </h4>
+                                        <div class="flex flex-wrap gap-3">
+                                            <div
+                                                v-for="(
+                                                    img, i
+                                                ) in existingImages"
+                                                :key="i"
+                                                class="relative h-24 w-24 overflow-hidden rounded-lg border border-gray-300"
+                                            >
+                                                <img
+                                                    :src="getImageSrc(img)"
+                                                    alt=""
+                                                    class="h-full w-full object-cover"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- PREVIEW: Imagini NOI -->
+                                    <div v-if="newImages.length" class="mt-4">
+                                        <h4
+                                            class="mb-2 text-sm font-medium text-gray-700"
+                                        >
+                                            Imagine noua
+                                        </h4>
+                                        <div class="flex flex-wrap gap-3">
+                                            <div
+                                                v-for="(img, i) in newImages"
+                                                :key="i"
+                                                class="relative h-24 w-24 overflow-hidden rounded-lg border border-gray-300"
+                                            >
+                                                <img
+                                                    :src="getImageSrc(img)"
+                                                    alt=""
+                                                    class="h-full w-full object-cover"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <label class="text-lg">Culoare</label>
                                     <input
-                                        v-model="glitter.hex_code"
+                                        v-model="bouquet_accessory.hex_code"
                                         class="mb-3 w-full"
                                         type="color"
                                     />
 
                                     <label class="text-lg">Descriere</label>
                                     <MyInput
-                                        v-model="glitter.description"
+                                        v-model="bouquet_accessory.description"
                                         class="mb-3"
-                                        label="Descriere sclipici"
+                                        label="Descriere accesoriu"
                                         type="textarea"
                                     />
 
                                     <label class="text-lg">Pret</label>
                                     <MyInput
-                                        v-model="glitter.price"
+                                        v-model="bouquet_accessory.price"
                                         class="mb-3"
                                         label="Pret"
                                         prepend="RON"
@@ -124,7 +184,7 @@
 
                                     <p class="text-lg">Categorie</p>
                                     <Multiselect
-                                        v-model="glitter.categories"
+                                        v-model="bouquet_accessory.categories"
                                         :clear-on-select="false"
                                         :close-on-select="false"
                                         :disabled="
@@ -153,8 +213,10 @@
                                     >
                                         {{ categoriesError }}
                                     </p>
+
                                     <ErrorAlert :message="generalError" />
                                 </div>
+
                                 <footer
                                     class="gap-3 bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6"
                                 >
@@ -186,6 +248,10 @@
 </template>
 
 <script setup>
+import { useAppStore } from '../../../store/index.js'
+import 'vue-multiselect/dist/vue-multiselect.css'
+import { computed, onMounted, ref, watch } from 'vue'
+import axiosClient from '../../../js/axios.js'
 import {
     Dialog,
     DialogPanel,
@@ -194,13 +260,8 @@ import {
     TransitionRoot,
 } from '@headlessui/vue'
 import Spinner from '../Spinner.vue'
-import { useAppStore } from '../../../store/index.js'
-import { computed, onMounted, ref, watch } from 'vue'
 import MyInput from '../MyInput.vue'
 import Multiselect from 'vue-multiselect'
-import 'vue-multiselect/dist/vue-multiselect.css'
-
-import axiosClient from '../../../js/axios.js'
 import { extractApiError } from '../../../utils/apiError.js'
 import { useFieldErrors } from '../../../utils/useFieldErrors.js'
 import ErrorAlert from '../ErrorAlert.vue'
@@ -209,7 +270,7 @@ const store = useAppStore()
 const loading = ref(false)
 const props = defineProps({
     modelValue: Boolean,
-    glitter_addon: {
+    bouquet_accessory_addon: {
         required: true,
         type: Object,
     },
@@ -222,18 +283,42 @@ const show = computed({
 })
 
 const parentCategories = ref([])
+const newImages = ref([])
+const existingImages = ref([])
+
 const loadingCategories = ref(false)
 const categoriesError = ref(null)
 
-const glitter = ref({
-    id: props.glitter_addon.id,
-    name: props.glitter_addon.name,
-    description: props.glitter_addon.description,
-    hex_code: props.glitter_addon.hex_code,
-    price: props.glitter_addon.price,
-    is_active: props.glitter_addon.is_active,
+const bouquet_accessory = ref({
+    id: props.bouquet_accessory_addon.id,
+    name: props.bouquet_accessory_addon.name,
+    description: props.bouquet_accessory_addon.description,
+    hex_code: props.bouquet_accessory_addon.hex_code,
+    image: props.bouquet_accessory_addon.image,
+    price: props.bouquet_accessory_addon.price,
+    is_active: props.bouquet_accessory_addon.is_active,
     categories: [],
 })
+
+function onFilesChange(filesArray) {
+    const files = (filesArray || []).filter((file) => file instanceof File)
+    if (files.length) newImages.value.push(...files)
+}
+
+function getImageSrc(img) {
+    // dacă e fișier uploadat
+    if (img instanceof File) {
+        return URL.createObjectURL(img)
+    }
+    if (typeof img === 'string') {
+        return img
+    }
+
+    if (img && img.url) {
+        return img.url
+    }
+    return null
+}
 
 onMounted(async () => {
     loadingCategories.value = true
@@ -252,11 +337,17 @@ onMounted(async () => {
 })
 
 watch(
-    () => props.glitter_addon,
+    () => props.bouquet_accessory_addon,
     (newVal) => {
         if (newVal) {
-            console.log('Glitter nou:', newVal)
-            glitter.value = { ...newVal }
+            console.log('Accesoriu nou:', newVal)
+            console.log('Existing images:', existingImages.value)
+            bouquet_accessory.value = { ...newVal }
+            existingImages.value = []
+            if (newVal.image) {
+                existingImages.value.push({ url: newVal.image })
+            }
+            newImages.value = []
         }
     },
     { deep: true, immediate: true },
@@ -274,18 +365,18 @@ async function onSubmit() {
     generalError.value = null
     try {
         const payload = {
-            ...glitter.value,
-            categories: glitter.value.categories.map((cat) => cat.id),
-            type: 'glitters',
+            ...bouquet_accessory.value,
+            categories: bouquet_accessory.value.categories.map((cat) => cat.id),
+            type: 'b_accessories',
         }
 
-        if (glitter.value.id) {
-            await store.updateAddon(payload)
+        if (bouquet_accessory.value.id) {
+            await store.updateAddon(payload, newImages.value)
         } else {
-            await store.createAddon(payload)
+            await store.createAddon(payload, newImages.value)
         }
 
-        await store.getAddons({ type: 'glitters' })
+        await store.getAddons({ type: 'b_accessories' })
         closeModal()
     } catch (err) {
         handleApiError(err)

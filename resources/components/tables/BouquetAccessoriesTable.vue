@@ -5,8 +5,8 @@
         >
             <div class="flex items-center">
                 <span class="mr-3 font-sans whitespace-nowrap sm:text-lg"
-                    >Per Page</span
-                >
+                    >Per Page
+                </span>
                 <select
                     v-model="perPage"
                     class="focus:ring-rosegold-500 focus:border-rosegold-500 relative block w-16 appearance-none rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:outline-none sm:text-sm"
@@ -19,18 +19,22 @@
                 </select>
                 <span class="ml-3 font-sans sm:text-lg"
                     >Found
-                    <span class="text-rosegold-900">{{ products?.total }}</span>
-                    products</span
-                >
+                    <span class="text-rosegold-900">{{
+                        bouquets_accessories?.total
+                    }}</span>
+                    items
+                </span>
             </div>
+
             <div>
                 <input
                     v-model="search"
                     class="focus:ring-rosegold-500 focus:border-rosegold-500 relative block w-48 rounded-md border border-gray-300 px-3 py-2 text-2xl text-gray-900 placeholder-gray-500 placeholder:text-lg focus:z-10 focus:outline-none"
-                    placeholder="Cauta produs.."
+                    placeholder="Cauta accesorii.."
                 />
             </div>
         </div>
+
         <table class="w-full table-auto">
             <thead>
                 <tr>
@@ -38,10 +42,15 @@
                         :sort-direction="sortDirection"
                         :sort-field="sortField"
                         field="id"
-                        @click="sortProducts('id')"
+                        @click="sortBouquetAccessories('id')"
                         >ID</TableHeaderCell
+                    ><TableHeaderCell
+                        :sort-direction="sortDirection"
+                        :sort-field="sortField"
+                        field="name"
+                        @click="sortBouquetAccessories('name')"
+                        >Nume</TableHeaderCell
                     >
-
                     <TableHeaderCell
                         :sort-direction="sortDirection"
                         :sort-field:="sortField"
@@ -52,76 +61,96 @@
 
                     <TableHeaderCell
                         :sort-direction="sortDirection"
-                        :sort-field="sortField"
-                        field="title"
-                        @click="sortProducts('title')"
-                        >Titlu</TableHeaderCell
+                        :sort-field:="sortField"
+                        field="hex_code"
                     >
+                        Culoare
+                    </TableHeaderCell>
 
                     <TableHeaderCell
                         :sort-direction="sortDirection"
                         :sort-field="sortField"
                         field="price"
-                        @click="sortProducts('price')"
-                        >Pret (RON)</TableHeaderCell
+                        @click="sortBouquetAccessories('price')"
                     >
+                        Pret (RON)
+                    </TableHeaderCell>
 
                     <TableHeaderCell
                         :sort-direction="sortDirection"
                         :sort-field="sortField"
                         field="categories"
-                        >Categorii</TableHeaderCell
                     >
+                        Destinat categoriei
+                    </TableHeaderCell>
 
                     <TableHeaderCell
                         :sort-direction="sortDirection"
                         :sort-field="sortField"
-                        field="badge"
-                        >Eticheta</TableHeaderCell
+                        field="type"
                     >
+                        Tipul de Add-On
+                    </TableHeaderCell>
 
                     <TableHeaderCell field="actions">Actions</TableHeaderCell>
                 </tr>
             </thead>
-            <tbody v-if="products.loading || !products.data.length">
+
+            <tbody
+                v-if="
+                    bouquets_accessories.loading ||
+                    !bouquets_accessories.data.length
+                "
+            >
                 <tr>
                     <td colspan="5">
                         <Spinner
-                            v-if="products.loading"
+                            v-if="bouquets_accessories.loading"
                             :text="'Se incarca...'"
                         />
                         <p
                             v-else
                             class="py-8 text-center text-lg font-bold text-gray-700"
                         >
-                            Nu exista produse inregistrate!
+                            Nu exista accesorii inregistrate!
                         </p>
                     </td>
                 </tr>
             </tbody>
+
             <tbody v-else>
-                <tr v-for="(product, index) of products.data" class="text-lg">
+                <tr
+                    v-for="(accessory, index) of bouquets_accessories.data"
+                    class="text-lg"
+                >
                     <td class="border-b p-2">
-                        {{ product.id }}
+                        {{ accessory.id }}
                     </td>
+                    <td
+                        class="border-b p-2"
+                        v-html="accessory._formatted?.name || accessory.name"
+                    ></td>
                     <td class="border-b p-2">
                         <img
                             v-if="
-                                (Array.isArray(product.media) &&
-                                    product.media.length > 0 &&
-                                    product.media[0].full_url) ||
-                                (Array.isArray(product.images) &&
-                                    product.images.length > 0 &&
-                                    product.images[0].url)
+                                (Array.isArray(accessory.media) &&
+                                    accessory.media.length > 0 &&
+                                    accessory.media[0].full_url) ||
+                                (Array.isArray(accessory.images) &&
+                                    accessory.images.length > 0 &&
+                                    accessory.images[0].url) ||
+                                accessory.image
                             "
                             :alt="
-                                product.media?.[0]?.alt_text ||
-                                product.images?.[0]?.alt_text ||
-                                product.title
+                                accessory.media?.[0]?.alt_text ||
+                                accessory.images?.[0]?.alt_text ||
+                                accessory.image ||
+                                accessory.title
                             "
                             :src="
-                                product.media?.[0]?.full_url ||
-                                product.images?.[0]?.url
+                                accessory.media?.[0]?.full_url ||
+                                accessory.images?.[0]?.url ||
+                                accessory.image
                             "
                             class="h-24 w-24 object-cover"
                         />
@@ -129,30 +158,19 @@
                             >Fără imagine</span
                         >
                     </td>
-
-                    <td
-                        class="max-w-[200px] overflow-hidden border-b p-2 text-ellipsis whitespace-nowrap"
-                        v-html="product._formatted?.title || product.title"
-                    ></td>
-
-                    <td
-                        v-if="product.discounted_price"
-                        class="border-black p-2"
-                    >
-                        <div class="flex items-center gap-2">
-                            <p class="line-through">{{ product.price }}</p>
-                            <p>{{ product.discounted_price }}</p>
-                        </div>
+                    <td class="border-b p-2">
+                        <div
+                            :style="{ backgroundColor: accessory.hex_code }"
+                            class="h-10 w-10"
+                        ></div>
                     </td>
-
-                    <td v-else class="border-black p-2">
-                        {{ product.price }}
+                    <td class="border-black p-2">
+                        {{ accessory.price }}
                     </td>
-
                     <td class="border-b p-2">
                         <div class="flex flex-wrap gap-2">
                             <span
-                                v-for="cat in product.categories"
+                                v-for="cat in accessory.categories"
                                 :key="cat.id ?? cat"
                                 class="bg-rosegold-500 rounded-full px-3 py-1 text-sm font-medium text-white"
                             >
@@ -160,15 +178,13 @@
                             </span>
                         </div>
                     </td>
-
-                    <td class="border-black p-2">
+                    <td class="border-b p-2">
                         <span
-                            class="bg-rosegold-700 rounded-full px-3 py-1 text-sm font-medium text-white"
+                            class="bg-rosegold-900 rounded-full px-3 py-1 text-sm font-medium text-white"
                         >
-                            {{ product.badge ? product.badge : 'N/A' }}
+                            {{ accessory.type }}
                         </span>
                     </td>
-
                     <td class="border-b p-2">
                         <Menu as="div" class="relative inline-block text-left">
                             <div>
@@ -199,24 +215,11 @@
                                                         : 'text-gray-900',
                                                     'group flex w-full items-center rounded-md px-2 py-2 text-sm',
                                                 ]"
-                                                @click="goToProduct(product)"
-                                            >
-                                                <EyeIcon
-                                                    :active="active"
-                                                    class="text-rosegold-700 group-hover:text-rosegold-700 mr-2 h-5 w-5"
-                                                />
-                                                Open
-                                            </button>
-                                        </MenuItem>
-                                        <MenuItem v-slot="{ active }">
-                                            <button
-                                                :class="[
-                                                    active
-                                                        ? 'bg-rosegold-300 text-white'
-                                                        : 'text-gray-900',
-                                                    'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                                                ]"
-                                                @click="editProduct(product)"
+                                                @click="
+                                                    editBouquetAccessory(
+                                                        accessory,
+                                                    )
+                                                "
                                             >
                                                 <PencilIcon
                                                     :active="active"
@@ -233,7 +236,11 @@
                                                         : 'text-gray-900',
                                                     'group flex w-full items-center rounded-md px-2 py-2 text-sm',
                                                 ]"
-                                                @click="deleteProduct(product)"
+                                                @click="
+                                                    deleteBouquetAccessories(
+                                                        accessory,
+                                                    )
+                                                "
                                             >
                                                 <TrashIcon
                                                     :active="active"
@@ -252,33 +259,43 @@
         </table>
 
         <div
-            v-if="!products.loading"
+            v-if="!bouquets_accessories.loading"
             class="mt-5 flex items-center justify-between"
         >
             <div
-                v-if="products.data.length"
+                v-if="bouquets_accessories.data.length"
                 class="flex items-center font-sans text-[14px] whitespace-pre-wrap"
             >
                 Showing from
-                <span class="text-rosegold-500"> {{ products.from }} </span> to
-                <span class="text-rosegold-500">{{ products.to }}</span> of
-                <span class="text-rosegold-500">{{ products.total }}</span>
-                products
+                <span class="text-rosegold-500">
+                    {{ bouquets_accessories.from }}
+                </span>
+                to
+                <span class="text-rosegold-500">{{
+                    bouquets_accessories.to
+                }}</span>
+                of
+                <span class="text-rosegold-500">{{
+                    bouquets_accessories.total
+                }}</span>
+                glitters
             </div>
             <nav
-                v-if="products.total > products.limit"
+                v-if="bouquets_accessories.total > bouquets_accessories.limit"
                 aria-label="Pagination"
                 class="relative z-0 inline-flex justify-center -space-x-px rounded-md shadow-sm"
             >
                 <a
-                    v-for="(link, i) of products.links"
+                    v-for="(link, i) of bouquets_accessories.links"
                     :key="i"
                     :class="[
                         link.active
                             ? 'bg-rosegold-100 border-rosegold-500 z-10 text-white'
                             : 'border-gray-300 bg-white text-gray-500 hover:bg-gray-50',
                         i === 0 ? 'rounded-l-md' : '',
-                        i === products.links.length - 1 ? 'rounded-r-md' : '',
+                        i === bouquets_accessories.links.length - 1
+                            ? 'rounded-r-md'
+                            : '',
                         !link.url
                             ? 'cursor-not-allowed bg-gray-100 text-gray-700 opacity-50'
                             : '',
@@ -293,71 +310,73 @@
                 </a>
             </nav>
         </div>
-        <ErrorAlert :message="listTableError" :message2="deleteProductError" />
+        <ErrorAlert
+            :message="listTableError"
+            :message2="deleteBouquetAccessoryError"
+        />
     </div>
 </template>
 
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue'
-import TableHeaderCell from '@/components/core/MyTableHeaderCell.vue'
 import { useAppStore } from '../../store/index.js'
-import { PRODUCTS_PER_PAGE } from '../../js/constants.js'
+import { ADDONS_PER_PAGE } from '../../js/constants.js'
+import { computed, onMounted, ref, watch } from 'vue'
+import TableHeaderCell from '../core/MyTableHeaderCell.vue'
 import Spinner from '../core/Spinner.vue'
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import {
     EllipsisVerticalIcon,
-    EyeIcon,
     PencilIcon,
     TrashIcon,
-} from '@heroicons/vue/24/outline'
-import { useRouter } from 'vue-router'
-import { extractApiError } from '../../utils/apiError.js'
+} from '@heroicons/vue/24/outline/index.js'
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import ErrorAlert from '../core/ErrorAlert.vue'
+import { extractApiError } from '../../utils/apiError.js'
 
 const store = useAppStore()
-const router = useRouter()
-
-const perPage = ref(PRODUCTS_PER_PAGE)
+const perPage = ref(ADDONS_PER_PAGE)
 const search = ref('')
 const sortField = ref('updated_at')
 const sortDirection = ref('desc')
 
-const products = computed(() => store.products)
+const bouquets_accessories = computed(() => store.addons.b_accessories)
 const emit = defineEmits(['clickEdit'])
 const listTableError = ref(null)
-const deleteProductError = ref(null)
+const deleteBouquetAccessoryError = ref(null)
 
 watch([search, perPage], () => {
-    getProducts()
+    getBouquetAccessories()
 })
 
 onMounted(() => {
-    getProducts()
+    getBouquetAccessories()
 })
 
 function getForPage(ev, link) {
     ev.preventDefault()
     if (!link.url || link.active) return
-    getProducts(link.url)
+    getBouquetAccessories(link.url)
 }
-async function getProducts(url = null) {
+
+async function getBouquetAccessories(url = null) {
     listTableError.value = null
     try {
-        await store.getProducts({
+        await store.getAddons({
             url,
             search: search.value,
             per_page: perPage.value,
             sort_field: sortField.value,
             sort_direction: sortDirection.value,
+            type: 'b_accessories',
         })
     } catch (err) {
         const { message, status } = extractApiError(err, {
-            defaultMessage: 'Nu s-au putut obtine produsele.',
+            defaultMessage: 'Nu s-au putut obtine accesoriile pentru buchete.',
         })
         listTableError.value = message
     }
 }
-function sortProducts(field) {
+
+function sortBouquetAccessories(field) {
     if (field === sortField.value) {
         if (sortDirection.value === 'desc') {
             sortDirection.value = 'asc'
@@ -369,36 +388,31 @@ function sortProducts(field) {
         sortDirection.value = 'asc'
     }
 
-    getProducts()
+    getBouquetAccessories()
 }
 
-async function deleteProduct(p) {
-    deleteProductError.value = null
-    if (!confirm('Esti sigur ca vrei sa stergi acest produs?')) return
+async function deleteBouquetAccessories(bouquet_accessory) {
+    deleteBouquetAccessoryError.value = null
+    if (!confirm('Esti sigur ca vrei sa stergi acest accesoriu?')) return
+
     try {
-        await store.deleteProduct(p.id)
-        await store.getProducts({
+        await store.deleteAddon(bouquet_accessory.id)
+        await store.getAddons({
             search: search.value,
             per_page: perPage.value,
             sort_field: sortField.value,
             sort_direction: sortDirection.value,
+            type: 'b_accessories',
         })
     } catch (err) {
         const { message, status } = extractApiError(err, {
-            defaultMessage: 'Nu s-a putut sterge produsul.',
+            defaultMessage: 'Nu s-a putut sterge accesoriul pentru buchete.',
         })
-        deleteProductError.value = message
+        deleteBouquetAccessoryError.value = message
     }
 }
 
-function editProduct(p) {
-    emit('clickEdit', p)
-}
-
-function goToProduct(p) {
-    router.push({
-        name: 'app.product',
-        params: { slug: p.slug },
-    })
+function editBouquetAccessory(bouquet_accessory) {
+    emit('clickEdit', bouquet_accessory)
 }
 </script>

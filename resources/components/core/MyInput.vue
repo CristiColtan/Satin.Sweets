@@ -42,7 +42,7 @@
                     :required="required"
                     :type="type"
                     multiple
-                    style="font-size: 18px"
+                    style="font-size: 15px"
                     @change="
                         emit(
                             'update:modelValue',

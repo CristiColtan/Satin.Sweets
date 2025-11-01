@@ -61,16 +61,9 @@ async function getProducts({
             limit: responseData.per_page,
             total: responseData.total,
         })
-
-        /*this.products.data = responseData.data
-        this.products.links = responseData.links
-        this.products.from = responseData.from
-        this.products.to = responseData.to
-        this.products.page = responseData.current_page
-        this.products.limit = responseData.per_page
-        this.products.total = responseData.total*/
     } catch (error) {
-        console.error('Error loading products:', error)
+        console.error('Error fetching products:', error)
+        throw error
     } finally {
         this.products.loading = false
     }
@@ -108,10 +101,28 @@ async function createProduct(product, newImages = []) {
         form.append('published', product.published ? 1 : 0)
         form.append('price', product.price)
 
+        form.append(
+            'discounted_price',
+            product.discounted_price !== null &&
+                product.discounted_price !== undefined &&
+                product.discounted_price !== ''
+                ? product.discounted_price
+                : '',
+        )
+
+        form.append('badge', product.badge || '')
+
         if (Array.isArray(product.categories) && product.categories.length > 0)
             product.categories.forEach((catId) => {
                 form.append('categories[]', catId)
             })
+
+        if (product.additional_info) {
+            form.append(
+                'additional_info',
+                JSON.stringify(product.additional_info),
+            )
+        }
 
         newImages.forEach((img) => {
             form.append('images[]', img)
@@ -122,6 +133,7 @@ async function createProduct(product, newImages = []) {
         })
     } catch (error) {
         console.error('Error creating product:', error)
+        throw error
     }
 }
 
@@ -150,6 +162,16 @@ async function updateProduct(product, newImages, removedImageIds) {
             form.append('description', product.description || '')
             form.append('published', product.published ? 1 : 0)
             form.append('price', product.price)
+            form.append('badge', product.badge || '')
+
+            form.append(
+                'discounted_price',
+                product.discounted_price !== null &&
+                    product.discounted_price !== undefined &&
+                    product.discounted_price !== ''
+                    ? product.discounted_price
+                    : '',
+            )
 
             if (
                 Array.isArray(product.categories) &&
@@ -158,6 +180,13 @@ async function updateProduct(product, newImages, removedImageIds) {
                 product.categories.forEach((catId) => {
                     form.append('categories[]', catId)
                 })
+
+            if (product.additional_info) {
+                form.append(
+                    'additional_info',
+                    JSON.stringify(product.additional_info),
+                )
+            }
 
             newImages.forEach((img, index) => {
                 form.append(`images[]`, img)
@@ -232,16 +261,9 @@ async function getAddons({
             limit: responseData.per_page,
             total: responseData.total,
         })
-
-        /*addonState.data = responseData.data
-        addonState.links = responseData.links
-        addonState.from = responseData.from
-        addonState.to = responseData.to
-        addonState.page = responseData.current_page
-        addonState.limit = responseData.per_page
-        addonState.total = responseData.total*/
     } catch (error) {
-        console.error('Error loading products:', error)
+        console.error('Error loading addons:', error)
+        throw error
     } finally {
         addonState.loading = false
     }
@@ -261,6 +283,7 @@ async function deleteAddon(id) {
         return axiosClient.delete(`/addons/${id}`)
     } catch (error) {
         console.error('Error deleting addon:', error)
+        throw error
     }
 }
 
@@ -294,6 +317,7 @@ async function createAddon(addon, newImages) {
         })
     } catch (error) {
         console.error('Error creating addon:', error)
+        throw error
     }
 }
 

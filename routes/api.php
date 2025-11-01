@@ -20,6 +20,7 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/product/{slug}', [ProductController::class, 'showSlug']);
+Route::get('/glitter-addons', [AddonController::class, 'index']);
 
 {/*Route::get('/user', function (Request $request) {
     return $request->user();

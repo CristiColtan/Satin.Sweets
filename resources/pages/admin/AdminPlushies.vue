@@ -15,6 +15,7 @@
             :plushie_addon="plushieModel"
             @close="onModalClose"
         />
+        <ErrorAlert :message="pageError" />
     </div>
 </template>
 
@@ -23,6 +24,8 @@ import { useAppStore } from '../../store/index.js'
 import { ref } from 'vue'
 import PlushiesModal from '../../components/core/modals/PlushiesModal.vue'
 import PlushiesTable from '../../components/tables/PlushiesTable.vue'
+import ErrorAlert from '../../components/core/ErrorAlert.vue'
+import { extractApiError } from '../../utils/apiError.js'
 
 const store = useAppStore()
 const DEFAULT_PLUSHIE_ADDON = {
@@ -37,16 +40,24 @@ const DEFAULT_PLUSHIE_ADDON = {
 
 const plushieModel = ref({ ...DEFAULT_PLUSHIE_ADDON })
 const showPlushieModal = ref(false)
+const pageError = ref(null)
 
 function showAddNewPlushieModal() {
     showPlushieModal.value = true
 }
 
-function editPlushie(p) {
-    store.getAddon(p.id).then(({ data }) => {
+async function editPlushie(p) {
+    pageError.value = null
+    try {
+        const { data } = await store.getAddon(p.id)
         plushieModel.value = data.data
         showAddNewPlushieModal()
-    })
+    } catch (err) {
+        const { message } = extractApiError(err, {
+            defaultMessage: 'Nu s-a putut obtine plusul.',
+        })
+        pageError.value = message
+    }
 }
 
 function onModalClose() {

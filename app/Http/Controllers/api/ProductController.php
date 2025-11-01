@@ -44,11 +44,18 @@ class ProductController extends Controller
         $search = request('search', '');
         $sortField = request('sort_field', 'created_at');
         $sortDirection = request('sort_direction', 'desc');
+        $categoryId = request('category_id');
 
         if ($search === '') {
             $query = Product::query()
                 ->with(['media', 'categories'])
                 ->orderBy($sortField, $sortDirection);
+
+            if ($categoryId) {
+                $query->whereHas('categories', function ($q) use ($categoryId) {
+                    $q->where('categories.id', $categoryId);
+                });
+            }
 
             return $query->paginate($perPage);
         }
@@ -132,6 +139,15 @@ class ProductController extends Controller
         unset($data['image'], $data['images'], $data['remove_image_ids'], $data['categories']);
 
         DB::transaction(function () use ($request, $data, $product) {
+            if ($request->has('additional_info')) {
+                $json = $request->input('additional_info');
+                if (is_string($json)) {
+                    $data['additional_info'] = json_decode($json, true);
+                } elseif (is_array($json)) {
+                    $data['additional_info'] = $json;
+                }
+            }
+
             $product->update($data);
 
             $categories = (array)$request->input('categories', []);
@@ -186,6 +202,31 @@ class ProductController extends Controller
         $data['updated_by'] = $request->user()->id;
 
         unset($data['image'], $data['images'], $data['remove_image_ids'], $data['categories']);
+
+        if (Product::where('title', $data['title'])->exists()) {
+            return response()->json([
+                'message' => 'Există deja un produs cu acest titlu.',
+            ], 422);
+        }
+
+        if ($request->has('discounted_price')) {
+            if ($request->filled('discounted_price')) {
+                $data['discounted_price'] = $request->input('discounted_price');
+            } else {
+                $data['discounted_price'] = null;
+            }
+        }
+
+        if ($request->has('additional_info')) {
+            $json = $request->input('additional_info');
+            if (is_string($json)) {
+                $data['additional_info'] = json_decode($json, true);
+            } else {
+                if (is_array($json)) {
+                    $data['additional_info'] = $json;
+                }
+            }
+        }
 
         $product = DB::transaction(function () use ($request, $data) {
             $product = Product::create($data);

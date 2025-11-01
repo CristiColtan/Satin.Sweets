@@ -83,7 +83,7 @@
         ><div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
             <div class="relative flex h-14 items-center justify-between">
                 <div class="hidden sm:ml-6 sm:block">
-                    <div class="flex -translate-y-0.5 space-x-4">
+                    <div class="flex -translate-y-0.5 space-x-5">
                         <RouterLink
                             v-for="item in navigation"
                             :key="item.name"
@@ -133,6 +133,12 @@ const navigation = [
     {
         name: 'Plushies',
         to: { name: 'admin.plushies' },
+    },
+    {
+        name: 'Bouquets Accessories',
+        to: {
+            name: 'admin.bouquets-accessories',
+        },
     },
 ]
 

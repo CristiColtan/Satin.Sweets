@@ -69,7 +69,7 @@
                         field="price"
                         @click="sortPlushies('price')"
                     >
-                        Pret
+                        Pret (RON)
                     </TableHeaderCell>
                     <TableHeaderCell
                         :sort-direction="sortDirection"
@@ -95,7 +95,10 @@
                             v-if="plushies.loading"
                             :text="'Se incarca...'"
                         />
-                        <p v-else class="py-8 text-center text-gray-700">
+                        <p
+                            v-else
+                            class="py-8 text-center text-lg font-bold text-gray-700"
+                        >
                             Nu exista plusuri inregistrate!
                         </p>
                     </td>
@@ -272,6 +275,7 @@
                 </a>
             </nav>
         </div>
+        <ErrorAlert :message="listTableError" :message2="deletePlushieError" />
     </div>
 </template>
 
@@ -287,6 +291,8 @@ import {
     TrashIcon,
 } from '@heroicons/vue/24/outline/index.js'
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
+import ErrorAlert from '../core/ErrorAlert.vue'
+import { extractApiError } from '../../utils/apiError.js'
 
 const store = useAppStore()
 const perPage = ref(ADDONS_PER_PAGE)
@@ -296,8 +302,10 @@ const sortDirection = ref('desc')
 
 const plushies = computed(() => store.addons.plushies)
 const emit = defineEmits(['clickEdit'])
+const listTableError = ref(null)
+const deletePlushieError = ref(null)
 
-watch(search, () => {
+watch([search, perPage], () => {
     getPlushies()
 })
 
@@ -311,15 +319,23 @@ function getForPage(ev, link) {
     getPlushies(link.url)
 }
 
-function getPlushies(url = null) {
-    store.getAddons({
-        url,
-        search: search.value,
-        per_page: perPage.value,
-        sort_field: sortField.value,
-        sort_direction: sortDirection.value,
-        type: 'plushies',
-    })
+async function getPlushies(url = null) {
+    listTableError.value = null
+    try {
+        await store.getAddons({
+            url,
+            search: search.value,
+            per_page: perPage.value,
+            sort_field: sortField.value,
+            sort_direction: sortDirection.value,
+            type: 'plushies',
+        })
+    } catch (err) {
+        const { message, status } = extractApiError(err, {
+            defaultMessage: 'Nu s-au putut obtine plusurile',
+        })
+        listTableError.value = message
+    }
 }
 
 function sortPlushies(field) {
@@ -338,15 +354,23 @@ function sortPlushies(field) {
 }
 
 async function deletePlushie(plushie) {
+    deletePlushieError.value = null
     if (!confirm('Esti sigur ca vrei sa stergi acest plus?')) return
-    await store.deleteAddon(plushie.id)
-    await store.getAddons({
-        search: search.value,
-        per_page: perPage.value,
-        sort_field: sortField.value,
-        sort_direction: sortDirection.value,
-        type: 'plushies',
-    })
+    try {
+        await store.deleteAddon(plushie.id)
+        await store.getAddons({
+            search: search.value,
+            per_page: perPage.value,
+            sort_field: sortField.value,
+            sort_direction: sortDirection.value,
+            type: 'plushies',
+        })
+    } catch (err) {
+        const { message, status } = extractApiError(err, {
+            defaultMessage: 'Nu s-a putut sterge plusul',
+        })
+        deletePlushieError.value = message
+    }
 }
 
 function editPlushie(plushie) {

@@ -16,7 +16,22 @@ class Product extends Model
     use SoftDeletes;
     use Searchable;
 
-    protected $fillable = ['title', 'description', 'price', 'created_by', 'updated_by', 'deleted_by'];
+    protected $fillable = [
+        'title',
+        'description',
+        'price',
+        'created_by',
+        'updated_by',
+        'deleted_by',
+        'badge',
+        'discounted_price',
+        'published',
+        'additional_info'
+    ];
+
+    protected $casts = [
+        'additional_info' => 'array',
+    ];
 
     public function toSearchableArray()
     {

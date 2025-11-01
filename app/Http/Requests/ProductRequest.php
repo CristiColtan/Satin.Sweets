@@ -27,6 +27,9 @@ class ProductRequest extends FormRequest
             'price' => ['required', 'numeric'],
             'description' => ['nullable', 'string'],
             'published' => ['required', 'boolean'],
+            'badge' => ['nullable', 'max:255'],
+            'discounted_price' => ['nullable', 'numeric'],
+            'additional_info' => ['nullable'],
 
             'categories' => ['required', 'array', 'min:1'],
             'categories.*' => ['integer', 'exists:categories,id'],

@@ -10,6 +10,9 @@ export default () => ({
         plushies: createTableState(),
         photos: createTableState(),
         ribbons: createTableState(),
+        b_accessories: createTableState(),
+        t_small_accessories: createTableState(),
+        t_big_accessories: createTableState(),
     },
 })
 

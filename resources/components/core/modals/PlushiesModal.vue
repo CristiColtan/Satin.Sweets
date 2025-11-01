@@ -1,6 +1,14 @@
 <template>
     <TransitionRoot :show="show" as="template">
-        <Dialog as="div" class="relative z-10" @close="closeModal">
+        <Dialog
+            as="div"
+            class="relative z-10"
+            @close="
+                () => {
+                    if (!loading && !generalError) closeModal()
+                }
+            "
+        >
             <TransitionChild
                 as="template"
                 enter="ease-out duration-300"
@@ -75,7 +83,14 @@
                                         v-model="plushie.name"
                                         class="mb-3"
                                         label="Nume plus"
+                                        @input="formErrors.name = null"
                                     />
+                                    <p
+                                        v-if="formErrors.name"
+                                        class="mt-1 text-sm text-red-600"
+                                    >
+                                        {{ formErrors.name }}
+                                    </p>
                                     <label class="text-lg">Imagini</label>
                                     <MyInput
                                         v-model="newImages"
@@ -145,18 +160,24 @@
                                         label="Descriere sclipici"
                                         type="textarea"
                                     />
+                                    <label class="text-lg">Pret</label>
+
                                     <MyInput
                                         v-model="plushie.price"
                                         class="mb-3"
                                         label="Pret"
                                         prepend="RON"
                                         type="number"
+                                        @input="formErrors.price = null"
                                     />
                                     <p class="text-lg">Categorie</p>
                                     <Multiselect
                                         v-model="plushie.categories"
                                         :clear-on-select="false"
                                         :close-on-select="false"
+                                        :disabled="
+                                            loadingCategories || categoriesError
+                                        "
                                         :multiple="true"
                                         :options="parentCategories"
                                         :preserve-search="true"
@@ -164,7 +185,24 @@
                                         label="name"
                                         placeholder="Selectează categoriile..."
                                         track-by="id"
+                                        @update:modelValue="
+                                            () => (formErrors.categories = null)
+                                        "
                                     />
+                                    <p
+                                        v-if="formErrors.categories"
+                                        class="mt-1 text-sm text-red-600"
+                                    >
+                                        {{ formErrors.categories }}
+                                    </p>
+                                    <p
+                                        v-if="categoriesError"
+                                        class="mt-1 text-sm text-red-600"
+                                    >
+                                        {{ categoriesError }}
+                                    </p>
+
+                                    <ErrorAlert :message="generalError" />
                                 </div>
 
                                 <footer
@@ -172,6 +210,7 @@
                                 >
                                     <button
                                         class="bg-rosegold-500 hover:bg-rosegold-700 focus:ring-rosegold-500 mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 px-4 py-2 text-lg font-medium text-white shadow-sm focus:ring-2 focus:ring-offset-2 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto"
+                                        type="submit"
                                     >
                                         <span class="text-lg">Salveaza</span>
                                     </button>
@@ -211,6 +250,9 @@ import { computed, onMounted, ref, watch } from 'vue'
 import MyInput from '../MyInput.vue'
 import Multiselect from 'vue-multiselect'
 import 'vue-multiselect/dist/vue-multiselect.css'
+import { extractApiError } from '../../../utils/apiError.js'
+import { useFieldErrors } from '../../../utils/useFieldErrors.js'
+import ErrorAlert from '../ErrorAlert.vue'
 
 const store = useAppStore()
 const loading = ref(false)
@@ -231,6 +273,9 @@ const show = computed({
 const parentCategories = ref([])
 const newImages = ref([])
 const existingImages = ref([])
+
+const loadingCategories = ref(false)
+const categoriesError = ref(null)
 
 const plushie = ref({
     id: props.plushie_addon.id,
@@ -264,11 +309,18 @@ function getImageSrc(img) {
 }
 
 onMounted(async () => {
+    loadingCategories.value = true
+    categoriesError.value = null
     try {
         const res = await axiosClient.get('/categories/parents')
         parentCategories.value = res.data
     } catch (err) {
-        console.log('Eroare fetch categorii parinte din baza de date: ', err)
+        const { message, status } = extractApiError(err, {
+            defaultMessage: 'Eroare fetch categorii parinte din baza de date.',
+        })
+        categoriesError.value = message
+    } finally {
+        loadingCategories.value = false
     }
 })
 
@@ -294,8 +346,11 @@ function closeModal() {
     emit('close')
 }
 
+const { formErrors, generalError, handleApiError } = useFieldErrors()
 async function onSubmit() {
     loading.value = true
+    formErrors.value = {}
+    generalError.value = null
     try {
         const payload = {
             ...plushie.value,
@@ -305,21 +360,14 @@ async function onSubmit() {
 
         if (plushie.value.id) {
             await store.updateAddon(payload, newImages.value)
-            loading.value = false
-            await store.getAddons({ type: 'plushies' })
-            closeModal()
         } else {
             await store.createAddon(payload, newImages.value)
-            loading.value = false
-            await store.getAddons({ type: 'plushies' })
-            closeModal()
         }
+        await store.getAddons({ type: 'plushies' })
+        closeModal()
     } catch (err) {
-        console.group('🛑 Eroare la salvarea plusului')
-        console.log('err:', err)
-        console.log('status:', err?.response?.status)
-        console.log('data:', err?.response?.data)
-        console.groupEnd()
+        handleApiError(err)
+
     } finally {
         loading.value = false
     }

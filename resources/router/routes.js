@@ -11,10 +11,10 @@ const TablouriPersonalizate = () => import('@/pages/TablouriPersonalizate.vue')
 const AdminLayout = () => import('@/components/AdminLayout.vue')
 const AdminDashboard = () => import('@/pages/admin/AdminDashboard.vue')
 const AdminProducts = () => import('@/pages/admin/AdminProducts.vue')
-
 const AdminGlitter = () => import('@/pages/admin/AdminGlitter.vue')
-
 const AdminPlushies = () => import('@/pages/admin/AdminPlushies.vue')
+const AdminBouquetAccessories = () =>
+    import('@/pages/admin/AdminBouquetAccessories.vue')
 const Product = () => import('@/pages/Product.vue')
 export const routes = [
     {
@@ -46,6 +46,11 @@ export const routes = [
                 path: 'plushies',
                 name: 'admin.plushies',
                 component: AdminPlushies,
+            },
+            {
+                path: 'bouquets-accessories',
+                name: 'admin.bouquets-accessories',
+                component: AdminBouquetAccessories,
             },
         ],
     },

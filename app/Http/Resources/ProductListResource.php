@@ -19,6 +19,10 @@ class ProductListResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'price' => $this->price,
+            'badge' => $this->badge,
+            'discounted_price' => $this->discounted_price,
+            'published' => $this->published,
+            'additional_info' => $this->additional_info,
             'images' => $this->media->map(function ($media) {
                 return [
                     'id' => $media->id,

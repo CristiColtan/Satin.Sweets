@@ -15,6 +15,7 @@
             :product="productModel"
             @close="onModalClose"
         />
+        <ErrorAlert :message="pageError" />
     </div>
 </template>
 
@@ -22,7 +23,9 @@
 import ProductsTable from '../../components/tables/ProductsTable.vue'
 import ProductModal from '../../components/core/modals/ProductModal.vue'
 import { useAppStore } from '../../store/index.js'
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
+import { extractApiError } from '../../utils/apiError.js'
+import ErrorAlert from '../../components/core/ErrorAlert.vue'
 
 const store = useAppStore()
 
@@ -32,25 +35,33 @@ const DEFAULT_PRODUCT = {
     description: '',
     price: '',
     published: false,
+    badge: '',
+    discounted_price: '',
+    additional_info: [],
     images: [],
     categories: [],
 }
 
-const products = computed(() => store.products)
 const productModel = ref({ ...DEFAULT_PRODUCT })
 const showProductModal = ref(false)
+const pageError = ref(null)
 
 function showAddNewProductModal() {
     showProductModal.value = true
 }
 
-function editProduct(p) {
-    store.getProduct(p.id).then(({ data }) => {
-        //const { id, title, description, price, published } = data.data
+async function editProduct(p) {
+    pageError.value = null
+    try {
+        const { data } = await store.getProduct(p.id)
         productModel.value = data.data
-        //console.log('productmodel', productModel.value)
         showAddNewProductModal()
-    })
+    } catch (err) {
+        const { message } = extractApiError(err, {
+            defaultMessage: 'Nu s-a putut obtine produsul.',
+        })
+        pageError.value = message
+    }
 }
 
 function onModalClose() {
