@@ -314,6 +314,16 @@
             :message="listTableError"
             :message2="deleteBouquetAccessoryError"
         />
+
+        <ConfirmModal
+            v-model="confirmOpen"
+            :loading="deleting"
+            :message="confirmMessage"
+            cancelText="Anulează"
+            confirmText="Da, șterge"
+            title="Ștergere accesoriu pentru buchete"
+            @confirm="confirmDelete"
+        />
     </div>
 </template>
 
@@ -331,6 +341,7 @@ import {
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import ErrorAlert from '../core/ErrorAlert.vue'
 import { extractApiError } from '../../utils/apiError.js'
+import ConfirmModal from '../core/ConfirmModal.vue'
 
 const store = useAppStore()
 const perPage = ref(ADDONS_PER_PAGE)
@@ -342,6 +353,11 @@ const bouquets_accessories = computed(() => store.addons.b_accessories)
 const emit = defineEmits(['clickEdit'])
 const listTableError = ref(null)
 const deleteBouquetAccessoryError = ref(null)
+
+const confirmOpen = ref(false)
+const confirmMessage = ref('')
+const toDelete = ref(null)
+const deleting = ref(false)
 
 watch([search, perPage], () => {
     getBouquetAccessories()
@@ -391,12 +407,20 @@ function sortBouquetAccessories(field) {
     getBouquetAccessories()
 }
 
-async function deleteBouquetAccessories(bouquet_accessory) {
+function deleteBouquetAccessories(bouquet_accessory) {
+    toDelete.value = bouquet_accessory
+    confirmMessage.value = `Ești sigur(ă) că vrei să ștergi accesoriul pentru buchete „${bouquet_accessory.name}”? Acțiunea este definitivă.`
+    confirmOpen.value = true
+}
+
+async function confirmDelete() {
+    if (!toDelete.value) return
+
     deleteBouquetAccessoryError.value = null
-    if (!confirm('Esti sigur ca vrei sa stergi acest accesoriu?')) return
 
     try {
-        await store.deleteAddon(bouquet_accessory.id)
+        deleting.value = true
+        await store.deleteAddon(toDelete.value.id)
         await store.getAddons({
             search: search.value,
             per_page: perPage.value,
@@ -404,11 +428,15 @@ async function deleteBouquetAccessories(bouquet_accessory) {
             sort_direction: sortDirection.value,
             type: 'b_accessories',
         })
+        confirmOpen.value = false
+        toDelete.value = null
     } catch (err) {
         const { message, status } = extractApiError(err, {
             defaultMessage: 'Nu s-a putut sterge accesoriul pentru buchete.',
         })
         deleteBouquetAccessoryError.value = message
+    } finally {
+        deleting.value = false
     }
 }
 

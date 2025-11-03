@@ -166,12 +166,12 @@
                                     </button>
                                     <button
                                         ref="cancelButtonRef"
-                                        class="group focus:ring-rosegold-500 mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-lg font-medium text-gray-700 shadow-sm hover:bg-gray-200 focus:ring-2 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto"
+                                        class="group mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 shadow-sm hover:bg-gray-400 sm:mt-0 sm:ml-3 sm:w-auto"
                                         type="button"
                                         @click="closeModal"
                                     >
                                         <span
-                                            class="text-lg group-hover:text-gray-600"
+                                            class="text-lg font-medium group-hover:text-gray-500"
                                             >Anuleaza</span
                                         >
                                     </button>
@@ -289,6 +289,7 @@ async function onSubmit() {
         closeModal()
     } catch (err) {
         handleApiError(err)
+
     } finally {
         loading.value = false
     }

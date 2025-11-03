@@ -238,6 +238,15 @@
             </nav>
         </div>
         <ErrorAlert :message="listTableError" :message2="deleteGlitterError" />
+        <ConfirmModal
+            v-model="confirmOpen"
+            :loading="deleting"
+            :message="confirmMessage"
+            cancelText="Anulează"
+            confirmText="Da, șterge"
+            title="Ștergere sclipici"
+            @confirm="confirmDelete"
+        />
     </div>
 </template>
 
@@ -255,6 +264,7 @@ import {
 } from '@heroicons/vue/24/outline/index.js'
 import ErrorAlert from '../core/ErrorAlert.vue'
 import { extractApiError } from '../../utils/apiError.js'
+import ConfirmModal from '../core/ConfirmModal.vue'
 
 const store = useAppStore()
 
@@ -267,6 +277,11 @@ const glitters = computed(() => store.addons.glitters)
 const emit = defineEmits(['clickEdit'])
 const listTableError = ref(null)
 const deleteGlitterError = ref(null)
+
+const confirmOpen = ref(false)
+const confirmMessage = ref('')
+const toDelete = ref(null)
+const deleting = ref(false)
 
 watch([search, perPage], () => {
     getGlitters()
@@ -316,11 +331,19 @@ function sortGlitters(field) {
     getGlitters()
 }
 
-async function deleteGlitter(glitter) {
+function deleteGlitter(glitter) {
+    toDelete.value = glitter
+    confirmMessage.value = `Ești sigur(ă) că vrei să ștergi sclipiciul „${glitter.name}”? Acțiunea este definitivă.`
+    confirmOpen.value = true
+}
+async function confirmDelete() {
+    if (!toDelete.value) return
+
     deleteGlitterError.value = null
-    if (!confirm('Esti sigur ca vrei sa stergi acest sclipici?')) return
+
     try {
-        await store.deleteAddon(glitter.id)
+        deleting.value = true
+        await store.deleteAddon(toDelete.value.id)
         await store.getAddons({
             search: search.value,
             per_page: perPage.value,
@@ -328,11 +351,15 @@ async function deleteGlitter(glitter) {
             sort_direction: sortDirection.value,
             type: 'glitters',
         })
+        confirmOpen.value = false
+        toDelete.value = null
     } catch (err) {
         const { message, status } = extractApiError(err, {
             defaultMessage: 'Nu s-a putut sterge sclipiciul.',
         })
         deleteGlitterError.value = message
+    } finally {
+        deleting.value = false
     }
 }
 

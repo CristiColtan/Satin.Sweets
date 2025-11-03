@@ -294,6 +294,15 @@
             </nav>
         </div>
         <ErrorAlert :message="listTableError" :message2="deleteProductError" />
+        <ConfirmModal
+            v-model="confirmOpen"
+            :loading="deleting"
+            :message="confirmMessage"
+            cancelText="Anulează"
+            confirmText="Da, șterge"
+            title="Ștergere produs"
+            @confirm="confirmDelete"
+        />/>
     </div>
 </template>
 
@@ -313,6 +322,7 @@ import {
 import { useRouter } from 'vue-router'
 import { extractApiError } from '../../utils/apiError.js'
 import ErrorAlert from '../core/ErrorAlert.vue'
+import ConfirmModal from '../core/ConfirmModal.vue'
 
 const store = useAppStore()
 const router = useRouter()
@@ -326,6 +336,11 @@ const products = computed(() => store.products)
 const emit = defineEmits(['clickEdit'])
 const listTableError = ref(null)
 const deleteProductError = ref(null)
+
+const confirmOpen = ref(false)
+const confirmMessage = ref('')
+const toDelete = ref(null)
+const deleting = ref(false)
 
 watch([search, perPage], () => {
     getProducts()
@@ -372,22 +387,36 @@ function sortProducts(field) {
     getProducts()
 }
 
-async function deleteProduct(p) {
+function deleteProduct(product) {
+    toDelete.value = product
+    confirmMessage.value =
+        confirmMessage.value = `Ești sigur(ă) că vrei să ștergi produsul „${product.name}”? Acțiunea este definitivă.`
+    confirmOpen.value = true
+}
+
+async function confirmDelete() {
+    if (!toDelete.value) return
+
     deleteProductError.value = null
-    if (!confirm('Esti sigur ca vrei sa stergi acest produs?')) return
+
     try {
-        await store.deleteProduct(p.id)
+        deleting.value = true
+        await store.deleteProduct(toDelete.value.id)
         await store.getProducts({
             search: search.value,
             per_page: perPage.value,
             sort_field: sortField.value,
             sort_direction: sortDirection.value,
         })
+        confirmOpen.value = false
+        toDelete.value = null
     } catch (err) {
         const { message, status } = extractApiError(err, {
             defaultMessage: 'Nu s-a putut sterge produsul.',
         })
         deleteProductError.value = message
+    } finally {
+        deleting.value = false
     }
 }
 
