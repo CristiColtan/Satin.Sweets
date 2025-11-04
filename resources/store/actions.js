@@ -1,4 +1,5 @@
 import axiosClient from '../js/axios.js'
+import { useRouter } from 'vue-router'
 
 async function getUser(params) {
     const response = await axiosClient.get('/user', { params })
@@ -21,11 +22,19 @@ async function login(data) {
 }
 
 async function logout() {
+    const router = useRouter()
+
     console.log('LOGOUT')
-    await axiosClient.post('/logout')
-    this.user.data = null
-    this.user.token = null
-    localStorage.removeItem('token')
+
+    try {
+        await axiosClient.post('/logout')
+    } catch (err) {
+        throw err
+    } finally {
+        this.user.data = null
+        this.user.token = null
+        localStorage.removeItem('token')
+    }
 }
 
 async function getProducts({

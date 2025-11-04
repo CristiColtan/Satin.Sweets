@@ -47,6 +47,7 @@
                     <button
                         class="relative rounded-full p-1 text-black transition-transform duration-200 hover:-translate-y-1 hover:text-white focus:outline-2 focus:outline-offset-2"
                         type="button"
+                        @click="handleLogout"
                     >
                         <span class="absolute -inset-1.5" />
                         <span class="sr-only">View notifications</span>
@@ -113,9 +114,11 @@ import {
 } from '@heroicons/vue/24/outline'
 
 import logo from '@/assets/logo4.png'
+import { useAppStore } from '../store/index.js'
 
 const route = useRoute()
 const router = useRouter()
+const store = useAppStore()
 
 const navigation = [
     {
@@ -142,6 +145,10 @@ const navigation = [
     },
 ]
 
+function handleLogout() {
+    store.logout()
+    router.push({ name: 'login' })
+}
 function redirectHome() {
     router.push({ name: 'app.home' })
 }

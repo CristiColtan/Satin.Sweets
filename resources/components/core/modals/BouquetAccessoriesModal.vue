@@ -380,7 +380,6 @@ async function onSubmit() {
         closeModal()
     } catch (err) {
         handleApiError(err)
-
     } finally {
         loading.value = false
     }
