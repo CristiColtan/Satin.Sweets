@@ -124,7 +124,9 @@ class ProductController extends Controller
     {
         $product = Product::with([
             'categories.parent.parent.parent',
-            'media'
+            'media',
+            'reviews.user',
+            'reviews.reply.user',
         ])->where('slug', $slug)->firstOrFail();
         return new ProductResource($product);
     }

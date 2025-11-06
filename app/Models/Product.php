@@ -73,4 +73,9 @@ class Product extends Model
     {
         return $query->where('title', 'like', "%$value%");
     }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
 }

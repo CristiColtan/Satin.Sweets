@@ -14,19 +14,6 @@ class ProductResource extends JsonResource
      */
     public function toArray(Request $request)
     {
-        //        $reviews = $this->reviews;
-        //        $average = round($this->reviews->avg('rating'), 1);
-        //        $total = $this->reviews->count();
-        //
-        //        $breakdown = collect(range(1, 5))->map(function ($stars) use ($reviews) {
-        //            return [
-        //                'stars' => $stars,
-        //                'count' => $reviews->where('rating', $stars)->count(),
-        //            ];
-        //        })->sortByDesc('stars')->values()->all();
-
-        //not needed anymore
-
         return [
             'id' => $this->id,
             'title' => $this->title,
@@ -67,12 +54,6 @@ class ProductResource extends JsonResource
             'additional_info' => $this->additional_info,
             'badge' => $this->badge,
             'published' => (bool)$this->published,
-//            'average_rating' => $average,
-//            'total_reviews' => $total,
-//            'rating_breakdown' => $breakdown,
-//            'reviews' => ReviewResource::collection(
-//                $this->whenLoaded('reviews')
-//            ),
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
         ];

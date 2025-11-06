@@ -1,5 +1,4 @@
 import axiosClient from '../js/axios.js'
-import { useRouter } from 'vue-router'
 
 async function getUser(params) {
     const response = await axiosClient.get('/user', { params })
@@ -22,8 +21,6 @@ async function login(data) {
 }
 
 async function logout() {
-    const router = useRouter()
-
     console.log('LOGOUT')
 
     try {
@@ -37,6 +34,18 @@ async function logout() {
     }
 }
 
+async function submitReview(review, productId) {
+    console.log('🔹 submitReview() a primit:', {
+        review,
+        productId,
+    })
+
+    try {
+        return axiosClient.post(`/products/${productId}/reviews`, review)
+    } catch (error) {
+        throw error
+    }
+}
 async function getProducts({
     url = null,
     search = '',
@@ -381,4 +390,5 @@ export default {
     updateAddon,
     login,
     logout,
+    submitReview,
 }

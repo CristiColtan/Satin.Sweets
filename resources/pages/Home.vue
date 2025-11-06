@@ -46,6 +46,7 @@ const produse = [
         img: Slide1,
         name: 'Aranjament Floral Majesty',
         price: '239 RON - 339 RON',
+        badge: '',
     },
     {
         img: Slide1,
