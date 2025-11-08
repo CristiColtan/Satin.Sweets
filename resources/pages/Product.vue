@@ -336,6 +336,32 @@
                         <p class="font-serif text-base font-semibold">
                             *pretul afisat este per poza*
                         </p>
+
+                        <!-- PREVIEW: Imagini NOI -->
+                        <div v-if="newImages.length" class="">
+                            <div class="flex flex-wrap gap-3">
+                                <div
+                                    v-for="(img, i) in newImages"
+                                    :key="i"
+                                    class="relative h-36 w-36 overflow-hidden rounded-lg border border-gray-300"
+                                >
+                                    <img
+                                        :src="getImageSrc(img)"
+                                        alt=""
+                                        class="h-full w-full object-cover"
+                                    />
+                                    <button
+                                        class="absolute top-1 right-1 rounded bg-black/60 px-2 py-1 text-xs text-white hover:bg-black/80"
+                                        title="Elimină din selecția nouă"
+                                        type="button"
+                                        @click="removeNew(i)"
+                                    >
+                                        ✕
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
                         <div
                             class="mt-3 flex items-center justify-between gap-3"
                         >
@@ -350,7 +376,7 @@
                                 @click="
                                     () => {
                                         photoSelected = !photoSelected
-                                        newImages = []
+                                        newImages.value = []
                                     }
                                 "
                             >
@@ -500,6 +526,25 @@ async function handleReviewSubmitted() {
     nextTick(() => {
         window.scrollTo({ top: scrollY, behavior: 'instant' })
     })
+}
+
+function removeNew(idx) {
+    newImages.value.splice(idx, 1)
+}
+
+function getImageSrc(img) {
+    // dacă e fișier uploadat
+    if (img instanceof File) {
+        return URL.createObjectURL(img)
+    }
+    if (typeof img === 'string') {
+        return img
+    }
+
+    if (img && img.url) {
+        return img.url
+    }
+    return null
 }
 
 const loadingReviews = ref(false)

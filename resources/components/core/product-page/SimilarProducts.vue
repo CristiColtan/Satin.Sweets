@@ -109,12 +109,25 @@
                         >
                             {{ product.title }}
                         </span>
-                        <p
+                        <div
                             v-if="hasTablouri === false"
-                            class="font-serif text-[17px] text-gray-500 lg:text-lg"
+                            class="pb-1 font-serif text-[17px] text-gray-500 lg:text-lg"
                         >
-                            {{ product.price }}
-                        </p>
+                            <span
+                                v-if="product?.discounted_price"
+                                class="font-semibold"
+                            >
+                                {{ product?.discounted_price }}
+                            </span>
+                            <span
+                                :class="[
+                                    product?.discounted_price
+                                        ? 'ml-2 line-through'
+                                        : '',
+                                ]"
+                                >{{ product?.price }}</span
+                            >
+                        </div>
                         <div
                             v-if="hasTablouri === false"
                             class="bg-rosegold-500 hover:bg-rosegold-700 mx-2 mb-3 px-6 py-2 text-white opacity-90"
