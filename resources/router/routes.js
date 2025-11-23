@@ -56,12 +56,10 @@ export const routes = [
     },
     {
         path: '/',
-        name: 'app',
         component: AppLayout,
-        redirect: '/home',
         children: [
             {
-                path: 'home',
+                path: '',
                 name: 'app.home',
                 component: HomePage,
             },
@@ -81,40 +79,42 @@ export const routes = [
                 component: Product,
                 props: true,
             },
-        ],
-    },
-    {
-        path: '/profile',
-        name: 'profile',
-        component: Profile,
-        meta: {},
-        children: [
             {
-                path: 'data',
-                name: 'profile.data',
-                component: ProfileData,
+                path: '/login',
+                name: 'login',
+                component: Login,
+                meta: { guestOnly: true },
             },
-            //more to come
+            {
+                path: '/register',
+                name: 'register',
+                component: Register,
+                meta: { guestOnly: true },
+            },
+            {
+                path: '/profile',
+                component: Profile,
+                meta: {},
+                children: [
+                    {
+                        path: 'data',
+                        name: 'profile.data',
+                        component: ProfileData,
+                    },
+                    //more to come
+                ],
+            },
+            {
+                path: '/reset-password',
+                name: 'reset-password',
+                component: ResetPassword,
+                meta: { guestOnly: true },
+            },
+            {
+                path: '/:pathMatch(.*)*',
+                name: 'notFound',
+                component: NotFound,
+            },
         ],
-    },
-    {
-        path: '/login',
-        name: 'login',
-        component: Login,
-    },
-    {
-        path: '/register',
-        name: 'register',
-        component: Register,
-    },
-    {
-        path: '/reset-password',
-        name: 'reset-password',
-        component: ResetPassword,
-    },
-    {
-        path: '/:pathMatch(.*)*',
-        name: 'notFound',
-        component: NotFound,
     },
 ]

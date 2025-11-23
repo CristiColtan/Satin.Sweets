@@ -11,11 +11,21 @@ export const router = createRouter({
     router.beforeEach((to, from, next) => {
         const store = useAppStore()
 
-        if (to.meta.requiresAuth && !store.user.token) {
-            next({ name: 'login' })
-        } else if (to.meta.isAdmin && !store.user.data.is_admin) {
+        const isLoggedIn = !!store.user.token
+        const isAdmin = store.user.data?.is_admin
+
+        if (to.meta.requiresAuth && !isLoggedIn) {
+            next({ name: 'login', query: { redirect: to.fullPath } })
+        }
+
+        if (to.meta.isAdmin && !isAdmin) {
             next({ name: 'app' })
         }
+
+        if (to.meta.guestOnly && isLoggedIn) {
+            next({ name: 'app' })
+        }
+
         next()
     })
 }
