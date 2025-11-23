@@ -1,4 +1,5 @@
 import axiosClient from '../js/axios.js'
+import { extractApiError } from '../utils/apiError.js'
 
 async function getUser(params) {
     const response = await axiosClient.get('/user', { params })
@@ -17,6 +18,8 @@ async function login(data) {
         `Bearer ${responseData.token}`
     localStorage.setItem('token', responseData.token)
 
+    await this.syncGuestFavoritesAfterLogin()
+
     return responseData.user
 }
 
@@ -30,6 +33,7 @@ async function logout() {
     } finally {
         this.user.data = null
         this.user.token = null
+        this.favorites = { loading: false, ids: [], items: [], error: null }
         localStorage.removeItem('token')
     }
 }
@@ -376,6 +380,109 @@ async function updateAddon(addon, newImages) {
         throw error
     }
 }
+
+async function fetchFavorites() {
+    this.favorites.loading = true
+    this.favorites.error = null
+    try {
+        if (this.user.token) {
+            const { data } = await axiosClient.get('/favorites')
+            this.favorites.ids = data.ids || []
+            this.favorites.items = data.data || []
+        } else {
+            // guest: din localStorage
+            const ids = JSON.parse(localStorage.getItem('fav_ids') || '[]')
+            this.favorites.ids = ids
+            this.favorites.items = []
+        }
+    } catch (err) {
+        const { message } = extractApiError(err, {
+            defaultMessage: 'Nu s-au putut încărca favoritele.',
+        })
+        this.favorites.error = message
+    } finally {
+        this.favorites.loading = false
+    }
+}
+
+function isFavorite(id) {
+    return this.favorites.ids.includes(id)
+}
+async function toggleFavorite(product) {
+    const id = product.id || product
+    const wasFav = this.isFavorite(id)
+
+    console.log('TOGGLE FAVORITE A PRIMIT: ', product, wasFav)
+    // optimistic update
+    if (wasFav) {
+        this.favorites.ids = this.favorites.ids.filter((x) => x !== id)
+    } else {
+        this.favorites.ids = [...this.favorites.ids, id]
+    }
+
+    // persist
+    if (!this.user.token) {
+        localStorage.setItem('fav_ids', JSON.stringify(this.favorites.ids))
+        return
+    }
+
+    try {
+        if (wasFav) {
+            await axiosClient.delete(`/favorites/${id}`)
+        } else {
+            await axiosClient.post(`/favorites/${id}`)
+        }
+    } catch (err) {
+        // revert on failure
+        if (wasFav) {
+            this.favorites.ids = [...this.favorites.ids, id]
+        } else {
+            this.favorites.ids = this.favorites.ids.filter((x) => x !== id)
+        }
+        throw err
+    }
+}
+
+async function syncGuestFavoritesAfterLogin() {
+    try {
+        if (!this.user?.token) return
+
+        const localIds = JSON.parse(localStorage.getItem('fav_ids') || '[]')
+
+        if (!this.favorites.ids || this.favorites.ids.length === 0) {
+            console.log('No favorites found.')
+            await this.fetchFavorites?.()?.catch(() => {})
+        } else {
+            await this.fetchFavorites?.()?.catch(() => {})
+        }
+
+        const alreadyHave = new Set(
+            this.favorites.ids ? [...this.favorites.ids] : [],
+        )
+
+        const toSync = localIds.filter((id) => !alreadyHave.has(id))
+
+        if (toSync.length === 0) {
+            console.log('Nothing to sync... Retrieving data from server!')
+            localStorage.removeItem('fav_ids')
+            await this.fetchFavorites
+            return
+        }
+
+        await Promise.all(
+            toSync.map((id) => {
+                axiosClient.post(`/favorites/${id}`)
+                console.log('Synced id:', id)
+            }),
+        )
+
+        localStorage.removeItem('fav_ids')
+        await this.fetchFavorites?.()?.catch(() => {})
+    } catch (err) {
+        console.error('syncGuestFavoritesAfterLogin failed', err)
+    }
+}
+
 export default {
     getProduct,
     getProducts,
@@ -391,4 +498,8 @@ export default {
     login,
     logout,
     submitReview,
+    isFavorite,
+    fetchFavorites,
+    toggleFavorite,
+    syncGuestFavoritesAfterLogin,
 }

@@ -14,6 +14,12 @@ export default () => ({
         t_small_accessories: createTableState(),
         t_big_accessories: createTableState(),
     },
+    favorites: {
+        loading: false,
+        ids: [],
+        items: [],
+        error: null,
+    },
 })
 
 function createTableState() {

@@ -56,10 +56,15 @@
                     <button
                         class="group absolute top-4 right-4 bg-white/90 p-1 shadow-lg transition-transform duration-300 hover:scale-105"
                         style="border-radius: 100px"
+                        @click.stop.prevent="onToggleFavorite(product, $event)"
                     >
-                        <!--TODO: add favorite condition-->
                         <Heart
-                            class="text-rosegold-700 hover:fill-rosegold-700 h-6 w-6"
+                            :class="
+                                store.isFavorite(product?.id)
+                                    ? 'fill-rosegold-700 text-rosegold-700'
+                                    : 'text-rosegold-700 hover:fill-rosegold-700'
+                            "
+                            class="h-6 w-6"
                         ></Heart>
                     </button>
                 </div>
@@ -471,9 +476,12 @@ import BenefitsSectionForProduct from '../components/home-page/BenefitsSectionFo
 import SimilarProducts from '../components/core/product-page/SimilarProducts.vue'
 import { useFieldErrors } from '../utils/useFieldErrors.js'
 import ErrorAlert from '../components/core/ErrorAlert.vue'
+import { useAppStore } from '../store/index.js'
+import { slugify } from '../utils/utils.js'
 
 const route = useRoute()
 const product = ref(null)
+const store = useAppStore()
 
 const reviews = ref([])
 const reviewsMeta = ref({
@@ -623,17 +631,12 @@ function onFilesChange(filesArray) {
     const files = (filesArray || []).filter((file) => file instanceof File)
     if (files.length) newImages.value.push(...files)
 }
-
-function slugify(text) {
-    return text
-        .toString()
-        .normalize('NFD') // elimină diacritice
-        .replace(/[\u0300-\u036f]/g, '') // curăță diacriticele
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9\s-]/g, '') // scoate caractere speciale
-        .replace(/\s+/g, '-') // înlocuiește spațiile cu -
-        .replace(/-+/g, '-') // elimină multiplele liniuțe
+function onToggleFavorite(p, e) {
+    e?.stopPropagation?.()
+    store.toggleFavorite(p).catch((err) => {
+        console.error('Eroare toggle favorite', err)
+        handleApiError(err)
+    })
 }
 </script>
 

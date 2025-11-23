@@ -45,6 +45,7 @@ class ProductController extends Controller
         $sortField = request('sort_field', 'created_at');
         $sortDirection = request('sort_direction', 'desc');
         $categoryId = request('category_id');
+        $topCategoryId = request('top_category_id');
 
         if ($search === '') {
             $query = Product::query()
@@ -54,6 +55,18 @@ class ProductController extends Controller
             if ($categoryId) {
                 $query->whereHas('categories', function ($q) use ($categoryId) {
                     $q->where('categories.id', $categoryId);
+                });
+            }
+
+            if ($topCategoryId) {
+                $query->whereHas('categories', function ($c) use ($topCategoryId) {
+                    $c->where('categories.id', $topCategoryId)
+                        ->orWhereHas('parent', function ($p) use ($topCategoryId) {
+                            $p->where('id', $topCategoryId)
+                                ->orWhereHas('parent', function ($gp) use ($topCategoryId) {
+                                    $gp->where('id', $topCategoryId);
+                                });
+                        });
                 });
             }
 

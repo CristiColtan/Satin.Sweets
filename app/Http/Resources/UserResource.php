@@ -22,7 +22,8 @@ class UserResource extends JsonResource
             'last_name' => $this->last_name,
             'email' => $this->email,
             'is_admin' => $this->is_admin,
-
+            'favorite_ids' => $this->whenLoaded('favorites', fn() => $this->favorites->pluck('id')),
+            'favorites_count' => $this->whenCounted('favorites'),
         ];
     }
 

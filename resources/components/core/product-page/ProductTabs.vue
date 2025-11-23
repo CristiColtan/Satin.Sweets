@@ -305,8 +305,12 @@
                         </Transition>
 
                         <!--recenzii-->
-                        <Spinner v-if="loadingReviews" />
-                        <div v-else class="w-full max-w-2xl space-y-6">
+                        <TransitionGroup
+                            appear
+                            class="w-full max-w-2xl space-y-6"
+                            name="reviews"
+                            tag="div"
+                        >
                             <div
                                 v-for="(review, i) in props.reviews"
                                 :key="review.id"
@@ -405,7 +409,7 @@
                                     >
                                 </button>
                             </div>
-                        </div>
+                        </TransitionGroup>
                     </div>
                 </div>
             </div>
@@ -420,7 +424,6 @@ import MyInput from '../MyInput.vue'
 import { useAppStore } from '../../../store/index.js'
 import { useFieldErrors } from '../../../utils/useFieldErrors.js'
 import ErrorAlert from '../ErrorAlert.vue'
-import Spinner from '../Spinner.vue'
 
 const props = defineProps({
     product: {
@@ -573,5 +576,20 @@ function toggleReviewForm() {
 .fade-slide-leave-to {
     opacity: 0;
     transform: translateY(10px);
+}
+
+.reviews-enter-active {
+    transition: all 0.35s ease;
+}
+.reviews-enter-from {
+    opacity: 0;
+    transform: translateY(10px);
+}
+.reviews-enter-to {
+    opacity: 1;
+    transform: translateY(0);
+}
+.reviews-move {
+    transition: transform 0.35s ease;
 }
 </style>

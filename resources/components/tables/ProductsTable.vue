@@ -302,7 +302,7 @@
             confirmText="Da, șterge"
             title="Ștergere produs"
             @confirm="confirmDelete"
-        />/>
+        />
     </div>
 </template>
 

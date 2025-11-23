@@ -108,15 +108,10 @@
 
 <script setup>
 import { ref } from 'vue'
-import {
-    Heart,
-    Hourglass,
-    MessageCircleQuestionMark,
-    Truck,
-} from 'lucide-vue-next'
 import BenefitsModal from './BenefitsModal.vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Pagination } from 'swiper/modules'
+import { benefits } from '../../utils/imports.js'
 
 import 'swiper/css'
 import 'swiper/css/pagination'
@@ -127,34 +122,4 @@ function onClickShowBenefitModal(benefit = null) {
     selectedBenefit.value = benefit
     showBenefitModal.value = true
 }
-
-const benefits = [
-    {
-        icon: Truck,
-        title: 'Livrare Rapidă',
-        description: 'Livrăm în 24 de ore oriunde în tara',
-        details: 'Livrare gratuită pentru comenzi peste 265 RON.',
-    },
-    {
-        icon: Hourglass,
-        title: 'Eleganta eterna',
-        description: 'Buchetele noastre nu ofilesc niciodata!',
-        details:
-            'Spune adio florilor trecătoare – Fiecare buchet este creat pentru a rezista în timp, păstrându-și forma și farmecul fără grija ofilirii.',
-    },
-    {
-        icon: Heart,
-        title: 'Aranjamente Personalizate',
-        description: 'Creăm buchete unice pentru tine',
-        details:
-            'Echipa noastră creează aranjamente personalizate pentru orice ocazie specială.',
-    },
-    {
-        icon: MessageCircleQuestionMark,
-        title: 'Disponibili 24/7 pentru tine',
-        description: 'Comandă oricând, suport rapid',
-        details:
-            'Comandă în orice moment și primește ajutor rapid – suntem disponibili non-stop, pentru ca tu să te bucuri de cadourile tale fără griji.',
-    },
-]
 </script>

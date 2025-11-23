@@ -35,7 +35,7 @@ class ProductRequest extends FormRequest
             'categories.*' => ['integer', 'exists:categories,id'],
 
             'images' => ['nullable', 'array'],
-            'images.*' => ['file', 'mimes:jpg,jpeg,png,gif', 'max:2048'],
+            'images.*' => ['file', 'mimes:jpg,jpeg,png,gif', 'max:5120'],
         ];
     }
 }

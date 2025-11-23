@@ -25,7 +25,8 @@ Route::apiResource('products', ProductController::class)->only(['index', 'show']
 
 Route::get('/products/{product}/reviews', [ReviewController::class, 'index']);
 Route::post('/products/{product}/reviews', [ReviewController::class, 'store'])
-    ->middleware('auth:sanctum'); // delete if users cand review if not authenticated
+    ->middleware('auth:sanctum');
+//sterge daca te razgandesti si utilizatorii pot lasa review uri daca nu sunt autentificati
 
 Route::get('/categories/children/{parentId}', [CategoryController::class, 'getChildCategories']);
 

@@ -5,10 +5,12 @@
             <div class="">
                 <router-view></router-view>
             </div>
+            <Footer></Footer>
         </div>
     </div>
 </template>
 
 <script setup>
 import Navbar from './Navbar.vue'
+import Footer from './Footer.vue'
 </script>

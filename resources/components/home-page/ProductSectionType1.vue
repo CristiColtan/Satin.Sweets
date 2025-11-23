@@ -37,12 +37,13 @@
             <div
                 class="grid grid-cols-2 gap-4 md:col-span-3 lg:grid-cols-3 lg:gap-10"
             >
-                <div
+                <RouterLink
                     v-for="(product, i) in products"
                     :key="i"
                     :class="
                         background === 'white' ? 'bg-[#f3f3f3]' : 'bg-white'
                     "
+                    :to="`/produs/${product.slug}`"
                     class="product-card group overflow-hidden rounded-2xl border-0"
                 >
                     <div
@@ -50,8 +51,23 @@
                         class="relative overflow-hidden"
                     >
                         <img
-                            :src="product.img"
-                            alt=""
+                            v-if="
+                                (Array.isArray(product.media) &&
+                                    product.media.length > 0 &&
+                                    product.media[0].full_url) ||
+                                (Array.isArray(product.images) &&
+                                    product.images.length > 0 &&
+                                    product.images[0].url)
+                            "
+                            :alt="
+                                product.media?.[0]?.alt_text ||
+                                product.images?.[0]?.alt_text ||
+                                product.title
+                            "
+                            :src="
+                                product.media?.[0]?.full_url ||
+                                product.images?.[0]?.url
+                            "
                             class="w-auto rounded-md object-cover transition-transform duration-300 group-hover:scale-105"
                         />
 
@@ -67,10 +83,17 @@
                         <button
                             class="group absolute top-4 right-4 bg-white/80 p-1 shadow-lg transition-transform duration-300 hover:scale-105"
                             style="border-radius: 100px"
+                            @click.stop.prevent="
+                                onToggleFavorite(product, $event)
+                            "
                         >
-                            <!--TODO: add favorite condition-->
                             <Heart
-                                class="text-rosegold-700 hover:fill-rosegold-700 h-6 w-6"
+                                :class="
+                                    store.isFavorite(product?.id)
+                                        ? 'fill-rosegold-700 text-rosegold-700'
+                                        : 'text-rosegold-700 hover:fill-rosegold-700'
+                                "
+                                class="h-6 w-6"
                             ></Heart>
                         </button>
 
@@ -92,7 +115,7 @@
                             v-if="hasTablouri === false"
                             class="text-rosegold-900 mt-4 mb-2 text-center font-serif text-xl font-medium lg:text-2xl"
                         >
-                            {{ product.name }}
+                            {{ product.title }}
                         </span>
 
                         <div
@@ -126,7 +149,7 @@
                             >
                         </button>
                     </div>
-                </div>
+                </RouterLink>
             </div>
         </div>
     </section>
@@ -134,6 +157,10 @@
 
 <script setup>
 import { Heart } from 'lucide-vue-next'
+import { useFieldErrors } from '../../utils/useFieldErrors.js'
+import { useAppStore } from '../../store/index.js'
+
+const store = useAppStore()
 
 defineProps({
     title: String,
@@ -144,6 +171,15 @@ defineProps({
     hasTablouri: Boolean,
     variant: String,
 })
+
+const { formErrors, generalError, handleApiError } = useFieldErrors()
+function onToggleFavorite(p, e) {
+    e?.stopPropagation?.()
+    store.toggleFavorite(p).catch((err) => {
+        console.error('Eroare toggle favorite', err)
+        handleApiError(err)
+    })
+}
 </script>
 
 <style scoped>

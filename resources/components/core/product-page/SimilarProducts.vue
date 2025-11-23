@@ -81,11 +81,17 @@
                         <button
                             class="group absolute top-4 right-4 bg-white/80 p-1 shadow-lg transition-transform duration-300 hover:scale-105"
                             style="border-radius: 100px"
-                            @click.stop.prevent="addToFavorites(product)"
+                            @click.stop.prevent="
+                                onToggleFavorite(product, $event)
+                            "
                         >
-                            <!--TODO: add favorite condition-->
                             <Heart
-                                class="text-rosegold-700 hover:fill-rosegold-700 h-6 w-6"
+                                :class="
+                                    store.isFavorite(product?.id)
+                                        ? 'fill-rosegold-700 text-rosegold-700'
+                                        : 'text-rosegold-700 hover:fill-rosegold-700'
+                                "
+                                class="h-6 w-6"
                             ></Heart>
                         </button>
 
@@ -147,6 +153,10 @@
 
 <script setup>
 import { Heart } from 'lucide-vue-next'
+import { useFieldErrors } from '../../../utils/useFieldErrors.js'
+import { useAppStore } from '../../../store/index.js'
+
+const store = useAppStore()
 
 defineProps({
     title: String,
@@ -159,8 +169,13 @@ defineProps({
     categories: Array,
 })
 
-function addToFavorites(product) {
-    console.log('addToFavorites', product)
+const { formErrors, generalError, handleApiError } = useFieldErrors()
+function onToggleFavorite(p, e) {
+    e?.stopPropagation?.()
+    store.toggleFavorite(p).catch((err) => {
+        console.error('Eroare toggle favorite', err)
+        handleApiError(err)
+    })
 }
 </script>
 

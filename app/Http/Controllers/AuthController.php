@@ -31,6 +31,9 @@ class AuthController extends Controller
 //            return response(['message' => 'You don\'t have permission to authenticate as admin'], 403);
 //        }
 
+        $user->loadCount('favorites')
+            ->load(['favorites:id']);
+
         $token = $user->createToken('main')->plainTextToken;
         return response(['user' => new UserResource($user), 'token' => $token]);
         //return response(['user' => new UserResource($user), 'token' => $token])->cookie('token', $token, 60 * 24);
