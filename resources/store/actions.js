@@ -8,19 +8,23 @@ async function getUser(params) {
 }
 
 async function login(data) {
-    const response = await axiosClient.post('/login', data)
-    const responseData = response.data
+    try {
+        const response = await axiosClient.post('/login', data)
+        const responseData = response.data
 
-    this.user.data = responseData.user
-    this.user.token = responseData.token
+        this.user.data = responseData.user
+        this.user.token = responseData.token
 
-    axiosClient.defaults.headers.common['Authorization'] =
-        `Bearer ${responseData.token}`
-    localStorage.setItem('token', responseData.token)
+        axiosClient.defaults.headers.common['Authorization'] =
+            `Bearer ${responseData.token}`
+        localStorage.setItem('token', responseData.token)
 
-    await this.syncGuestFavoritesAfterLogin()
+        await this.syncGuestFavoritesAfterLogin()
 
-    return responseData.user
+        return responseData.user
+    } catch (err) {
+        throw err
+    }
 }
 
 async function logout() {

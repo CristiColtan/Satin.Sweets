@@ -47,7 +47,7 @@
                     <button
                         class="relative rounded-full p-1 text-black transition-transform duration-200 hover:-translate-y-1 hover:text-white focus:outline-2 focus:outline-offset-2"
                         type="button"
-                        @click="handleLogout"
+                        @click="redirectHome"
                     >
                         <span class="absolute -inset-1.5" />
                         <span class="sr-only">View notifications</span>
@@ -149,6 +149,7 @@ function handleLogout() {
     store.logout()
     router.push({ name: 'login' })
 }
+//not used for this moment
 function redirectHome() {
     router.push({ name: 'app.home' })
 }

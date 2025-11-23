@@ -15,17 +15,17 @@ export const router = createRouter({
         const isAdmin = store.user.data?.is_admin
 
         if (to.meta.requiresAuth && !isLoggedIn) {
-            next({ name: 'login', query: { redirect: to.fullPath } })
+            return next({ name: 'login', query: { redirect: to.fullPath } })
         }
 
         if (to.meta.isAdmin && !isAdmin) {
-            next({ name: 'app' })
+            return next({ name: 'app.home' })
         }
 
         if (to.meta.guestOnly && isLoggedIn) {
-            next({ name: 'app' })
+            return next({ name: 'app.home' })
         }
 
-        next()
+        return next()
     })
 }

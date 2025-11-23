@@ -80,19 +80,19 @@ export const routes = [
                 props: true,
             },
             {
-                path: '/login',
+                path: 'login',
                 name: 'login',
                 component: Login,
                 meta: { guestOnly: true },
             },
             {
-                path: '/register',
+                path: 'register',
                 name: 'register',
                 component: Register,
                 meta: { guestOnly: true },
             },
             {
-                path: '/profile',
+                path: 'profile',
                 component: Profile,
                 meta: {},
                 children: [
@@ -105,13 +105,13 @@ export const routes = [
                 ],
             },
             {
-                path: '/reset-password',
+                path: 'reset-password',
                 name: 'reset-password',
                 component: ResetPassword,
                 meta: { guestOnly: true },
             },
             {
-                path: '/:pathMatch(.*)*',
+                path: ':pathMatch(.*)*',
                 name: 'notFound',
                 component: NotFound,
             },

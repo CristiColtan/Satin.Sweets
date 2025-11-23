@@ -195,9 +195,9 @@ function redirectAdmin() {
     router.push({ name: 'admin' })
 }
 
-function handleLogout() {
-    store.logout()
-    router.push({ name: 'login' })
+async function handleLogout() {
+    await store.logout()
+    await router.push({ name: 'login' })
 }
 const isActive = (item) => route.name === item.to?.name
 
