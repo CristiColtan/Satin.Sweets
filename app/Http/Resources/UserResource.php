@@ -21,6 +21,7 @@ class UserResource extends JsonResource
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
             'email' => $this->email,
+            'phone_number' => optional($this->customer)->phone_number,
             'is_admin' => $this->is_admin,
             'favorite_ids' => $this->whenLoaded('favorites', fn() => $this->favorites->pluck('id')),
             'favorites_count' => $this->whenCounted('favorites'),

@@ -6,6 +6,8 @@
                 <router-view></router-view>
             </div>
             <Footer></Footer>
+
+            <MyToast />
         </div>
     </div>
 </template>
@@ -13,4 +15,5 @@
 <script setup>
 import Navbar from './Navbar.vue'
 import Footer from './Footer.vue'
+import MyToast from './core/MyToast.vue'
 </script>

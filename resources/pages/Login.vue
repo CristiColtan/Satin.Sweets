@@ -148,6 +148,7 @@ async function login() {
                 <button
                     :disabled="loading"
                     class="bg-rosegold-700 hover:bg-rosegold-500 focus-visible:outline-rosegold-700 rounded-md px-10 py-2 font-semibold text-white shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2"
+                    style="border-radius: 10px"
                     type="submit"
                 >
                     <span class="text-lg">{{

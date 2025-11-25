@@ -26,7 +26,15 @@ async function login(data) {
         throw err
     }
 }
-
+async function register(data) {
+    try {
+        const response = await axiosClient.post('/register', data)
+        console.log('REGISTER RESPONSE:', response)
+        return response.data
+    } catch (err) {
+        throw err
+    }
+}
 async function logout() {
     console.log('LOGOUT')
 
@@ -501,6 +509,7 @@ export default {
     updateAddon,
     login,
     logout,
+    register,
     submitReview,
     isFavorite,
     fetchFavorites,

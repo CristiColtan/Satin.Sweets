@@ -1,20 +1,73 @@
 <script setup>
 import '../css/app.css'
+import { useFieldErrors } from '../utils/useFieldErrors.js'
+import { reactive, ref } from 'vue'
+import MyInput from '../components/core/MyInput.vue'
+import ErrorAlert from '../components/core/ErrorAlert.vue'
+import { useRouter } from 'vue-router'
+import { useToast } from '../utils/myToast.js'
+import { useAppStore } from '../store/index.js'
 
-const emit = defineEmits(['submit'])
+const { showToast } = useToast()
+
+const store = useAppStore()
+
+const userData = reactive({
+    last_name: '',
+    first_name: '',
+    email: '',
+    phone_number: '',
+    password: '',
+    confirm_password: '',
+    terms_cond: false,
+    pol_conf: false,
+})
+const loading = ref(false)
+
+const router = useRouter()
+
+const { formErrors, generalError, handleApiError } = useFieldErrors()
+
+async function handleRegister() {
+    loading.value = true
+    formErrors.value = {}
+    generalError.value = null
+
+    if (!userData.terms_cond || !userData.pol_conf) {
+        generalError.value = 'Trebuie sa acceptati termenii si conditiile'
+        return
+    }
+
+    if (userData.password !== userData.confirm_password) {
+        generalError.value = 'Parolele nu coincid'
+        return
+    }
+
+    try {
+        await store.register(userData)
+        await router.push('/login')
+        showToast('Contul a fost creat cu succes!', 'success')
+    } catch (err) {
+        handleApiError(err)
+    } finally {
+        loading.value = false
+    }
+}
 </script>
 
 <template>
     <div
-        class="flex min-h-screen flex-col items-center justify-center bg-[#f3f3f3] p-6 sm:p-14"
+        class="flex flex-col items-center justify-center bg-[#f3f3f3] p-6 sm:p-14"
     >
-        <form method="POST" @submit.prevent="emit('submit')">
+        <form method="POST" @submit.prevent="handleRegister">
             <div class="space-y-4">
                 <div class="border-b border-gray-900/10 pb-4">
-                    <h2 class="text-base/7 font-semibold text-gray-900">
+                    <p
+                        class="font-serif text-2xl font-semibold text-gray-900 sm:text-3xl"
+                    >
                         Creeaza-ti un cont!
-                    </h2>
-                    <p class="">
+                    </p>
+                    <p class="text-xl">
                         Ai cont deja?
                         <RouterLink class="link-terms" to="/login"
                             >Autentifica-te!</RouterLink
@@ -25,7 +78,7 @@ const emit = defineEmits(['submit'])
                     >
                         <div class="sm:col-span-3">
                             <label
-                                class="block text-sm/6 font-medium text-gray-900"
+                                class="block text-lg font-medium text-gray-900"
                                 for="last_name"
                                 >Nume <span class="text-red-600">*</span></label
                             >
@@ -35,18 +88,27 @@ const emit = defineEmits(['submit'])
                                 >
                                     <input
                                         id="last_name"
+                                        v-model="userData.last_name"
                                         class="block min-w-0 grow bg-white py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
                                         name="last_name"
                                         placeholder="Popescu"
+                                        style="font-size: 18px"
                                         type="text"
+                                        @input="formErrors.last_name = null"
                                     />
                                 </div>
+                                <p
+                                    v-if="formErrors.last_name"
+                                    class="mt-1 text-sm text-red-600"
+                                >
+                                    {{ formErrors.last_name }}
+                                </p>
                             </div>
                         </div>
 
                         <div class="sm:col-span-3">
                             <label
-                                class="block text-sm/6 font-medium text-gray-900"
+                                class="block text-lg font-medium text-gray-900"
                                 for="first_name"
                                 >Prenume
                                 <span class="text-red-600">*</span></label
@@ -57,18 +119,27 @@ const emit = defineEmits(['submit'])
                                 >
                                     <input
                                         id="first_name"
+                                        v-model="userData.first_name"
                                         class="block min-w-0 grow bg-white py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
                                         name="first_name"
                                         placeholder="Vasile"
+                                        style="font-size: 18px"
                                         type="text"
+                                        @input="formErrors.first_name = null"
                                     />
                                 </div>
+                                <p
+                                    v-if="formErrors.first_name"
+                                    class="mt-1 text-sm text-red-600"
+                                >
+                                    {{ formErrors.first_name }}
+                                </p>
                             </div>
                         </div>
 
                         <div class="sm:col-span-3">
                             <label
-                                class="block text-sm/6 font-medium text-gray-900"
+                                class="block text-lg font-medium text-gray-900"
                                 for="email"
                                 >E-mail
                                 <span class="text-red-600">*</span></label
@@ -79,18 +150,27 @@ const emit = defineEmits(['submit'])
                                 >
                                     <input
                                         id="email"
+                                        v-model="userData.email"
                                         class="block min-w-0 grow bg-white py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
                                         name="email"
                                         placeholder="popescu.vasile@yahoo.com"
+                                        style="font-size: 18px"
                                         type="text"
+                                        @input="formErrors.email = null"
                                     />
                                 </div>
+                                <p
+                                    v-if="formErrors.email"
+                                    class="mt-1 text-sm text-red-600"
+                                >
+                                    {{ formErrors.email }}
+                                </p>
                             </div>
                         </div>
 
                         <div class="sm:col-span-3">
                             <label
-                                class="block text-sm/6 font-medium text-gray-900"
+                                class="block text-lg font-medium text-gray-900"
                                 for="phone_number"
                                 >Telefon
                                 <span class="text-red-600">*</span></label
@@ -101,18 +181,27 @@ const emit = defineEmits(['submit'])
                                 >
                                     <input
                                         id="phone_number"
+                                        v-model="userData.phone_number"
                                         class="block min-w-0 grow bg-white py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
                                         name="phone_number"
                                         placeholder="0754322400"
+                                        style="font-size: 18px"
                                         type="text"
+                                        @input="formErrors.phone_number = null"
                                     />
                                 </div>
+                                <p
+                                    v-if="formErrors.phone_number"
+                                    class="mt-1 text-sm text-red-600"
+                                >
+                                    {{ formErrors.phone_number }}
+                                </p>
                             </div>
                         </div>
 
                         <div class="sm:col-span-3">
                             <label
-                                class="block text-sm/6 font-medium text-gray-900"
+                                class="block text-lg font-medium text-gray-900"
                                 for="password"
                                 >Parola
                                 <span class="text-red-600">*</span></label
@@ -123,18 +212,27 @@ const emit = defineEmits(['submit'])
                                 >
                                     <input
                                         id="password"
+                                        v-model="userData.password"
                                         class="block min-w-0 grow bg-white py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
                                         name="password"
                                         placeholder="********"
+                                        style="font-size: 18px"
                                         type="password"
+                                        @input="formErrors.password = null"
                                     />
                                 </div>
+                                <p
+                                    v-if="formErrors.password"
+                                    class="mt-1 text-sm text-red-600"
+                                >
+                                    {{ formErrors.password }}
+                                </p>
                             </div>
                         </div>
 
                         <div class="sm:col-span-3">
                             <label
-                                class="block text-sm/6 font-medium text-gray-900"
+                                class="block text-lg font-medium text-gray-900"
                                 for="confirm_password"
                                 >Confirma parola
                                 <span class="text-red-600">*</span></label
@@ -145,12 +243,23 @@ const emit = defineEmits(['submit'])
                                 >
                                     <input
                                         id="confirm_password"
+                                        v-model="userData.confirm_password"
                                         class="block min-w-0 grow bg-white py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
-                                        name="phone_number"
+                                        name="confirm_password"
                                         placeholder="********"
+                                        style="font-size: 18px"
                                         type="password"
+                                        @input="
+                                            formErrors.confirm_password = null
+                                        "
                                     />
                                 </div>
+                                <p
+                                    v-if="formErrors.confirm_password"
+                                    class="mt-1 text-sm text-red-600"
+                                >
+                                    {{ formErrors.confirm_password }}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -165,16 +274,30 @@ const emit = defineEmits(['submit'])
                                         <div
                                             class="group grid size-4 grid-cols-1"
                                         >
-                                            <input
-                                                id="terms_conds"
-                                                aria-describedby="terms-and-conditions"
-                                                class="h-4 w-4 accent-[#B87E7A] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B87E7A]"
-                                                name="terms_conds"
+                                            <MyInput
+                                                v-model="userData.terms_cond"
+                                                class="border-none shadow-none"
                                                 type="checkbox"
+                                                @input="
+                                                    formErrors.terms_cond = null
+                                                "
                                             />
+                                            <p
+                                                v-if="formErrors.terms_cond"
+                                                class="mt-1 text-sm text-red-600"
+                                            >
+                                                {{ formErrors.terms_cond }}
+                                            </p>
+                                            <!--  <input-->
+                                            <!--  id="terms_conds"-->
+                                            <!--  aria-describedby="terms-and-conditions"-->
+                                            <!--  class="h-4 w-4 accent-[#B87E7A] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B87E7A]"-->
+                                            <!--  name="terms_conds"-->
+                                            <!--  type="checkbox"-->
+                                            <!--  />-->
                                         </div>
                                     </div>
-                                    <div class="text-sm/6">
+                                    <div class="translate-y-1.5 text-lg">
                                         <p
                                             id="terms-and-conditions"
                                             class="text-gray-900"
@@ -195,16 +318,30 @@ const emit = defineEmits(['submit'])
                                         <div
                                             class="group grid size-4 grid-cols-1"
                                         >
-                                            <input
-                                                id="pol_conf"
-                                                aria-describedby="policy-of-confidentiality"
-                                                class="h-4 w-4 accent-[#B87E7A] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B87E7A]"
-                                                name="pol_conf"
+                                            <MyInput
+                                                v-model="userData.pol_conf"
+                                                class="border-none shadow-none"
                                                 type="checkbox"
+                                                @input="
+                                                    formErrors.pol_conf = null
+                                                "
                                             />
+                                            <p
+                                                v-if="formErrors.pol_conf"
+                                                class="mt-1 text-sm text-red-600"
+                                            >
+                                                {{ formErrors.pol_conf }}
+                                            </p>
+                                            <!-- <input-->
+                                            <!-- id="pol_conf"-->
+                                            <!-- aria-describedby="policy-of-confidentiality"-->
+                                            <!-- class="h-4 w-4 accent-[#B87E7A] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B87E7A]"-->
+                                            <!-- name="pol_conf"-->
+                                            <!-- type="checkbox"-->
+                                            <!-- />-->
                                         </div>
                                     </div>
-                                    <div class="text-sm/6">
+                                    <div class="translate-y-1.5 text-lg">
                                         <p
                                             id="policy-of-confidentiality"
                                             class="text-gray-900"
@@ -226,12 +363,15 @@ const emit = defineEmits(['submit'])
                 </div>
             </div>
 
+            <ErrorAlert :message="generalError" />
+
             <div class="mt-2 flex items-center justify-center gap-x-6">
                 <button
-                    class="bg-rosegold-700 hover:bg-rosegold-500 focus-visible:outline-rosegold-700 rounded-md px-7 py-2 text-sm font-semibold text-white shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2"
+                    class="bg-rosegold-700 hover:bg-rosegold-500 focus-visible:outline-rosegold-700 rounded-md px-7 py-2 font-semibold text-white shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2"
+                    style="border-radius: 10px"
                     type="submit"
                 >
-                    Creeaza
+                    <span class="text-lg">Creeaza</span>
                 </button>
             </div>
         </form>
