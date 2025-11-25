@@ -37,7 +37,7 @@ class AuthController extends Controller
         }*/
 
         $user->loadCount('favorites')
-            ->load(['favorites:id', 'customer:id,user_id,phone_number,status']);
+            ->load(['favorites:id', 'customer:user_id,phone_number,status']);
 
         $token = $user->createToken('main')->plainTextToken;
         return response(['user' => new UserResource($user), 'token' => $token]);
