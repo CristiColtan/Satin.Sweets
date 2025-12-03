@@ -60,12 +60,12 @@ async function login() {
                     <p
                         class="font-serif text-2xl font-semibold text-gray-900 sm:text-3xl"
                     >
-                        Autentifica-te!
+                        Autentifică-te!
                     </p>
                     <p class="text-xl">
                         Nu ai un cont?
                         <RouterLink class="link-terms" to="/register"
-                            >Creeaza unul acum!</RouterLink
+                            >Creează unul acum!</RouterLink
                         >
                     </p>
                     <div
@@ -140,8 +140,8 @@ async function login() {
             <div
                 class="mt-2 grid grid-rows-2 items-center justify-center gap-x-6"
             >
-                <p class="flex items-center justify-center font-serif text-lg">
-                    <RouterLink class="link-terms" to="/reset-password"
+                <p class="flex items-center justify-center font-serif text-xl">
+                    <RouterLink class="link-terms" to="/forgot-password"
                         >Ai uitat parola?</RouterLink
                     >
                 </p>

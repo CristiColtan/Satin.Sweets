@@ -34,12 +34,14 @@ async function handleRegister() {
     generalError.value = null
 
     if (!userData.terms_cond || !userData.pol_conf) {
-        generalError.value = 'Trebuie sa acceptati termenii si conditiile'
+        generalError.value = 'Trebuie să acceptați termenii și condițiile'
+        loading.value = false
         return
     }
 
     if (userData.password !== userData.confirm_password) {
         generalError.value = 'Parolele nu coincid'
+        loading.value = false
         return
     }
 
@@ -65,12 +67,12 @@ async function handleRegister() {
                     <p
                         class="font-serif text-2xl font-semibold text-gray-900 sm:text-3xl"
                     >
-                        Creeaza-ti un cont!
+                        Creează-ți un cont!
                     </p>
                     <p class="text-xl">
                         Ai cont deja?
                         <RouterLink class="link-terms" to="/login"
-                            >Autentifica-te!</RouterLink
+                            >Autentifică-te!</RouterLink
                         >
                     </p>
                     <div
@@ -203,7 +205,7 @@ async function handleRegister() {
                             <label
                                 class="block text-lg font-medium text-gray-900"
                                 for="password"
-                                >Parola
+                                >Parolă
                                 <span class="text-red-600">*</span></label
                             >
                             <div class="mt-2">
@@ -234,7 +236,7 @@ async function handleRegister() {
                             <label
                                 class="block text-lg font-medium text-gray-900"
                                 for="confirm_password"
-                                >Confirma parola
+                                >Confirmă parola
                                 <span class="text-red-600">*</span></label
                             >
                             <div class="mt-2">
@@ -302,12 +304,12 @@ async function handleRegister() {
                                             id="terms-and-conditions"
                                             class="text-gray-900"
                                         >
-                                            Am citit si accept
+                                            Am citit și accept
                                             <RouterLink
                                                 class="link-terms"
                                                 to="/termeni-si-conditii"
-                                                >Termenii si
-                                                conditiile</RouterLink
+                                                >Termenii și
+                                                condițiile</RouterLink
                                             >.
                                             <span class="text-red-600">*</span>
                                         </p>
@@ -346,12 +348,12 @@ async function handleRegister() {
                                             id="policy-of-confidentiality"
                                             class="text-gray-900"
                                         >
-                                            Am citit si sunt de acord cu
+                                            Am citit și sunt de acord cu
                                             <RouterLink
                                                 class="link-terms"
                                                 to="/protectia-datelor"
                                                 >Politica de
-                                                Confidentialitate</RouterLink
+                                                Confidențialitate</RouterLink
                                             >.
                                             <span class="text-red-600">*</span>
                                         </p>
@@ -367,11 +369,14 @@ async function handleRegister() {
 
             <div class="mt-2 flex items-center justify-center gap-x-6">
                 <button
+                    :disabled="loading"
                     class="bg-rosegold-700 hover:bg-rosegold-500 focus-visible:outline-rosegold-700 rounded-md px-7 py-2 font-semibold text-white shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2"
                     style="border-radius: 10px"
                     type="submit"
                 >
-                    <span class="text-lg">Creeaza</span>
+                    <span class="text-lg">{{
+                        loading ? 'Se creează...' : 'Creează'
+                    }}</span>
                 </button>
             </div>
         </form>

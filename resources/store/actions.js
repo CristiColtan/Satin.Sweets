@@ -49,7 +49,6 @@ async function logout() {
         localStorage.removeItem('token')
     }
 }
-
 async function submitReview(review, productId) {
     console.log('🔹 submitReview() a primit:', {
         review,

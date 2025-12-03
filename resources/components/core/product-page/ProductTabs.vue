@@ -512,7 +512,7 @@ const loadingSubmitReview = ref(false)
 const { formErrors, generalError, handleApiError } = useFieldErrors()
 async function submitReview() {
     if (!form.value.email || !form.value.order_id || !form.value.text) {
-        errorMessage.value = 'Te rugam sa completezi toate campurile!'
+        errorMessage.value = 'Te rugăm să completezi toate câmpurile!'
         return
     }
 

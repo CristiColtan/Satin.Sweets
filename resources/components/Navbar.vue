@@ -34,7 +34,7 @@
                             <img
                                 :src="logo"
                                 alt="LOGO"
-                                class="h-20 w-auto md:h-24"
+                                class="ml-4 h-20 w-auto sm:ml-0 md:h-24"
                                 @click="redirectHome"
                             />
                         </div>

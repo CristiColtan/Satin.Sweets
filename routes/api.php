@@ -5,8 +5,17 @@ use App\Http\Controllers\api\ProductController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\ResetPasswController;
 use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
+
+//Route::get('/debug-dom', function () {
+//    return [
+//        'class_exists' => class_exists(DOMDocument::class),
+//        'php_version' => PHP_VERSION,
+//        'extensions' => get_loaded_extensions(),
+//    ];
+//});
 
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::apiResource('products', ProductController::class)->except(['show', 'index']);
@@ -19,6 +28,9 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
+Route::post('/forgot-password', [ResetPasswController::class, 'sendResetLinkEmail']);
+Route::post('/reset-password', [ResetPasswController::class, 'resetPassword']);
+
 Route::get('/product/{slug}', [ProductController::class, 'showSlug']);
 Route::get('/glitter-addons', [AddonController::class, 'index']);
 

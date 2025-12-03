@@ -1,6 +1,7 @@
 const HomePage = () => import('@/pages/Home.vue')
 const Login = () => import('@/pages/Login.vue')
 const Register = () => import('@/pages/Register.vue')
+const ForgotPassword = () => import('@/pages/ForgotPassword.vue')
 const ResetPassword = () => import('@/pages/ResetPassword.vue')
 const Profile = () => import('@/pages/Profile.vue')
 const ProfileData = () => import('@/pages/ProfileData.vue')
@@ -103,6 +104,12 @@ export const routes = [
                     },
                     //more to come
                 ],
+            },
+            {
+                path: 'forgot-password',
+                name: 'forgot-password',
+                component: ForgotPassword,
+                meta: { guestOnly: true },
             },
             {
                 path: 'reset-password',
