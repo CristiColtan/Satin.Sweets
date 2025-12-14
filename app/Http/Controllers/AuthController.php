@@ -6,8 +6,10 @@ use App\Http\Resources\UserResource;
 use App\Models\Customer;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class AuthController extends Controller
 {
@@ -77,6 +79,39 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Cont creat cu succes.',
         ], 201);
+    }
+
+    public function update(Request $request)
+    {
+        $user = Auth::user();
+
+        $validated = $request->validate(
+            [
+                'first_name' => ['sometimes', 'string', 'max:255'],
+                'last_name' => ['sometimes', 'string', 'max:255'],
+                'email' => ['sometimes', 'string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
+                'phone_number' => ['sometimes', 'string', 'max:10', Rule::unique('customers', 'phone_number')->ignore($user->id, 'user_id')],
+            ]
+        );
+
+        DB::transaction(function () use ($user, $validated) {
+            $userData = Arr::only($validated, ['first_name', 'last_name', 'email']);
+            if (!empty($userData)) {
+                $user->update($userData);
+            }
+
+            $customerData = Arr::only($validated, ['phone_number']);
+            if (!empty($customerData)) {
+                $customer = $user->customer()->firstOrCreate(['user_id' => $user->id]);
+                $customer->fill($customerData)->save();
+            }
+        });
+
+        $user->loadCount('favorites')
+            ->load(['favorites:id', 'customer:user_id,phone_number,status']);
+
+
+        return response(['user' => new UserResource($user)]);
     }
 
     public function logout()

@@ -4,7 +4,13 @@ const Register = () => import('@/pages/Register.vue')
 const ForgotPassword = () => import('@/pages/ForgotPassword.vue')
 const ResetPassword = () => import('@/pages/ResetPassword.vue')
 const Profile = () => import('@/pages/Profile.vue')
-const ProfileData = () => import('@/pages/ProfileData.vue')
+const ProfileInfo = () => import('@/components/profile-page/ProfileInfo.vue')
+const ProfileChangePassword = () =>
+    import('@/components/profile-page/ProfileChangePassword.vue')
+const ProfileOrders = () =>
+    import('@/components/profile-page/ProfileOrders.vue')
+const ProfileAddresses = () =>
+    import('@/components/profile-page/ProfileAddresses.vue')
 const NotFound = () => import('@/pages/NotFound.vue')
 const AppLayout = () => import('@/components/AppLayout.vue')
 const BucheteDeFlori = () => import('@/pages/BucheteDeFlori.vue')
@@ -95,13 +101,32 @@ export const routes = [
             {
                 path: 'profile',
                 component: Profile,
-                meta: {},
+                meta: {
+                    requiresAuth: true,
+                },
+                redirect: '/profile/data',
                 children: [
                     {
                         path: 'data',
                         name: 'profile.data',
-                        component: ProfileData,
+                        component: ProfileInfo,
                     },
+                    {
+                        path: 'change-password',
+                        name: 'profile.change-password',
+                        component: ProfileChangePassword,
+                    },
+                    {
+                        path: 'orders',
+                        name: 'profile.orders',
+                        component: ProfileOrders,
+                    },
+                    {
+                        path: 'shipping-addresses',
+                        name: 'profile.shipping-addresses',
+                        component: ProfileAddresses,
+                    },
+
                     //more to come
                 ],
             },

@@ -45,7 +45,9 @@ Route::get('/categories/children/{parentId}', [CategoryController::class, 'getCh
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user', [AuthController::class, 'getUser']);
+    Route::patch('/user', [AuthController::class, 'update']);
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::patch('/change-password', [ResetPasswController::class, 'changePassword']);
 
     Route::get('/favorites', [FavoriteController::class, 'index']);
     Route::post('/favorites/{product}', [FavoriteController::class, 'store']);

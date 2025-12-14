@@ -4,7 +4,7 @@
         class="fixed top-0 right-0 left-0 z-50 transition-transform duration-300"
     >
         <Disclosure v-slot="{ open }" as="nav" class="bg-rosegold-500">
-            <div class="mx-auto max-w-10/12">
+            <div class="mx-auto max-w-11/12 sm:max-w-10/12">
                 <div class="relative flex h-24 items-center justify-between">
                     <div
                         class="absolute inset-y-0 left-0 flex items-center sm:hidden"
@@ -95,7 +95,7 @@
                         <button
                             class="relative rounded-full p-1 text-black transition-transform duration-200 hover:-translate-y-1 hover:text-white focus:outline-2 focus:outline-offset-2"
                             type="button"
-                            @click="handleLogout"
+                            @click="handleProfile"
                         >
                             <span class="absolute -inset-1.5" />
                             <span class="sr-only">View notifications</span>
@@ -195,9 +195,8 @@ function redirectAdmin() {
     router.push({ name: 'admin' })
 }
 
-async function handleLogout() {
-    await store.logout()
-    await router.push({ name: 'login' })
+async function handleProfile() {
+    await router.push({ name: 'profile.data' })
 }
 const isActive = (item) => route.name === item.to?.name
 

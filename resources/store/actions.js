@@ -7,6 +7,19 @@ async function getUser(params) {
     return response.data
 }
 
+async function updateProfile(data) {
+    try {
+        const response = await axiosClient.patch('/user', data)
+        const responseData = response.data
+
+        this.user.data = responseData.user
+
+        return responseData.user
+    } catch (err) {
+        throw err
+    }
+}
+
 async function login(data) {
     try {
         const response = await axiosClient.post('/login', data)
@@ -509,6 +522,7 @@ export default {
     login,
     logout,
     register,
+    updateProfile,
     submitReview,
     isFavorite,
     fetchFavorites,

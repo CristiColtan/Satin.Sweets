@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class ResetPasswController extends Controller
 {
@@ -23,6 +24,29 @@ class ResetPasswController extends Controller
         return response()->json([
             'message' => __($status),
         ], 422);
+    }
+
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'old_password' => ['required', 'current_password'],
+            'new_password' => ['required', 'string', 'min:8'],
+            'confirm_password' => ['required', 'same:new_password'],
+        ]);
+
+        if ($request['old_password'] === $request['new_password']) {
+            throw ValidationException::withMessages([
+                'new_password' => ['Parola nouă trebuie să fie diferită de cea veche.'],
+            ]);
+        }
+
+        $user = $request->user();
+
+        $user->forceFill([
+            'password' => Hash::make($request->new_password),
+        ])->save();
+
+        return response()->json(['message' => 'Parola a fost resetata cu succes.']);
     }
 
     public function resetPassword(Request $request)
