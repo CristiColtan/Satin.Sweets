@@ -436,12 +436,22 @@ async function toggleFavorite(product) {
     const id = product.id || product
     const wasFav = this.isFavorite(id)
 
+    const prevIds = [...this.favorites.ids]
+    const prevItems = [...this.favorites.items]
+
     console.log('TOGGLE FAVORITE A PRIMIT: ', product, wasFav)
     // optimistic update
     if (wasFav) {
         this.favorites.ids = this.favorites.ids.filter((x) => x !== id)
+        this.favorites.items = this.favorites.items.filter((x) => x.id !== id)
     } else {
         this.favorites.ids = [...this.favorites.ids, id]
+        if (typeof product === 'object') {
+            const exists = this.favorites.items.some((p) => p.id === id)
+            if (!exists) {
+                this.favorites.items = [...this.favorites.items, product]
+            }
+        }
     }
 
     // persist
@@ -458,11 +468,8 @@ async function toggleFavorite(product) {
         }
     } catch (err) {
         // revert on failure
-        if (wasFav) {
-            this.favorites.ids = [...this.favorites.ids, id]
-        } else {
-            this.favorites.ids = this.favorites.ids.filter((x) => x !== id)
-        }
+        this.favorites.ids = prevIds
+        this.favorites.items = prevItems
         throw err
     }
 }

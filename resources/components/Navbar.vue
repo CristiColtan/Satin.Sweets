@@ -65,6 +65,7 @@
                         <button
                             class="relative rounded-full p-1 text-black transition-transform duration-200 hover:-translate-y-1 focus:outline-2 focus:outline-offset-2"
                             type="button"
+                            @click="redirectFavorites"
                         >
                             <span class="absolute -inset-1.5" />
                             <span class="sr-only">View notifications</span>
@@ -195,6 +196,9 @@ function redirectAdmin() {
     router.push({ name: 'admin' })
 }
 
+function redirectFavorites() {
+    router.push({ name: 'app.favorites' })
+}
 async function handleProfile() {
     await router.push({ name: 'profile.data' })
 }

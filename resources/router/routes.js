@@ -11,6 +11,7 @@ const ProfileOrders = () =>
     import('@/components/profile-page/ProfileOrders.vue')
 const ProfileAddresses = () =>
     import('@/components/profile-page/ProfileAddresses.vue')
+const Favorites = () => import('@/pages/Favorites.vue')
 const NotFound = () => import('@/pages/NotFound.vue')
 const AppLayout = () => import('@/components/AppLayout.vue')
 const BucheteDeFlori = () => import('@/pages/BucheteDeFlori.vue')
@@ -85,6 +86,11 @@ export const routes = [
                 name: 'app.product',
                 component: Product,
                 props: true,
+            },
+            {
+                path: 'favorites',
+                name: 'app.favorites',
+                component: Favorites,
             },
             {
                 path: 'login',
