@@ -59,6 +59,7 @@ async function logout() {
         this.user.data = null
         this.user.token = null
         this.favorites = { loading: false, ids: [], items: [], error: null }
+        this.cart = { items: [] }
         localStorage.removeItem('token')
     }
 }
@@ -432,6 +433,52 @@ async function fetchFavorites() {
 function isFavorite(id) {
     return this.favorites.ids.includes(id)
 }
+
+function findCartItemIndex(cartItems, productId, addons) {
+    return cartItems.findIndex(
+        (item) =>
+            item.product_id === productId &&
+            JSON.stringify(item.addons || {}) === JSON.stringify(addons || {}),
+    )
+}
+
+function clearCart() {
+    this.cart.items = []
+}
+
+function removeFromCart(index) {
+    if (index < 0 || index >= this.cart.items.length) return
+    this.cart.items.splice(index, 1)
+}
+
+async function addToCart({ product, quantity = 1, addons = {}, unitPrice }) {
+    console.log('ADD TO CART: ', product, quantity, addons, unitPrice)
+    if (!product?.id) return
+
+    const itemAddons = {
+        ribbonText: addons.ribbonText || null,
+        glitterId: addons.glitterId || null,
+        glitterColor: addons.glitterColor || null,
+        led: !!addons.led,
+        photoSelected: !!addons.photoSelected,
+        photoCount: addons.photoCount || 0,
+    }
+
+    const index = findCartItemIndex(this.cart.items, product.id, itemAddons)
+
+    if (index !== -1) {
+        this.cart.items[index].quantity += quantity
+    } else {
+        this.cart.items.push({
+            product_id: product.id,
+            quantity,
+            unit_price: Number(unitPrice),
+            addons: itemAddons,
+            product: product,
+        })
+    }
+}
+
 async function toggleFavorite(product) {
     const id = product.id || product
     const wasFav = this.isFavorite(id)
@@ -521,18 +568,28 @@ export default {
     updateProduct,
     createProduct,
     getUser,
+
+    //addons
     getAddon,
     getAddons,
     deleteAddon,
     createAddon,
     updateAddon,
+
     login,
     logout,
     register,
     updateProfile,
     submitReview,
+
+    //favorites
     isFavorite,
     fetchFavorites,
     toggleFavorite,
     syncGuestFavoritesAfterLogin,
+
+    //cart
+    addToCart,
+    clearCart,
+    removeFromCart,
 }

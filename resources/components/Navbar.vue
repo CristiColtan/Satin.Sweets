@@ -80,6 +80,7 @@
                         <button
                             class="relative rounded-full p-1 text-black transition-transform duration-200 hover:-translate-y-1 focus:outline-2 focus:outline-offset-2"
                             type="button"
+                            @click="redirectCart"
                         >
                             <span class="absolute -inset-1.5" />
                             <span class="sr-only">View notifications</span>
@@ -88,9 +89,10 @@
                                 class="size-8"
                             />
                             <span
+                                v-if="cartItemsCount > 0"
                                 class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-white text-[12px] font-bold text-black"
                             >
-                                3
+                                {{ cartItemsCount }}
                             </span>
                         </button>
                         <button
@@ -187,6 +189,7 @@ const navigation = [
 ]
 
 const favoritesCount = computed(() => store.favoritesCount)
+const cartItemsCount = computed(() => store.cartCount)
 
 function redirectHome() {
     router.push({ name: 'app.home' })
@@ -198,6 +201,10 @@ function redirectAdmin() {
 
 function redirectFavorites() {
     router.push({ name: 'app.favorites' })
+}
+
+function redirectCart() {
+    router.push({ name: 'app.cart' })
 }
 async function handleProfile() {
     await router.push({ name: 'profile.data' })

@@ -6,6 +6,7 @@
                 'bg-green-600': toast.type === 'success',
                 'bg-red-600': toast.type === 'error',
                 'bg-blue-600': toast.type === 'info',
+                'bg-yellow-500': toast.type === 'warning',
             }"
             class="fixed top-4 right-4 z-50 max-w-sm rounded-md px-4 py-3 shadow-lg"
         >

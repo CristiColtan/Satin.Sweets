@@ -163,7 +163,7 @@
                             <p
                                 class="-translate-y-0.5 text-center font-serif text-lg"
                             >
-                                Adauga panglica
+                                Adaugă panglică
                             </p>
                         </div>
                         <div class="flex gap-3">
@@ -205,7 +205,7 @@
                             <p
                                 class="-translate-y-0.5 text-center font-serif text-lg"
                             >
-                                Adauga sclipici
+                                Adaugă sclipici
                             </p>
                         </div>
                         <div class="flex gap-3">
@@ -272,7 +272,7 @@
                             <p
                                 class="-translate-y-0.5 text-center font-serif text-lg"
                             >
-                                Adauga LED
+                                Adaugă LED
                             </p>
                         </div>
                         <div class="flex gap-3">
@@ -323,7 +323,7 @@
                             <p
                                 class="-translate-y-0.5 text-center font-serif text-lg"
                             >
-                                Adauga poze
+                                Adaugă poze
                             </p>
                         </div>
                         <div class="flex gap-3">
@@ -343,7 +343,7 @@
                         </p>
 
                         <!-- PREVIEW: Imagini NOI -->
-                        <div v-if="newImages.length" class="">
+                        <div v-if="photoSelected && newImages.length" class="">
                             <div class="flex flex-wrap gap-3">
                                 <div
                                     v-for="(img, i) in newImages"
@@ -378,12 +378,7 @@
                                 "
                                 :style="{ borderRadius: '10px' }"
                                 class="bg-rosegold-500 hover:bg-rosegold-700 translate-y-0.5 border-2 px-2 py-1 text-white transition"
-                                @click="
-                                    () => {
-                                        photoSelected = !photoSelected
-                                        newImages.value = []
-                                    }
-                                "
+                                @click="togglePhotos"
                             >
                                 <span class="text-lg">{{
                                     photoSelected ? 'Da' : 'Nu'
@@ -424,6 +419,7 @@
                     <button
                         :style="{ borderRadius: '12px' }"
                         class="bg-rosegold-500 hover:bg-rosegold-700 flex h-11 w-full items-center justify-center gap-2 font-medium text-white shadow-md transition"
+                        @click="handleAddToCart"
                     >
                         <div class="flex items-center justify-center gap-2">
                             <ShoppingCart class="h-6 w-6" />
@@ -456,7 +452,7 @@
 
 <script setup>
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import axiosClient from '../js/axios.js'
 
 import {
@@ -482,6 +478,7 @@ import { slugify } from '../utils/utils.js'
 const route = useRoute()
 const product = ref(null)
 const store = useAppStore()
+const router = useRouter()
 
 const reviews = ref([])
 const reviewsMeta = ref({
@@ -538,6 +535,14 @@ async function handleReviewSubmitted() {
 
 function removeNew(idx) {
     newImages.value.splice(idx, 1)
+}
+
+function togglePhotos() {
+    photoSelected.value = !photoSelected.value
+
+    if (!photoSelected.value) {
+        newImages.value = []
+    }
 }
 
 function getImageSrc(img) {
@@ -637,6 +642,32 @@ function onToggleFavorite(p, e) {
         console.error('Eroare toggle favorite', err)
         handleApiError(err)
     })
+}
+
+const handleAddToCart = () => {
+    if (!product.value) return
+
+    if (newImages.value.length === 0) photoSelected.value = false
+
+    const glitter = selectedGlitterId.value
+        ? glitterAddons.value.find((g) => g.id === selectedGlitterId.value)
+        : null
+
+    store.addToCart({
+        product: product.value,
+        quantity: 1,
+        addons: {
+            ribbonText: ribbonText.value,
+            glitterId: selectedGlitterId.value,
+            glitterColor: glitter ? glitter.hex_code : null,
+            led: ledSelected.value,
+            photoSelected: photoSelected.value,
+            photoCount: newImages.value.length,
+        },
+        unitPrice: currentPrice.value,
+    })
+
+    router.push('/cart')
 }
 </script>
 

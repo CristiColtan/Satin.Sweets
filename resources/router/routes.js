@@ -12,6 +12,8 @@ const ProfileOrders = () =>
 const ProfileAddresses = () =>
     import('@/components/profile-page/ProfileAddresses.vue')
 const Favorites = () => import('@/pages/Favorites.vue')
+const Cart = () => import('@/pages/Cart.vue')
+const Checkout = () => import('@/pages/Checkout.vue')
 const NotFound = () => import('@/pages/NotFound.vue')
 const AppLayout = () => import('@/components/AppLayout.vue')
 const BucheteDeFlori = () => import('@/pages/BucheteDeFlori.vue')
@@ -91,6 +93,17 @@ export const routes = [
                 path: 'favorites',
                 name: 'app.favorites',
                 component: Favorites,
+            },
+            {
+                path: 'cart',
+                name: 'app.cart',
+                component: Cart,
+            },
+            {
+                path: 'checkout',
+                name: 'app.checkout',
+                component: Checkout,
+                meta: { requiresAuth: true },
             },
             {
                 path: 'login',

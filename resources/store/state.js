@@ -20,6 +20,9 @@ export default () => ({
         items: [],
         error: null,
     },
+    cart: {
+        items: [],
+    },
 })
 
 function createTableState() {
