@@ -27,7 +27,7 @@
                         leave-to="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                     >
                         <DialogPanel
-                            class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg"
+                            class="relative transform overflow-hidden rounded-lg bg-white p-2 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg"
                         >
                             <div
                                 class="flex flex-col items-start justify-between px-4 py-3"
@@ -37,7 +37,7 @@
                                     @click="closeModal"
                                 >
                                     <span
-                                        class="rounded-full text-2xl hover:bg-gray-100 hover:text-gray-300"
+                                        class="rounded-full text-2xl hover:bg-gray-100 hover:text-gray-500"
                                         ><X class="h-5 w-5"
                                     /></span>
                                 </button>
@@ -63,11 +63,12 @@
                                     {{ benefit.details }}
                                 </p>
                                 <button
-                                    class="bg-rosegold-700 hover:bg-rosegold-500 mt-8 w-full py-2 text-white transition"
+                                    class="bg-rosegold-700 hover:bg-rosegold-500 mt-8 w-full border border-gray-300 py-2 text-white transition"
                                     style="border-radius: 10px"
                                     @click="closeModal"
                                 >
-                                    <span class="rounded-2xl text-[14px]"
+                                    <span
+                                        class="rounded-2xl text-[15px] font-medium"
                                         >Am înțeles</span
                                     >
                                 </button>

@@ -1,5 +1,5 @@
 <template>
-    <div class="mt-20 w-full bg-[rgba(204,204,204,0.2)] py-8">
+    <div class="mt-6 w-full rounded-xl bg-[rgba(204,204,204,0.2)] py-8">
         <div class="mx-auto w-10/12">
             <div class="hidden gap-6 sm:grid sm:grid-cols-2 lg:grid-cols-4">
                 <div
@@ -9,7 +9,7 @@
                     @click="onClickShowBenefitModal(benefit)"
                 >
                     <div
-                        class="bg-rosegold-100 group-hover:bg-rosegold-300 mb-1 rounded-full p-3 transition-colors"
+                        class="bg-rosegold-100 group-hover:bg-rosegold-300 mb-1 gap-2 rounded-full p-3 transition-colors"
                     >
                         <component
                             :is="benefit.icon"
@@ -21,7 +21,7 @@
                     >
                         {{ benefit.title }}
                     </h3>
-                    <p class="text-[14px] leading-relaxed font-thin text-black">
+                    <p class="text-[15px] leading-relaxed font-thin text-black">
                         {{ benefit.description }}
                     </p>
                 </div>
@@ -75,15 +75,10 @@
 
 <script setup>
 import { ref } from 'vue'
-import {
-    Heart,
-    Hourglass,
-    MessageCircleQuestionMark,
-    Truck,
-} from 'lucide-vue-next'
 import BenefitsModal from './BenefitsModal.vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Pagination } from 'swiper/modules'
+import { benefits } from '../../utils/imports.js'
 
 import 'swiper/css'
 import 'swiper/css/pagination'
@@ -94,36 +89,6 @@ function onClickShowBenefitModal(benefit = null) {
     selectedBenefit.value = benefit
     showBenefitModal.value = true
 }
-
-const benefits = [
-    {
-        icon: Truck,
-        title: 'Livrare Rapidă',
-        description: 'Livrăm în 24 de ore oriunde în tara',
-        details: 'Livrare gratuită pentru comenzi peste 265 RON.',
-    },
-    {
-        icon: Hourglass,
-        title: 'Eleganta eterna',
-        description: 'Buchetele noastre nu ofilesc niciodata!',
-        details:
-            'Spune adio florilor trecătoare – Fiecare buchet este creat pentru a rezista în timp, păstrându-și forma și farmecul fără grija ofilirii.',
-    },
-    {
-        icon: Heart,
-        title: 'Aranjamente Personalizate',
-        description: 'Creăm buchete unice pentru tine',
-        details:
-            'Echipa noastră creează aranjamente personalizate pentru orice ocazie specială.',
-    },
-    {
-        icon: MessageCircleQuestionMark,
-        title: 'Disponibili 24/7 pentru tine',
-        description: 'Comandă oricând, suport rapid',
-        details:
-            'Comandă în orice moment și primește ajutor rapid – suntem disponibili non-stop, pentru ca tu să te bucuri de cadourile tale fără griji.',
-    },
-]
 </script>
 
 <style scoped>

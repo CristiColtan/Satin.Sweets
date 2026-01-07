@@ -12,7 +12,9 @@
                         :to="link.link"
                         class="mt-1 block"
                     >
-                        <p class="font-serif text-xl text-white">
+                        <p
+                            class="font-serif text-xl text-white underline-offset-2 hover:underline"
+                        >
                             {{ link.name }}
                         </p>
                     </RouterLink>
@@ -25,10 +27,10 @@
                         v-for="(link, i) in links_t_footer"
                         :key="i"
                         :to="link.link"
-                        class="mt-1 hover:text-black"
+                        class="mt-1 block"
                     >
                         <p
-                            class="font-serif text-xl text-white hover:text-black"
+                            class="font-serif text-xl text-white underline-offset-2 hover:underline"
                         >
                             {{ link.name }}
                         </p>
@@ -42,10 +44,10 @@
                         v-for="(link, i) in links_b_footer"
                         :key="i"
                         :to="link.link"
-                        class="mt-1 hover:text-black"
+                        class="mt-1 block"
                     >
                         <p
-                            class="font-serif text-xl text-white hover:text-black"
+                            class="font-serif text-xl text-white underline-offset-2 hover:underline"
                         >
                             {{ link.name }}
                         </p>
@@ -58,12 +60,12 @@
                     <RouterLink
                         v-for="(link, i) in benefits"
                         :key="i"
-                        class="mt-1 flex gap-2"
+                        class="mt-1 flex items-center gap-2"
                         to="/benefits"
                     >
                         <component :is="link.icon" class="h-6 w-6 text-white" />
                         <p
-                            class="font-serif text-xl text-white hover:text-black"
+                            class="font-serif text-xl text-white underline-offset-2 hover:underline"
                         >
                             {{ link.title }}
                         </p>
@@ -96,14 +98,14 @@
                 </div>
             </div>
 
-            <div class="flex flex-col gap-2 py-10 sm:hidden">
+            <div class="flex flex-col gap-3 py-10 sm:hidden">
                 <div>
                     <button
                         class="flex w-full items-center justify-between"
                         @click="mobileOpen.utile = !mobileOpen.utile"
                     >
                         <span
-                            class="font-serif text-2xl font-semibold whitespace-nowrap text-white"
+                            class="font-serif text-2xl whitespace-nowrap text-white"
                         >
                             Utile
                         </span>
@@ -123,9 +125,9 @@
                                 :to="link.link"
                                 class="mt-1 block"
                             >
-                                <p class="font-serif text-xl text-white">
+                                <span class="font-serif text-xl text-white">
                                     {{ link.name }}
-                                </p>
+                                </span>
                             </RouterLink>
                         </div>
                     </Transition>
@@ -137,7 +139,7 @@
                         @click="mobileOpen.tablouri = !mobileOpen.tablouri"
                     >
                         <span
-                            class="font-serif text-2xl font-semibold whitespace-nowrap text-white"
+                            class="font-serif text-2xl whitespace-nowrap text-white"
                         >
                             Tablouri personalizate
                         </span>
@@ -171,7 +173,7 @@
                         @click="mobileOpen.buchete = !mobileOpen.buchete"
                     >
                         <span
-                            class="font-serif text-2xl font-semibold whitespace-nowrap text-white"
+                            class="font-serif text-2xl whitespace-nowrap text-white"
                         >
                             Buchete de flori
                         </span>
@@ -205,7 +207,7 @@
                         @click="mobileOpen.beneficii = !mobileOpen.beneficii"
                     >
                         <span
-                            class="font-serif text-2xl font-semibold whitespace-nowrap text-white"
+                            class="font-serif text-2xl whitespace-nowrap text-white"
                         >
                             Beneficii
                         </span>
@@ -242,7 +244,7 @@
                         @click="mobileOpen.contact = !mobileOpen.contact"
                     >
                         <span
-                            class="font-serif text-2xl font-semibold whitespace-nowrap text-white"
+                            class="font-serif text-2xl whitespace-nowrap text-white"
                         >
                             Contact
                         </span>
@@ -288,9 +290,9 @@
             <div class="grid grid-cols-1 gap-8 sm:grid-cols-2">
                 <!-- stanga -->
                 <div>
-                    <div class="flex min-w-0 items-center gap-3">
+                    <div class="mb-1 flex min-w-0 items-center gap-3">
                         <p
-                            class="font-serif text-2xl font-semibold whitespace-nowrap text-white"
+                            class="font-serif text-2xl whitespace-nowrap text-white"
                         >
                             Modalități de plată:
                         </p>
@@ -309,9 +311,9 @@
 
                 <!-- dreapta -->
                 <div>
-                    <div class="flex min-w-0 items-center gap-3">
+                    <div class="mb-1 flex min-w-0 items-center gap-3">
                         <p
-                            class="font-serif text-2xl font-semibold whitespace-nowrap text-white"
+                            class="font-serif text-2xl whitespace-nowrap text-white"
                         >
                             Urmărește-ne și pe:
                         </p>
@@ -382,7 +384,7 @@
                 class="underline-offset-4 hover:underline"
                 href="https://www.instagram.com/coltan_cristian/"
                 rel="noopener noreferrer"
-                style="color: black; text-decoration: none"
+                style="color: black"
                 target="_blank"
             >
                 Colțan Cristian

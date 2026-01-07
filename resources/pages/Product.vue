@@ -1,5 +1,5 @@
 <template>
-    <div class="mx-auto mt-20 max-w-11/12 sm:mx-3 sm:max-w-9/12">
+    <div class="mx-auto mt-1 max-w-11/12 sm:mt-5 sm:max-w-9/12">
         <div class="border-b border-b-gray-400">
             <div class="flex items-center gap-2">
                 <RouterLink class="group flex items-center" to="/">
@@ -22,7 +22,7 @@
             <ErrorAlert :message="generalError" />
         </div>
 
-        <div class="mt-20 grid gap-12 lg:grid-cols-2">
+        <div class="mt-4 grid items-start gap-12 lg:grid-cols-2">
             <!--left-->
             <div class="space-y-4">
                 <div
@@ -121,14 +121,18 @@
             </div>
 
             <!--right-->
-            <div class="space-y-8 rounded-xl bg-[rgba(204,204,204,0.2)] p-3">
+            <div
+                class="space-y-8 rounded-xl bg-[rgba(204,204,204,0.2)] p-3 py-4"
+            >
                 <div class="">
                     <p
                         class="text-muted text-center font-serif text-3xl font-semibold tracking-tight lg:text-4xl"
                     >
                         {{ product?.title }}
                     </p>
-                    <div class="mb-5 flex items-center justify-center gap-4">
+                    <div
+                        class="mt-2 mb-5 flex items-center justify-center gap-4"
+                    >
                         <div class="w-full border-b-1"></div>
                         <span
                             class="text-md font-serif text-nowrap text-gray-800 lg:text-lg"
@@ -166,7 +170,7 @@
                                 Adaugă panglică
                             </p>
                         </div>
-                        <div class="flex gap-3">
+                        <div class="flex items-center gap-3">
                             <p class="font-serif text-xl font-semibold">
                                 +10 RON
                             </p>
@@ -180,7 +184,7 @@
                     <input
                         v-model="ribbonText"
                         :style="{ fontSize: '16px' }"
-                        class="focus:ring-rosegold-500 w-full rounded-lg border border-gray-500"
+                        class="focus:ring-rosegold-500 w-full rounded-lg border border-gray-300"
                         placeholder="Scrie mesajul aici..."
                         type="text"
                     />
@@ -208,7 +212,7 @@
                                 Adaugă sclipici
                             </p>
                         </div>
-                        <div class="flex gap-3">
+                        <div class="flex items-center gap-3">
                             <p class="font-serif text-xl font-semibold">
                                 +10 RON
                             </p>
@@ -275,7 +279,7 @@
                                 Adaugă LED
                             </p>
                         </div>
-                        <div class="flex gap-3">
+                        <div class="flex items-center gap-3">
                             <p class="font-serif text-xl font-semibold">
                                 +10 RON
                             </p>
@@ -326,7 +330,7 @@
                                 Adaugă poze
                             </p>
                         </div>
-                        <div class="flex gap-3">
+                        <div class="flex items-center gap-3">
                             <p class="font-serif text-xl font-semibold">
                                 +10 RON
                             </p>
@@ -338,13 +342,15 @@
                     </div>
 
                     <div class="flex flex-col">
-                        <p class="font-serif text-base font-semibold">
-                            *pretul afisat este per poza*
+                        <p
+                            class="font-serif text-base leading-relaxed font-semibold"
+                        >
+                            *pretul afișat este per poză*
                         </p>
 
                         <!-- PREVIEW: Imagini NOI -->
                         <div v-if="photoSelected && newImages.length" class="">
-                            <div class="flex flex-wrap gap-3">
+                            <div class="mt-2 flex flex-wrap gap-3">
                                 <div
                                     v-for="(img, i) in newImages"
                                     :key="i"
@@ -399,7 +405,7 @@
                 <!-- Total price + cart -->
                 <div class="space-y-4 rounded-2xl bg-[#f3f3f3] p-3">
                     <div class="flex items-center justify-between">
-                        <span class="font-serif text-lg text-gray-800">
+                        <span class="ml-1 font-serif text-lg text-gray-800">
                             Prețul afișat conține TVA
                         </span>
                         <div class="flex flex-col">

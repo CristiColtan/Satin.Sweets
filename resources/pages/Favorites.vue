@@ -1,5 +1,5 @@
 <template>
-    <div class="mt-20 mb-20 overflow-x-hidden">
+    <div class="mt-10 mb-10 overflow-x-hidden">
         <div class="relative right-1/2 left-1/2 -mx-[50vw] w-screen">
             <div class="mx-auto max-w-11/12 sm:max-w-10/12">
                 <section class="w-full">
@@ -7,7 +7,7 @@
                         <!-- up -->
                         <div class="mb-12 text-center">
                             <div
-                                class="mb-5 flex items-center justify-center gap-4"
+                                class="mb-1 flex items-center justify-center gap-4"
                             >
                                 <div class="w-full border-b-2"></div>
                                 <span
@@ -88,7 +88,7 @@
                                     </button>
                                 </div>
                                 <div
-                                    class="relative flex flex-col items-center justify-center"
+                                    class="relative flex flex-col items-center justify-center gap-2"
                                 >
                                     <span
                                         class="text-rosegold-900 mt-4 mb-2 text-center font-serif text-xl font-medium lg:text-2xl"
@@ -121,7 +121,7 @@
                                     >
                                         <span
                                             class="font-serif text-[17px] font-semibold md:text-lg"
-                                            >Comanda acum!</span
+                                            >Comandă acum!</span
                                         >
                                     </button>
                                 </div>

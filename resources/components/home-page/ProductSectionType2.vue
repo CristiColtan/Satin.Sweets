@@ -3,7 +3,7 @@
         <div :class="background === 'white' ? 'bg-white' : ''" class="gap-12">
             <!-- up -->
             <div class="mb-12 text-center">
-                <div class="mb-5 flex items-center justify-center gap-4">
+                <div class="mb-1 flex items-center justify-center gap-4">
                     <div class="w-full border-b-2"></div>
                     <span
                         class="font-serif text-3xl font-bold text-nowrap text-gray-800 lg:text-3xl"
@@ -15,7 +15,7 @@
                 <p class="font-serif text-xl text-gray-600">
                     Buchete pline de rafinament pentru momentele speciale
                 </p>
-                <div class="mt-2 flex flex-wrap justify-center gap-2">
+                <div class="mt-3 flex flex-wrap justify-center gap-2">
                     <div v-for="(category, i) in categories" :key="i">
                         <RouterLink
                             :to="`/categorie/${slugify(category.name)}`"
@@ -100,12 +100,12 @@
                         >
                             <span
                                 class="font-serif text-lg font-semibold whitespace-nowrap"
-                                >Comanda acum!</span
+                                >Comandă acum!</span
                             >
                         </button>
                     </div>
                     <div
-                        class="relative flex flex-col items-center justify-center"
+                        class="relative flex flex-col items-center justify-center gap-2"
                     >
                         <span
                             v-if="hasTablouri === false"
@@ -141,7 +141,7 @@
                         >
                             <span
                                 class="font-serif text-[17px] font-semibold md:text-lg"
-                                >Comanda acum!</span
+                                >Comandă acum!</span
                             >
                         </button>
                     </div>

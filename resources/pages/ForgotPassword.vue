@@ -62,13 +62,11 @@ async function handleForgotPassword() {
                                 E-mail <span class="text-red-600">*</span>
                             </label>
                             <div class="mt-2">
-                                <div
-                                    class="focus-within:outline-rosegold-500 flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2"
-                                >
+                                <div class="flex items-center">
                                     <input
                                         id="email"
                                         v-model="userData.email"
-                                        class="block min-w-0 grow bg-white py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
+                                        class="focus:ring-rosegold-500 hover:ring-rosegold-700 w-full flex-1 rounded-lg border border-gray-300 bg-gray-50 hover:ring-1"
                                         name="email"
                                         placeholder="popescu.vasile@yahoo.com"
                                         style="font-size: 18px"

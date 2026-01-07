@@ -1,27 +1,13 @@
 <template>
-    <div class="mt-20 mb-20 overflow-x-hidden">
+    <div class="mt-1 mb-10 overflow-x-hidden">
         <div class="relative right-1/2 left-1/2 -mx-[50vw] w-screen">
             <div class="mx-auto max-w-11/12 sm:max-w-10/12">
                 <section class="w-full">
+                    <CheckoutSteps :current-step="1" />
                     <div class="gap-12 bg-[#f3f3f3]">
-                        <!-- up -->
-                        <div class="mb-8 text-center md:mb-12">
-                            <div
-                                class="mb-5 flex items-center justify-center gap-4"
-                            >
-                                <div class="w-full border-b-2"></div>
-                                <span
-                                    class="font-serif text-2xl font-bold text-nowrap text-gray-800 lg:text-3xl"
-                                >
-                                    Coșul tău
-                                </span>
-                                <div class="w-full border-b-2"></div>
-                            </div>
-                        </div>
-
                         <div
                             v-if="cartItemsCount > 0"
-                            class="grid grid-cols-1 gap-3 xl:grid-cols-[3fr_1fr]"
+                            class="grid grid-cols-1 gap-5 xl:grid-cols-[3fr_1fr]"
                         >
                             <div class="flex flex-col gap-3">
                                 <div
@@ -242,7 +228,7 @@
                                     </div>
                                 </div>
                                 <button
-                                    class="hover:bg-rosegold-500 group flex w-full items-center justify-center border px-4 py-2 transition-colors"
+                                    class="hover:bg-rosegold-500 group flex w-full items-center justify-center border border-gray-300 px-4 py-2 transition-colors"
                                     style="border-radius: 10px"
                                     @click="redirectHome"
                                 >
@@ -333,7 +319,7 @@
                                     </div>
 
                                     <button
-                                        class="bg-rosegold-700 hover:bg-rosegold-500 mt-3 w-full rounded-lg py-1 font-semibold text-white transition-colors"
+                                        class="bg-rosegold-700 hover:bg-rosegold-500 mt-3 w-full rounded-lg border border-gray-300 py-1 font-semibold text-white transition-colors"
                                         style="border-radius: 10px"
                                         @click="redirectNextStep"
                                     >
@@ -349,7 +335,7 @@
 
                         <div
                             v-else
-                            class="flex flex-col items-center justify-center gap-2 pb-24 text-center"
+                            class="mt-16 flex flex-col items-center justify-center gap-2 pb-18 text-center md:pb-24"
                         >
                             <p class="font-serif text-xl sm:text-2xl">
                                 Nu ai produse în coș.
@@ -385,6 +371,7 @@ import {
     SparklesIcon,
     Trash2Icon,
 } from 'lucide-vue-next'
+import CheckoutSteps from '../components/core/checkout-page/CheckoutSteps.vue'
 
 const store = useAppStore()
 const router = useRouter()

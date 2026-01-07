@@ -16,7 +16,7 @@ const benefits = [
     {
         icon: Truck,
         title: 'Livrare Rapidă',
-        description: 'Livrăm în 24 de ore oriunde în tara',
+        description: 'Livrăm în 24 de ore oriunde în țară',
         details: 'Livrare gratuită pentru comenzi peste 265 RON.',
     },
     {
@@ -53,7 +53,7 @@ const benefits_subscribe = [
     },
     {
         icon: TagsIcon,
-        description: 'Oferte speciale pentru abonati!',
+        description: 'Oferte speciale pentru abonați!',
     },
 ]
 

@@ -19,7 +19,7 @@
                         <input
                             id="old_password"
                             v-model="formData.old_password"
-                            class="focus:ring-rosegold-500 w-full flex-1 rounded border bg-gray-50 hover:ring-1"
+                            class="focus:ring-rosegold-500 hover:ring-rosegold-500 w-full flex-1 rounded-lg border border-gray-300 bg-gray-50 hover:ring-1"
                             name="old_password"
                             style="font-size: 15px"
                             type="password"
@@ -39,7 +39,7 @@
                         <input
                             id="new_password"
                             v-model="formData.new_password"
-                            class="focus:ring-rosegold-500 w-full flex-1 rounded border bg-gray-50 hover:ring-1"
+                            class="focus:ring-rosegold-500 hover:ring-rosegold-500 w-full flex-1 rounded-lg border border-gray-300 bg-gray-50 hover:ring-1"
                             name="new_password"
                             style="font-size: 15px"
                             type="password"
@@ -59,7 +59,7 @@
                         <input
                             id="confirm_password"
                             v-model="formData.confirm_password"
-                            class="focus:ring-rosegold-500 w-full flex-1 rounded border bg-gray-50 hover:ring-1"
+                            class="focus:ring-rosegold-500 hover:ring-rosegold-500 w-full flex-1 rounded-lg border border-gray-300 bg-gray-50 hover:ring-1"
                             name="confirm_password"
                             style="font-size: 15px"
                             type="password"
@@ -75,13 +75,14 @@
                 </form>
                 <button
                     :disabled="loading"
-                    class="hover:bg-rosegold-700 bg-rosegold-500 rounded border px-3 py-1 text-white sm:px-4"
+                    class="hover:bg-rosegold-700 bg-rosegold-500 rounded-lg border border-gray-300 px-3 py-1 text-white sm:px-4"
                     type="button"
                     @click="handleChangePassword"
                 >
-                    <span class="font-sans text-[15px] sm:text-lg">{{
-                        loading ? 'Se salvează..' : 'Salvează'
-                    }}</span>
+                    <span
+                        class="font-sans text-[15px] font-medium sm:text-lg"
+                        >{{ loading ? 'Se salvează..' : 'Salvează' }}</span
+                    >
                 </button>
                 <ErrorAlert :message="generalError" />
             </div>

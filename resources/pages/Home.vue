@@ -90,7 +90,7 @@ const bouquets_mom = ref([])
 </script>
 
 <template>
-    <div class="mt-20 mb-20 overflow-x-hidden">
+    <div class="mt-0 mb-10 overflow-x-hidden sm:mt-10">
         <div class="relative right-1/2 left-1/2 -mx-[50vw] w-screen">
             <div class="mx-auto max-w-11/12 sm:max-w-10/12">
                 <MyCarouselV2 />

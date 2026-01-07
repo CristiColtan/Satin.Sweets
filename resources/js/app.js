@@ -1,7 +1,5 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import '@sts/funky-ui-kit/dist/funky-ui-kit.css'
-import funkyUIKitPlugin from '@sts/funky-ui-kit'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
 import './bootstrap'
@@ -25,6 +23,5 @@ pinia.use(piniaPluginPersistedstate)
 
 app.use(pinia)
 app.use(router)
-app.use(funkyUIKitPlugin)
 app.component('v-icon', OhVueIcon)
 app.mount('#app')

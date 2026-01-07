@@ -10,7 +10,7 @@
                         class="absolute inset-y-0 left-0 flex items-center sm:hidden"
                     >
                         <DisclosureButton
-                            class="relative inline-flex items-center justify-center rounded-md p-2 text-black hover:bg-white/5 hover:text-white focus:outline-2 focus:-outline-offset-1 focus:outline-indigo-500"
+                            class="focus:outline-rosegold-500 relative inline-flex items-center justify-center rounded-md p-2 text-black hover:bg-white/5 hover:text-white focus:outline-2 focus:-outline-offset-1"
                         >
                             <span class="absolute -inset-0.5" />
                             <span class="sr-only">Open main menu</span>
@@ -63,7 +63,7 @@
                             </span>
                         </button>
                         <button
-                            class="relative rounded-full p-1 text-black transition-transform duration-200 hover:-translate-y-1 focus:outline-2 focus:outline-offset-2"
+                            class="relative rounded-full p-1 text-black transition-transform duration-200 hover:-translate-y-1"
                             type="button"
                             @click="redirectFavorites"
                         >
@@ -78,7 +78,7 @@
                             </span>
                         </button>
                         <button
-                            class="relative rounded-full p-1 text-black transition-transform duration-200 hover:-translate-y-1 focus:outline-2 focus:outline-offset-2"
+                            class="relative rounded-full p-1 text-black transition-transform duration-200 hover:-translate-y-1"
                             type="button"
                             @click="redirectCart"
                         >
@@ -96,7 +96,7 @@
                             </span>
                         </button>
                         <button
-                            class="relative rounded-full p-1 text-black transition-transform duration-200 hover:-translate-y-1 hover:text-white focus:outline-2 focus:outline-offset-2"
+                            class="relative rounded-full p-1 text-black transition-transform duration-200 hover:-translate-y-1"
                             type="button"
                             @click="handleProfile"
                         >

@@ -102,12 +102,12 @@
                         >
                             <span
                                 class="font-serif text-lg font-semibold whitespace-nowrap"
-                                >Comanda acum!</span
+                                >Comandă acum!</span
                             >
                         </button>
                     </div>
                     <div
-                        class="relative flex flex-col items-center justify-center"
+                        class="relative flex flex-col items-center justify-center gap-2"
                     >
                         <span
                             v-if="hasTablouri === false"
@@ -141,7 +141,7 @@
                         >
                             <span
                                 class="font-serif text-[17px] font-semibold md:text-lg"
-                                >Comanda acum!</span
+                                >Comandă acum!</span
                             >
                         </div>
                     </div>

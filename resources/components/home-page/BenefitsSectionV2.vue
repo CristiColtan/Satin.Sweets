@@ -1,5 +1,5 @@
 <template>
-    <div class="mt-20 w-full bg-[rgba(204,204,204,0.2)] py-20">
+    <div class="mt-5 w-full rounded-2xl bg-[rgba(204,204,204,0.2)] py-20">
         <div class="mx-auto w-10/12">
             <div class="mb-12 text-center">
                 <span
@@ -7,16 +7,16 @@
                 >
                     De ce să alegi Satin & Sweets?
                 </span>
-                <p class="mt-4 font-sans text-xl font-thin">
-                    Rafinament și eleganta in fiecare detaliu
+                <p class="mt-7 font-sans text-xl font-thin">
+                    Rafinament și eleganță în fiecare detaliu
                 </p>
             </div>
 
-            <div class="hidden gap-6 sm:grid sm:grid-cols-2 lg:grid-cols-4">
+            <div class="hidden gap-8 sm:grid sm:grid-cols-2 lg:grid-cols-4">
                 <div
                     v-for="(benefit, index) in benefits"
                     :key="index"
-                    class="benefit-card group bg-card cursor-pointer overflow-hidden rounded-2xl border-0 p-8"
+                    class="benefit-card group bg-card cursor-pointer overflow-hidden rounded-2xl border-0 bg-white p-8"
                     @click="onClickShowBenefitModal(benefit)"
                 >
                     <div
@@ -32,7 +32,7 @@
                     >
                         {{ benefit.title }}
                     </h3>
-                    <p class="text-[14px] leading-relaxed font-thin text-black">
+                    <p class="text-[15px] leading-relaxed font-thin text-black">
                         {{ benefit.description }}
                     </p>
                 </div>
@@ -52,7 +52,7 @@
                         :key="index"
                     >
                         <div
-                            class="benefit-card group bg-card cursor-pointer overflow-hidden rounded-2xl border-0 p-8"
+                            class="benefit-card group bg-card cursor-pointer overflow-hidden rounded-2xl border-0 bg-white p-8"
                             style="min-height: 250px"
                             @click="onClickShowBenefitModal(benefit)"
                         >
@@ -70,7 +70,7 @@
                                 {{ benefit.title }}
                             </h3>
                             <p
-                                class="text-[14px] leading-relaxed font-thin text-black"
+                                class="text-[15px] leading-relaxed font-thin text-black"
                             >
                                 {{ benefit.description }}
                             </p>

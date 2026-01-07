@@ -53,9 +53,9 @@
 
             <div v-if="activeTab === 'info'">
                 <p class="mb-3 font-serif text-2xl font-bold sm:text-3xl">
-                    Informatii suplimentare
+                    Informații suplimentare
                 </p>
-                <div class="overflow-hidden rounded-lg border">
+                <div class="overflow-hidden rounded-lg border border-gray-300">
                     <table class="w-full">
                         <tbody>
                             <tr
@@ -68,12 +68,12 @@
                                 ]"
                             >
                                 <td
-                                    class="border-b-1 border-gray-800 px-4 py-2 font-serif text-xl group-hover:bg-rose-100/20"
+                                    class="border-b-1 border-gray-300 px-4 py-2 font-serif text-xl group-hover:bg-rose-100/20"
                                 >
                                     {{ item.label }}
                                 </td>
                                 <td
-                                    class="px-4 py-2 font-serif text-lg text-gray-600 group-hover:bg-rose-100/20"
+                                    class="border-b-1 border-gray-300 px-4 py-2 font-serif text-lg text-gray-600 group-hover:bg-rose-100/20"
                                 >
                                     {{ item.value }}
                                 </td>
@@ -90,7 +90,7 @@
                             Recenzii
                         </p>
                         <div
-                            class="bg-rosegold-300 flex -translate-y-1.5 items-center gap-2 rounded px-2 py-1"
+                            class="bg-rosegold-300 flex items-center gap-2 rounded px-2 py-1"
                         >
                             <span
                                 class="font-serif text-xl font-semibold sm:text-2xl"
@@ -211,7 +211,7 @@
                                 >Scrie un review</span
                             >
                             <CircleStar
-                                class="group-hover:text-rosegold-900 text-lg font-medium text-white"
+                                class="text-lg font-medium text-white"
                                 size="28"
                             />
                         </button>
@@ -314,7 +314,7 @@
                             <div
                                 v-for="(review, i) in props.reviews"
                                 :key="review.id"
-                                class="space-y-4 rounded-lg border p-6"
+                                class="space-y-4 rounded-lg border border-gray-300 p-6"
                             >
                                 <div
                                     class="flex flex-col items-start justify-between sm:flex-row"
@@ -494,7 +494,7 @@ const tabs = [
         key: 'description',
         label: 'Descriere',
     },
-    { key: 'info', label: 'Informatii suplimentare' },
+    { key: 'info', label: 'Informații suplimentare' },
     {
         key: 'reviews',
         label: 'Recenzii',

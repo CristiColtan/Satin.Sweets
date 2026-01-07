@@ -85,13 +85,11 @@ async function handleRegister() {
                                 >Nume <span class="text-red-600">*</span></label
                             >
                             <div class="mt-2">
-                                <div
-                                    class="focus-within:outline-rosegold-500 flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2"
-                                >
+                                <div>
                                     <input
                                         id="last_name"
                                         v-model="userData.last_name"
-                                        class="block min-w-0 grow bg-white py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
+                                        class="focus:ring-rosegold-500 hover:ring-rosegold-700 w-full flex-1 rounded-lg border border-gray-300 bg-gray-50 hover:ring-1"
                                         name="last_name"
                                         placeholder="Popescu"
                                         style="font-size: 18px"
@@ -116,13 +114,11 @@ async function handleRegister() {
                                 <span class="text-red-600">*</span></label
                             >
                             <div class="mt-2">
-                                <div
-                                    class="focus-within:outline-rosegold-500 flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2"
-                                >
+                                <div>
                                     <input
                                         id="first_name"
                                         v-model="userData.first_name"
-                                        class="block min-w-0 grow bg-white py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
+                                        class="focus:ring-rosegold-500 hover:ring-rosegold-700 w-full flex-1 rounded-lg border border-gray-300 bg-gray-50 hover:ring-1"
                                         name="first_name"
                                         placeholder="Vasile"
                                         style="font-size: 18px"
@@ -147,13 +143,11 @@ async function handleRegister() {
                                 <span class="text-red-600">*</span></label
                             >
                             <div class="mt-2">
-                                <div
-                                    class="focus-within:outline-rosegold-500 flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2"
-                                >
+                                <div>
                                     <input
                                         id="email"
                                         v-model="userData.email"
-                                        class="block min-w-0 grow bg-white py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
+                                        class="focus:ring-rosegold-500 hover:ring-rosegold-700 w-full flex-1 rounded-lg border border-gray-300 bg-gray-50 hover:ring-1"
                                         name="email"
                                         placeholder="popescu.vasile@yahoo.com"
                                         style="font-size: 18px"
@@ -178,13 +172,11 @@ async function handleRegister() {
                                 <span class="text-red-600">*</span></label
                             >
                             <div class="mt-2">
-                                <div
-                                    class="focus-within:outline-rosegold-500 flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2"
-                                >
+                                <div>
                                     <input
                                         id="phone_number"
                                         v-model="userData.phone_number"
-                                        class="block min-w-0 grow bg-white py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
+                                        class="focus:ring-rosegold-500 hover:ring-rosegold-700 w-full flex-1 rounded-lg border border-gray-300 bg-gray-50 hover:ring-1"
                                         name="phone_number"
                                         placeholder="0754322400"
                                         style="font-size: 18px"
@@ -209,13 +201,11 @@ async function handleRegister() {
                                 <span class="text-red-600">*</span></label
                             >
                             <div class="mt-2">
-                                <div
-                                    class="focus-within:outline-rosegold-500 flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2"
-                                >
+                                <div>
                                     <input
                                         id="password"
                                         v-model="userData.password"
-                                        class="block min-w-0 grow bg-white py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
+                                        class="focus:ring-rosegold-500 hover:ring-rosegold-700 w-full flex-1 rounded-lg border border-gray-300 bg-gray-50 hover:ring-1"
                                         name="password"
                                         placeholder="********"
                                         style="font-size: 18px"
@@ -240,13 +230,11 @@ async function handleRegister() {
                                 <span class="text-red-600">*</span></label
                             >
                             <div class="mt-2">
-                                <div
-                                    class="focus-within:outline-rosegold-500 flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2"
-                                >
+                                <div>
                                     <input
                                         id="confirm_password"
                                         v-model="userData.confirm_password"
-                                        class="block min-w-0 grow bg-white py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
+                                        class="focus:ring-rosegold-500 hover:ring-rosegold-700 w-full flex-1 rounded-lg border border-gray-300 bg-gray-50 hover:ring-1"
                                         name="confirm_password"
                                         placeholder="********"
                                         style="font-size: 18px"
@@ -307,7 +295,7 @@ async function handleRegister() {
                                             Am citit și accept
                                             <RouterLink
                                                 class="link-terms"
-                                                to="/termeni-si-conditii"
+                                                to="/terms-and-conditions"
                                                 >Termenii și
                                                 condițiile</RouterLink
                                             >.
@@ -351,7 +339,7 @@ async function handleRegister() {
                                             Am citit și sunt de acord cu
                                             <RouterLink
                                                 class="link-terms"
-                                                to="/protectia-datelor"
+                                                to="/privacy-policy"
                                                 >Politica de
                                                 Confidențialitate</RouterLink
                                             >.
@@ -367,7 +355,7 @@ async function handleRegister() {
 
             <ErrorAlert :message="generalError" />
 
-            <div class="mt-2 flex items-center justify-center gap-x-6">
+            <div class="mt-4 flex items-center justify-center gap-x-6">
                 <button
                     :disabled="loading"
                     class="bg-rosegold-700 hover:bg-rosegold-500 focus-visible:outline-rosegold-700 rounded-md px-7 py-2 font-semibold text-white shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2"

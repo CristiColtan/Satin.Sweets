@@ -16,7 +16,7 @@
                     </span>
                 </div>
                 <p
-                    class="modal-text mt-4 text-[16px] leading-relaxed text-gray-600"
+                    class="modal-text mt-4 text-[16px] leading-relaxed text-gray-600 sm:text-[17px]"
                 >
                     {{ description }}
                 </p>
@@ -26,7 +26,7 @@
                     style="border-radius: 10px; margin-top: 20px"
                 >
                     <div class="flex items-center justify-between">
-                        <span class="rounded-2xl text-[16px]"
+                        <span class="rounded-2xl text-[16px] font-medium"
                             >Vezi mai multe</span
                         >
                     </div>
@@ -104,12 +104,12 @@
                         >
                             <span
                                 class="font-serif text-lg font-semibold whitespace-nowrap"
-                                >Comanda acum!</span
+                                >Comandă acum!</span
                             >
                         </button>
                     </div>
                     <div
-                        class="relative flex flex-col items-center justify-center"
+                        class="relative flex flex-col items-center justify-center gap-2"
                     >
                         <span
                             v-if="hasTablouri === false"
@@ -145,7 +145,7 @@
                         >
                             <span
                                 class="font-serif text-[17px] font-semibold md:text-lg"
-                                >Comanda acum!</span
+                                >Comandă acum!</span
                             >
                         </button>
                     </div>

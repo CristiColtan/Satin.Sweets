@@ -10,7 +10,7 @@
 
             <template v-if="!isEditing">
                 <button
-                    class="hover:bg-rosegold-300 -translate-y-1 rounded border bg-gray-50 px-4 py-1"
+                    class="hover:bg-rosegold-300 -translate-y-1 rounded-lg border border-gray-300 bg-gray-50 px-4 py-1"
                     type="button"
                     @click="isEditing = true"
                 >
@@ -23,16 +23,17 @@
             <template v-else>
                 <div class="flex -translate-y-1 gap-2">
                     <button
-                        class="hover:bg-rosegold-700 bg-rosegold-500 rounded border px-2 py-1 text-white sm:px-4"
+                        class="hover:bg-rosegold-700 bg-rosegold-500 rounded-lg border border-gray-300 px-2 py-1 text-white sm:px-4"
                         type="button"
                         @click="saveProfile"
                     >
-                        <span class="font-sans text-[15px] sm:text-lg"
+                        <span
+                            class="font-sans text-[15px] font-medium sm:text-lg"
                             >Salvează</span
                         >
                     </button>
                     <button
-                        class="rounded border bg-gray-50 px-2 py-1 hover:bg-gray-200 sm:px-4"
+                        class="rounded-lg border border-gray-300 bg-gray-50 px-2 py-1 hover:bg-gray-100 sm:px-4"
                         type="button"
                         @click="cancelEditing"
                     >
@@ -54,7 +55,7 @@
                             <input
                                 id="first_name"
                                 v-model="formData.first_name"
-                                class="focus:ring-rosegold-500 flex-1 rounded border bg-gray-50 hover:ring-1"
+                                class="focus:ring-rosegold-500 hover:ring-rosegold-500 w-full flex-1 rounded-lg border border-gray-300 bg-gray-50 hover:ring-1"
                                 name="first_name"
                                 style="font-size: 15px"
                                 type="text"
@@ -83,7 +84,7 @@
                             <input
                                 id="last_name"
                                 v-model="formData.last_name"
-                                class="focus:ring-rosegold-500 flex-1 rounded border bg-gray-50 hover:ring-1"
+                                class="focus:ring-rosegold-500 hover:ring-rosegold-500 w-full flex-1 rounded-lg border border-gray-300 bg-gray-50 hover:ring-1"
                                 name="last_name"
                                 style="font-size: 15px"
                                 type="text"
@@ -112,7 +113,7 @@
                             <input
                                 id="email"
                                 v-model="formData.email"
-                                class="focus:ring-rosegold-500 flex-1 rounded border bg-gray-50 hover:ring-1"
+                                class="focus:ring-rosegold-500 hover:ring-rosegold-500 w-full flex-1 rounded-lg border border-gray-300 bg-gray-50 hover:ring-1"
                                 name="email"
                                 style="font-size: 15px"
                                 type="text"
@@ -141,7 +142,7 @@
                             <input
                                 id="phone_number"
                                 v-model="formData.phone_number"
-                                class="focus:ring-rosegold-500 flex-1 rounded border bg-gray-50 hover:ring-1"
+                                class="focus:ring-rosegold-500 hover:ring-rosegold-500 w-full flex-1 rounded-lg border border-gray-300 bg-gray-50 hover:ring-1"
                                 name="phone_number"
                                 style="font-size: 15px"
                                 type="text"
