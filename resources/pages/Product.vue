@@ -318,15 +318,13 @@
                     class="rounded-2xl border-2 border-gray-300/90 bg-[#f3f3f3] p-3"
                 >
                     <div class="flex justify-between">
-                        <div class="flex gap-3">
+                        <div class="flex items-center gap-3">
                             <div
                                 class="bg-rosegold-500 flex h-6 w-6 items-center justify-center rounded-full font-bold text-white"
                             >
                                 4
                             </div>
-                            <p
-                                class="-translate-y-0.5 text-center font-serif text-lg"
-                            >
+                            <p class="text-center font-serif text-lg">
                                 Adaugă poze
                             </p>
                         </div>
@@ -348,27 +346,65 @@
                             *pretul afișat este per poză*
                         </p>
 
-                        <!-- PREVIEW: Imagini NOI -->
-                        <div v-if="photoSelected && newImages.length" class="">
+                        <!-- PREVIEW -->
+                        <div v-if="photoSelected && items.length" class="">
                             <div class="mt-2 flex flex-wrap gap-3">
                                 <div
-                                    v-for="(img, i) in newImages"
-                                    :key="i"
+                                    v-for="(it, i) in items"
+                                    :key="it.id"
                                     class="relative h-36 w-36 overflow-hidden rounded-lg border border-gray-300"
                                 >
                                     <img
-                                        :src="getImageSrc(img)"
+                                        :src="it.previewUrl"
                                         alt=""
                                         class="h-full w-full object-cover"
                                     />
-                                    <button
-                                        class="absolute top-1 right-1 rounded bg-black/60 px-2 py-1 text-xs text-white hover:bg-black/80"
-                                        title="Elimină din selecția nouă"
-                                        type="button"
-                                        @click="removeNew(i)"
+                                    <div
+                                        :class="
+                                            it.status === 'done'
+                                                ? 'bg-green-600/90'
+                                                : it.status === 'uploading'
+                                                  ? 'bg-black/50'
+                                                  : 'bg-red-600/90'
+                                        "
+                                        class="absolute top-0 right-0 left-0 px-2 py-1 text-center text-xs font-semibold text-white"
                                     >
-                                        ✕
-                                    </button>
+                                        <template v-if="it.status === 'done'">
+                                            Încărcare completă
+                                        </template>
+
+                                        <template
+                                            v-else-if="
+                                                it.status === 'uploading'
+                                            "
+                                        >
+                                            Se încarcă {{ it.progress }}%
+                                        </template>
+
+                                        <template v-else>
+                                            Eroare la încărcare
+                                        </template>
+                                    </div>
+                                    <div class="absolute top-2 left-2">
+                                        <div
+                                            v-if="it.status === 'uploading'"
+                                            aria-label="Uploading"
+                                            class="grid h-7 w-7 place-items-center rounded-full bg-black/60"
+                                        >
+                                            <div
+                                                class="h-4 w-4 animate-spin rounded-full border-2 border-white/70 border-t-transparent"
+                                            ></div>
+                                        </div>
+                                        <button
+                                            v-else
+                                            class="rounded bg-black/60 px-2 py-1 text-xs text-white hover:bg-black/80"
+                                            title="Elimină din selecția nouă"
+                                            type="button"
+                                            @click="removeItem(i)"
+                                        >
+                                            ✕
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -390,14 +426,33 @@
                                     photoSelected ? 'Da' : 'Nu'
                                 }}</span>
                             </button>
-                            <MyInput
+                            <div
                                 v-if="photoSelected"
-                                v-model="newImages"
-                                class=""
-                                label="Imagini"
-                                type="file"
-                                @change="onFilesChange"
-                            />
+                                class="flex items-center gap-2 overflow-hidden"
+                            >
+                                <!-- real input hidden -->
+                                <input
+                                    ref="fileInput"
+                                    accept="image/png,image/jpeg"
+                                    class="hidden"
+                                    multiple
+                                    type="file"
+                                    @change="onFilesPicked"
+                                />
+
+                                <!-- buton custom -->
+                                <button
+                                    class="inline-flex items-center rounded-lg border border-gray-300 bg-gray-50 px-3 py-2 text-lg text-gray-600 hover:bg-gray-100"
+                                    type="button"
+                                    @click="fileInput.click()"
+                                >
+                                    Alege poze
+                                </button>
+
+                                <span class="text-sm text-gray-500">
+                                    {{ items.length }}/3
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -423,6 +478,7 @@
                         </div>
                     </div>
                     <button
+                        :disabled="isUploading"
                         :style="{ borderRadius: '12px' }"
                         class="bg-rosegold-500 hover:bg-rosegold-700 flex h-11 w-full items-center justify-center gap-2 font-medium text-white shadow-md transition"
                         @click="handleAddToCart"
@@ -457,7 +513,15 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import {
+    computed,
+    nextTick,
+    onBeforeUnmount,
+    onMounted,
+    reactive,
+    ref,
+    watch,
+} from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import axiosClient from '../js/axios.js'
 
@@ -472,7 +536,6 @@ import {
 
 import 'swiper/css'
 import 'swiper/css/pagination'
-import MyInput from '../components/core/MyInput.vue'
 import ProductTabs from '../components/core/product-page/ProductTabs.vue'
 import BenefitsSectionForProduct from '../components/home-page/BenefitsSectionForProduct.vue'
 import SimilarProducts from '../components/core/product-page/SimilarProducts.vue'
@@ -485,6 +548,8 @@ const route = useRoute()
 const product = ref(null)
 const store = useAppStore()
 const router = useRouter()
+
+const fileInput = ref(null)
 
 const reviews = ref([])
 const reviewsMeta = ref({
@@ -506,8 +571,8 @@ const currentPrice = computed(() => {
     if (ribbonText.value.trim()) price += 10
     if (selectedGlitterId.value) price += 10
     if (ledSelected.value) price += 10
-    if (photoSelected.value && newImages.value.length > 0) {
-        price += newImages.value.length * 10
+    if (photoSelected.value && items.value.length > 0) {
+        price += items.value.length * 10
     }
 
     return price
@@ -518,8 +583,8 @@ const oldPrice = computed(() => {
     if (ribbonText.value.trim()) price += 10
     if (selectedGlitterId.value) price += 10
     if (ledSelected.value) price += 10
-    if (photoSelected.value && newImages.value.length > 0) {
-        price += newImages.value.length * 10
+    if (photoSelected.value && items.value.length > 0) {
+        price += items.value.length * 10
     }
 
     return price
@@ -547,7 +612,10 @@ function togglePhotos() {
     photoSelected.value = !photoSelected.value
 
     if (!photoSelected.value) {
-        newImages.value = []
+        for (const it of items.value) {
+            if (it.previewUrl) URL.revokeObjectURL(it.previewUrl)
+        }
+        items.value = []
     }
 }
 
@@ -650,10 +718,149 @@ function onToggleFavorite(p, e) {
     })
 }
 
+function getUploadToken() {
+    const key = 'upload_token'
+    let t = localStorage.getItem(key)
+    if (!t) {
+        // fallback
+        t = Date.now().toString(36) + Math.random().toString(36).slice(2)
+
+        localStorage.setItem(key, t)
+    }
+    return t
+}
+
+const items = ref([])
+function validateFiles(files) {
+    const allowed = ['image/jpeg', 'image/png', 'image/jpg']
+    const maxMB = 10
+    const maxCount = 3
+
+    const current = items.value.length
+    const toAdd = []
+
+    for (const f of files) {
+        if (current + toAdd.length >= maxCount) break
+        if (!allowed.includes(f.type)) continue
+        if (f.size > maxMB * 1024 * 1024) continue
+        toAdd.push(f)
+    }
+    return toAdd
+}
+
+// watch(
+//     items,
+//     (newItems, oldItems) => {
+//         console.log(
+//             'ITEMS CHANGED',
+//             newItems.map((i) => ({
+//                 id: i.id,
+//                 status: i.status,
+//                 progress: i.progress,
+//             })),
+//         )
+//     },
+//     { deep: true },
+// )
+
+function uid() {
+    return Math.random().toString(36).slice(2) + Date.now().toString(36)
+}
+async function onFilesPicked(eOrFiles) {
+    const rawFiles = eOrFiles?.target?.files
+        ? Array.from(eOrFiles.target.files)
+        : Array.isArray(eOrFiles)
+          ? eOrFiles
+          : []
+
+    if (eOrFiles?.target) eOrFiles.target.value = ''
+
+    const files = validateFiles(rawFiles)
+    if (!files.length) return
+
+    for (const file of files) {
+        const it = reactive({
+            id: uid(),
+            file,
+            previewUrl: URL.createObjectURL(file),
+            status: 'uploading',
+            progress: 0,
+            url: null,
+            error: null,
+        })
+        items.value.push(it)
+        uploadOne(it)
+    }
+}
+
+const isUploading = computed(() =>
+    items.value.some((x) => x.status === 'uploading'),
+)
+
+async function uploadOne(it) {
+    const fd = new FormData()
+    fd.append('upload_token', getUploadToken())
+    fd.append('photo', it.file)
+
+    try {
+        const res = await axiosClient.post('/upload/order-photo', fd, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+            onUploadProgress: (evt) => {
+                if (!evt.total) return
+                it.progress = Math.round((evt.loaded * 100) / evt.total)
+            },
+        })
+
+        if (!res.data?.success || !res.data?.url) {
+            throw new Error('Upload invalid')
+        }
+
+        it.url = res.data.url
+        it.status = 'done'
+        it.progress = 100
+        it.error = null
+    } catch (err) {
+        console.error('Upload error:', err)
+
+        it.status = 'error'
+        it.progress = 0
+
+        if (err.response) {
+            it.error = err.response.data?.message || 'Eroare la upload (server)'
+        } else if (err.request) {
+            it.error = 'Eroare de rețea'
+        } else {
+            it.error = err.message || 'Eroare necunoscută'
+        }
+    }
+}
+
+onBeforeUnmount(() => {
+    for (const it of items.value) {
+        if (it.previewUrl) URL.revokeObjectURL(it.previewUrl)
+    }
+})
+
+function removeItem(idx) {
+    const it = items.value[idx]
+    if (it?.previewUrl) URL.revokeObjectURL(it.previewUrl)
+    items.value.splice(idx, 1)
+}
+
+function getUploadedUrls() {
+    return items.value
+        .filter((x) => x.status === 'done' && x.url)
+        .map((x) => x.url)
+}
+
 const handleAddToCart = () => {
     if (!product.value) return
 
-    if (newImages.value.length === 0) photoSelected.value = false
+    if (items.value.length === 0) photoSelected.value = false
+
+    if (photoSelected.value && isUploading.value) return
+
+    const photoUrls = photoSelected.value ? getUploadedUrls() : []
 
     const glitter = selectedGlitterId.value
         ? glitterAddons.value.find((g) => g.id === selectedGlitterId.value)
@@ -668,7 +875,8 @@ const handleAddToCart = () => {
             glitterColor: glitter ? glitter.hex_code : null,
             led: ledSelected.value,
             photoSelected: photoSelected.value,
-            photoCount: newImages.value.length,
+            photoCount: items.value.length,
+            photoUrls,
         },
         unitPrice: currentPrice.value,
     })

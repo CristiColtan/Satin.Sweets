@@ -60,7 +60,10 @@ async function logout() {
         this.user.token = null
         this.favorites = { loading: false, ids: [], items: [], error: null }
         this.cart = { items: [] }
+        this.couponCode = null
+        this.couponDiscount = 0
         localStorage.removeItem('token')
+        this.$reset()
     }
 }
 async function submitReview(review, productId) {
@@ -345,6 +348,7 @@ async function createAddon(addon, newImages) {
         form.append('hex_code', addon.hex_code)
         form.append('price', addon.price)
         form.append('type', addon.type)
+        form.append('sub_type', addon.sub_type)
         form.append('is_active', addon.is_active ? 1 : 0)
 
         if (Array.isArray(newImages) && newImages.length > 0) {
@@ -381,6 +385,7 @@ async function updateAddon(addon, newImages) {
         form.append('hex_code', addon.hex_code)
         form.append('price', addon.price)
         form.append('type', addon.type)
+        form.append('sub_type', addon.sub_type)
         form.append('is_active', addon.is_active ? 1 : 0)
 
         if (Array.isArray(newImages) && newImages.length > 0) {
@@ -434,35 +439,49 @@ function isFavorite(id) {
     return this.favorites.ids.includes(id)
 }
 
-function findCartItemIndex(cartItems, productId, addons) {
-    return cartItems.findIndex(
-        (item) =>
-            item.product_id === productId &&
-            JSON.stringify(item.addons || {}) === JSON.stringify(addons || {}),
-    )
-}
-
-function clearCart() {
-    this.cart.items = []
-}
-
-function removeFromCart(index) {
-    if (index < 0 || index >= this.cart.items.length) return
-    this.cart.items.splice(index, 1)
-}
-
-async function addToCart({ product, quantity = 1, addons = {}, unitPrice }) {
-    console.log('ADD TO CART: ', product, quantity, addons, unitPrice)
-    if (!product?.id) return
-
-    const itemAddons = {
+function normalizeAddons(addons = {}) {
+    return {
         ribbonText: addons.ribbonText || null,
         glitterId: addons.glitterId || null,
         glitterColor: addons.glitterColor || null,
         led: !!addons.led,
         photoSelected: !!addons.photoSelected,
         photoCount: addons.photoCount || 0,
+        photoUrls: (addons.photoUrls || []).slice().sort(),
     }
+}
+
+function findCartItemIndex(cartItems, productId, addons) {
+    const normalized = normalizeAddons(addons)
+
+    return cartItems.findIndex((item) => {
+        if (item.product_id !== productId) return false
+
+        const itemNormalized = normalizeAddons(item.addons)
+
+        return JSON.stringify(itemNormalized) === JSON.stringify(normalized)
+    })
+}
+
+function clearCart() {
+    this.cart.items = []
+    this.clearCoupon()
+}
+
+function removeFromCart(index) {
+    if (index < 0 || index >= this.cart.items.length) return
+    this.cart.items.splice(index, 1)
+
+    if (this.cart.items.length === 0) {
+        this.clearCoupon()
+    }
+}
+
+async function addToCart({ product, quantity = 1, addons = {}, unitPrice }) {
+    console.log('ADD TO CART: ', product, quantity, addons, unitPrice)
+    if (!product?.id) return
+
+    const itemAddons = normalizeAddons(addons)
 
     const index = findCartItemIndex(this.cart.items, product.id, itemAddons)
 
@@ -477,6 +496,48 @@ async function addToCart({ product, quantity = 1, addons = {}, unitPrice }) {
             product: product,
         })
     }
+}
+
+async function applyCoupon(rawCode) {
+    const subtotal = this.cartTotal
+    const code = rawCode.trim().toUpperCase()
+
+    if (!code) {
+        this.clearCoupon()
+        return {
+            success: false,
+            message: 'Te rugăm să introduci un cod.',
+        }
+    }
+
+    try {
+        const res = await axiosClient.post(`/coupons/apply`, {
+            code,
+            subtotal,
+        })
+
+        this.couponCode = res.data.couponCode
+        this.couponDiscount = res.data.couponDiscount
+
+        return {
+            success: true,
+            message: res.data.message,
+        }
+    } catch (err) {
+        this.clearCoupon()
+        const msg =
+            err?.response?.data?.message || 'Codul introdus nu este valid.'
+
+        return {
+            success: false,
+            message: msg,
+        }
+    }
+}
+
+function clearCoupon() {
+    this.couponCode = null
+    this.couponDiscount = 0
 }
 
 async function toggleFavorite(product) {
@@ -592,4 +653,6 @@ export default {
     addToCart,
     clearCart,
     removeFromCart,
+    applyCoupon,
+    clearCoupon,
 }
