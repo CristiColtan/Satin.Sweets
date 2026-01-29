@@ -1,7 +1,7 @@
 <template>
     <div class="animate-fade-in-down rounded-lg bg-white p-4 shadow">
         <div
-            class="grid grid-rows-2 gap-y-4 border-b-2 pb-3 sm:flex sm:justify-between"
+            class="grid grid-rows-2 gap-y-4 border-b-2 border-gray-300 pb-3 sm:flex sm:justify-between"
         >
             <div class="flex items-center">
                 <span class="mr-3 font-sans whitespace-nowrap sm:text-lg"
@@ -26,8 +26,8 @@
             <div>
                 <input
                     v-model="search"
-                    class="focus:ring-rosegold-500 focus:border-rosegold-500 relative block w-48 rounded-md border border-gray-300 px-3 py-2 text-2xl text-gray-900 placeholder-gray-500 placeholder:text-lg focus:z-10 focus:outline-none"
-                    placeholder="Cauta produs.."
+                    class="focus:ring-rosegold-500 focus:border-rosegold-500 relative block w-48 rounded-md border border-gray-300 px-3 py-2 text-lg text-gray-900 placeholder-gray-500 placeholder:text-lg focus:z-10 focus:outline-none"
+                    placeholder="Caută produs.."
                 />
             </div>
         </div>
@@ -88,23 +88,23 @@
                     <td colspan="5">
                         <Spinner
                             v-if="products.loading"
-                            :text="'Se incarca...'"
+                            :text="'Se incarcă...'"
                         />
                         <p
                             v-else
                             class="py-8 text-center text-lg font-bold text-gray-700"
                         >
-                            Nu exista produse inregistrate!
+                            Nu există produse înregistrate!
                         </p>
                     </td>
                 </tr>
             </tbody>
             <tbody v-else>
                 <tr v-for="(product, index) of products.data" class="text-lg">
-                    <td class="border-b p-2">
+                    <td class="border-b border-gray-300 p-2">
                         {{ product.id }}
                     </td>
-                    <td class="border-b p-2">
+                    <td class="border-b border-gray-300 p-2">
                         <img
                             v-if="
                                 (Array.isArray(product.media) &&
@@ -131,13 +131,13 @@
                     </td>
 
                     <td
-                        class="max-w-[200px] overflow-hidden border-b p-2 text-ellipsis whitespace-nowrap"
+                        class="max-w-[200px] overflow-hidden border-b border-gray-300 p-2 text-ellipsis whitespace-nowrap"
                         v-html="product._formatted?.title || product.title"
                     ></td>
 
                     <td
                         v-if="product.discounted_price"
-                        class="border-black p-2"
+                        class="border-b border-gray-300 p-2"
                     >
                         <div class="flex items-center gap-2">
                             <p class="line-through">{{ product.price }}</p>
@@ -145,11 +145,11 @@
                         </div>
                     </td>
 
-                    <td v-else class="border-black p-2">
+                    <td v-else class="border-b border-gray-300 p-2">
                         {{ product.price }}
                     </td>
 
-                    <td class="border-b p-2">
+                    <td class="border-b border-gray-300 p-2">
                         <div class="flex flex-wrap gap-2">
                             <span
                                 v-for="cat in product.categories"
@@ -161,7 +161,7 @@
                         </div>
                     </td>
 
-                    <td class="border-black p-2">
+                    <td class="border-b border-gray-300 p-2">
                         <span
                             class="bg-rosegold-700 rounded-full px-3 py-1 text-sm font-medium text-white"
                         >
@@ -169,7 +169,7 @@
                         </span>
                     </td>
 
-                    <td class="border-b p-2">
+                    <td class="border-b border-gray-300 p-2">
                         <Menu as="div" class="relative inline-block text-left">
                             <div>
                                 <MenuButton
@@ -188,7 +188,7 @@
                                 leave-to-class="transform scale-95 opacity-0"
                             >
                                 <MenuItems
-                                    class="absolute right-0 z-10 mt-2 w-32 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black focus:outline-none"
+                                    class="absolute right-0 z-10 mt-2 w-32 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-gray-400 focus:outline-none"
                                 >
                                     <div class="px-1 py-1">
                                         <MenuItem v-slot="{ active }">
@@ -203,9 +203,11 @@
                                             >
                                                 <EyeIcon
                                                     :active="active"
-                                                    class="text-rosegold-700 group-hover:text-rosegold-700 mr-2 h-5 w-5"
+                                                    class="text-rosegold-700 group-hover:text-rosegold-700 mr-2 h-6 w-6"
                                                 />
-                                                Open
+                                                <span class="font-sans text-lg"
+                                                    >Open</span
+                                                >
                                             </button>
                                         </MenuItem>
                                         <MenuItem v-slot="{ active }">
@@ -220,9 +222,11 @@
                                             >
                                                 <PencilIcon
                                                     :active="active"
-                                                    class="text-rosegold-700 group-hover:text-rosegold-700 mr-2 h-5 w-5"
+                                                    class="text-rosegold-700 group-hover:text-rosegold-700 mr-2 h-6 w-6"
                                                 />
-                                                Edit
+                                                <span class="font-sans text-lg"
+                                                    >Edit</span
+                                                >
                                             </button>
                                         </MenuItem>
                                         <MenuItem v-slot="{ active }">
@@ -237,9 +241,11 @@
                                             >
                                                 <TrashIcon
                                                     :active="active"
-                                                    class="text-rosegold-700 group-hover:text-rosegold-700 mr-2 h-5 w-5"
+                                                    class="text-rosegold-700 group-hover:text-rosegold-700 mr-2 h-6 w-6"
                                                 />
-                                                Delete
+                                                <span class="font-sans text-lg"
+                                                    >Delete</span
+                                                >
                                             </button>
                                         </MenuItem>
                                     </div>

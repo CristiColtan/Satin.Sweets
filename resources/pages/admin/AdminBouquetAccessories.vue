@@ -1,14 +1,14 @@
 <template>
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between">
-            <h1 class="mt-2 font-sans text-3xl text-amber-900">
+        <div class="my-5 flex items-center justify-between">
+            <h1 class="text-rosegold-900 mt-2 font-serif text-3xl">
                 Accesorii buchete
             </h1>
             <button
                 class="bg-rosegold-500 hover:bg-rosegold-700 rounded px-3 py-2 font-semibold text-white"
                 @click="showAddNewAccessoryModal"
             >
-                <span class="text-xl">Adauga accesoriu</span>
+                <span class="font-serif text-xl">Adaugă accesoriu</span>
             </button>
         </div>
         <BouquetAccessoriesTable @clickEdit="editBouquetAccessory" />
@@ -38,6 +38,7 @@ const DEFAULT_BOUQUET_ACCESSORY_ADDON = {
     hex_code: '#ffffff',
     price: 0,
     is_active: true,
+    sub_type: '',
     categories: [],
 }
 

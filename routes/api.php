@@ -4,7 +4,11 @@ use App\Http\Controllers\AddonController;
 use App\Http\Controllers\api\ProductController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\CountryController;
+use App\Http\Controllers\CouponController;
 use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ResetPasswController;
 use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
@@ -43,6 +47,12 @@ Route::post('/products/{product}/reviews', [ReviewController::class, 'store'])
 
 Route::get('/categories/children/{parentId}', [CategoryController::class, 'getChildCategories']);
 
+Route::get('/countries/{code}/states', [CountryController::class, 'getStates']);
+
+Route::post('/coupons/apply', [CouponController::class, 'apply']);
+
+Route::post('/upload/order-photo', [OrderController::class, 'storeOne']);
+
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user', [AuthController::class, 'getUser']);
     Route::patch('/user', [AuthController::class, 'update']);
@@ -52,6 +62,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/favorites', [FavoriteController::class, 'index']);
     Route::post('/favorites/{product}', [FavoriteController::class, 'store']);
     Route::delete('/favorites/{product}', [FavoriteController::class, 'destroy']);
+
+    Route::post('/checkout', [CheckoutController::class, 'store']);
+
+    Route::get('/orders/{order}', [OrderController::class, 'show']);
 });
 {/*Route::get('/user', function (Request $request) {
     return $request->user();

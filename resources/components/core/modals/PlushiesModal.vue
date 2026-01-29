@@ -153,6 +153,16 @@
                                         class="mb-3 w-full"
                                         type="color"
                                     />
+
+                                    <label class="text-lg"
+                                        >Subcategorie add-on</label
+                                    >
+                                    <MyInput
+                                        v-model="plushie.sub_type"
+                                        class="mb-3"
+                                        label="Subcategorie"
+                                    />
+
                                     <label class="text-lg">Descriere</label>
                                     <MyInput
                                         v-model="plushie.description"
@@ -170,7 +180,7 @@
                                         type="number"
                                         @input="formErrors.price = null"
                                     />
-                                    <p class="text-lg">Categorie</p>
+                                    <p class="text-lg">Destinat categoriei</p>
                                     <Multiselect
                                         v-model="plushie.categories"
                                         :clear-on-select="false"
@@ -216,13 +226,12 @@
                                     </button>
                                     <button
                                         ref="cancelButtonRef"
-                                        class="group mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 shadow-sm hover:bg-gray-400 sm:mt-0 sm:ml-3 sm:w-auto"
+                                        class="group mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 shadow-sm hover:bg-gray-200 sm:mt-0 sm:ml-3 sm:w-auto"
                                         type="button"
                                         @click="closeModal"
                                     >
-                                        <span
-                                            class="text-lg font-medium group-hover:text-gray-500"
-                                            >Anuleaza</span
+                                        <span class="text-lg font-medium"
+                                            >Anulează</span
                                         >
                                     </button>
                                 </footer>
@@ -285,6 +294,7 @@ const plushie = ref({
     image: props.plushie_addon.image,
     price: props.plushie_addon.price,
     is_active: props.plushie_addon.is_active,
+    sub_type: props.plushie_addon.sub_type,
     categories: [],
 })
 

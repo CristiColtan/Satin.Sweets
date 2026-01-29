@@ -1,7 +1,7 @@
 <template>
     <div class="animate-fade-in-down rounded-lg bg-white p-4 shadow">
         <div
-            class="grid grid-rows-2 gap-y-4 border-b-2 pb-3 sm:flex sm:justify-between"
+            class="grid grid-rows-2 gap-y-4 border-b-2 border-gray-300 pb-3 sm:flex sm:justify-between"
         >
             <div class="flex items-center">
                 <span class="mr-3 font-sans whitespace-nowrap sm:text-lg"
@@ -29,8 +29,8 @@
             <div>
                 <input
                     v-model="search"
-                    class="focus:ring-rosegold-500 focus:border-rosegold-500 relative block w-48 rounded-md border border-gray-300 px-3 py-2 text-2xl text-gray-900 placeholder-gray-500 placeholder:text-lg focus:z-10 focus:outline-none"
-                    placeholder="Cauta accesorii.."
+                    class="focus:ring-rosegold-500 focus:border-rosegold-500 relative block w-48 rounded-md border border-gray-300 px-3 py-2 text-lg text-gray-900 placeholder-gray-500 placeholder:text-lg focus:z-10 focus:outline-none"
+                    placeholder="Caută accesorii.."
                 />
             </div>
         </div>
@@ -89,7 +89,15 @@
                         :sort-field="sortField"
                         field="type"
                     >
-                        Tipul de Add-On
+                        Categorie addon
+                    </TableHeaderCell>
+
+                    <TableHeaderCell
+                        :sort-direction="sortDirection"
+                        :sort-field="sortField"
+                        field="sub_type"
+                    >
+                        Subcategorie
                     </TableHeaderCell>
 
                     <TableHeaderCell field="actions">Actions</TableHeaderCell>
@@ -106,13 +114,13 @@
                     <td colspan="5">
                         <Spinner
                             v-if="bouquets_accessories.loading"
-                            :text="'Se incarca...'"
+                            :text="'Se incarcă...'"
                         />
                         <p
                             v-else
                             class="py-8 text-center text-lg font-bold text-gray-700"
                         >
-                            Nu exista accesorii inregistrate!
+                            Nu există accesorii înregistrate!
                         </p>
                     </td>
                 </tr>
@@ -123,14 +131,14 @@
                     v-for="(accessory, index) of bouquets_accessories.data"
                     class="text-lg"
                 >
-                    <td class="border-b p-2">
+                    <td class="border-b border-gray-300 p-2">
                         {{ accessory.id }}
                     </td>
                     <td
-                        class="border-b p-2"
+                        class="border-b border-gray-300 p-2"
                         v-html="accessory._formatted?.name || accessory.name"
                     ></td>
-                    <td class="border-b p-2">
+                    <td class="border-b border-gray-300 p-2">
                         <img
                             v-if="
                                 (Array.isArray(accessory.media) &&
@@ -158,16 +166,16 @@
                             >Fără imagine</span
                         >
                     </td>
-                    <td class="border-b p-2">
+                    <td class="border-b border-gray-300 p-2">
                         <div
                             :style="{ backgroundColor: accessory.hex_code }"
                             class="h-10 w-10"
                         ></div>
                     </td>
-                    <td class="border-black p-2">
+                    <td class="border-b border-gray-300 p-2">
                         {{ accessory.price }}
                     </td>
-                    <td class="border-b p-2">
+                    <td class="border-b border-gray-300 p-2">
                         <div class="flex flex-wrap gap-2">
                             <span
                                 v-for="cat in accessory.categories"
@@ -178,14 +186,21 @@
                             </span>
                         </div>
                     </td>
-                    <td class="border-b p-2">
+                    <td class="border-b border-gray-300 p-2">
                         <span
                             class="bg-rosegold-900 rounded-full px-3 py-1 text-sm font-medium text-white"
                         >
                             {{ accessory.type }}
                         </span>
                     </td>
-                    <td class="border-b p-2">
+                    <td class="border-b border-gray-300 p-2">
+                        <span
+                            class="bg-rosegold-900 rounded-full px-3 py-1 text-sm font-medium text-white"
+                        >
+                            {{ accessory.sub_type }}
+                        </span>
+                    </td>
+                    <td class="border-b border-gray-300 p-2">
                         <Menu as="div" class="relative inline-block text-left">
                             <div>
                                 <MenuButton
@@ -204,7 +219,7 @@
                                 leave-to-class="transform scale-95 opacity-0"
                             >
                                 <MenuItems
-                                    class="absolute right-0 z-10 mt-2 w-32 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black focus:outline-none"
+                                    class="absolute right-0 z-10 mt-2 w-32 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-gray-400 focus:outline-none"
                                 >
                                     <div class="px-1 py-1">
                                         <MenuItem v-slot="{ active }">
@@ -223,9 +238,11 @@
                                             >
                                                 <PencilIcon
                                                     :active="active"
-                                                    class="text-rosegold-700 group-hover:text-rosegold-700 mr-2 h-5 w-5"
+                                                    class="text-rosegold-700 group-hover:text-rosegold-700 mr-2 h-6 w-6"
                                                 />
-                                                Edit
+                                                <span class="font-sans text-lg"
+                                                    >Edit</span
+                                                >
                                             </button>
                                         </MenuItem>
                                         <MenuItem v-slot="{ active }">
@@ -244,9 +261,11 @@
                                             >
                                                 <TrashIcon
                                                     :active="active"
-                                                    class="text-rosegold-700 group-hover:text-rosegold-700 mr-2 h-5 w-5"
+                                                    class="text-rosegold-700 group-hover:text-rosegold-700 mr-2 h-6 w-6"
                                                 />
-                                                Delete
+                                                <span class="font-sans text-lg"
+                                                    >Delete</span
+                                                >
                                             </button>
                                         </MenuItem>
                                     </div>
@@ -278,7 +297,7 @@
                 <span class="text-rosegold-500">{{
                     bouquets_accessories.total
                 }}</span>
-                glitters
+                bouquet accessories
             </div>
             <nav
                 v-if="bouquets_accessories.total > bouquets_accessories.limit"

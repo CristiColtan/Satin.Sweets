@@ -28,6 +28,7 @@ class AddonRequest extends FormRequest
             'description' => ['nullable', 'string'],
             'is_active' => ['required', 'boolean'],
             'type' => ['required', 'max:255'],
+            'sub_type' => ['nullable', 'string', 'max:50'],
             'hex_code' => ['nullable', 'max:255'],
             'image' => ['nullable', 'file', 'mimes:jpg,jpeg,png,gif', 'max:2048'],
 

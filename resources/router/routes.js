@@ -14,7 +14,8 @@ const ProfileAddresses = () =>
 const Favorites = () => import('@/pages/Favorites.vue')
 const Cart = () => import('@/pages/Cart.vue')
 const Checkout = () => import('@/pages/Checkout.vue')
-const PlacedOrder = () => import('@/pages/PlacedOrder.vue')
+const ThankYou = () => import('@/pages/ThankYou.vue')
+const OrderDetails = () => import('@/pages/OrderDetails.vue')
 const NotFound = () => import('@/pages/NotFound.vue')
 const AppLayout = () => import('@/components/AppLayout.vue')
 const BucheteDeFlori = () => import('@/pages/BucheteDeFlori.vue')
@@ -107,10 +108,15 @@ export const routes = [
                 meta: { requiresAuth: true },
             },
             {
-                //todo
-                path: 'placed-order',
-                name: 'app.placed-order',
-                component: PlacedOrder,
+                path: 'thank-you/:orderId',
+                name: 'app.thank-you',
+                component: ThankYou,
+                meta: { requiresAuth: true },
+            },
+            {
+                path: 'orders/:orderId',
+                name: 'app.orders',
+                component: OrderDetails,
                 meta: { requiresAuth: true },
             },
             {

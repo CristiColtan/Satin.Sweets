@@ -40,12 +40,12 @@
                     class="inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0"
                 >
                     <p
-                        class="mr-10 flex translate-y-1.5 items-center text-lg font-medium text-black md:text-2xl"
+                        class="mr-10 flex items-center font-sans text-lg font-semibold text-black md:text-2xl"
                     >
                         ADMIN PANEL
                     </p>
                     <button
-                        class="relative rounded-full p-1 text-black transition-transform duration-200 hover:-translate-y-1 hover:text-white focus:outline-2 focus:outline-offset-2"
+                        class="relative rounded-full p-1 text-black transition-transform duration-200 hover:-translate-y-1"
                         type="button"
                         @click="redirectHome"
                     >

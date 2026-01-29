@@ -23,6 +23,8 @@ export default () => ({
     cart: {
         items: [],
     },
+    couponCode: null,
+    couponDiscount: 0,
 })
 
 function createTableState() {

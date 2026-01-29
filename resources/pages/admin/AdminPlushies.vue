@@ -1,12 +1,12 @@
 <template>
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between">
-            <h1 class="mt-2 font-sans text-3xl text-amber-900">Plusuri</h1>
+        <div class="my-5 flex items-center justify-between">
+            <h1 class="text-rosegold-900 mt-2 font-sans text-3xl">Plușuri</h1>
             <button
                 class="bg-rosegold-500 hover:bg-rosegold-700 rounded px-3 py-2 font-semibold text-white"
                 @click="showAddNewPlushieModal"
             >
-                <span class="text-xl">Adauga plusuri</span>
+                <span class="font-serif text-xl">Adaugă plușuri</span>
             </button>
         </div>
         <PlushiesTable @clickEdit="editPlushie" />
@@ -35,6 +35,7 @@ const DEFAULT_PLUSHIE_ADDON = {
     hex_code: '#ffffff',
     price: 0,
     is_active: true,
+    sub_type: '',
     categories: [],
 }
 

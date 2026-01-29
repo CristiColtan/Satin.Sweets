@@ -9,4 +9,5 @@ export default {
             0,
         )
     },
+    discount: (state) => state.couponDiscount,
 }

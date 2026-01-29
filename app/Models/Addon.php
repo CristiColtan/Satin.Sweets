@@ -16,6 +16,7 @@ class Addon extends Model
     protected $fillable = [
         'name',
         'type',
+        'sub_type',
         'hex_code',
         'description',
         'image',

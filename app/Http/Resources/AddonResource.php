@@ -19,6 +19,7 @@ class AddonResource extends JsonResource
             'name' => $this->name,
             'image' => $this->image,
             'type' => $this->type,
+            'sub_type' => $this->sub_type,
             'description' => $this->description,
             'price' => $this->price,
             'hex_code' => $this->hex_code,

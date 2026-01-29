@@ -7,7 +7,7 @@
                     <div class="gap-12 bg-[#f3f3f3]">
                         <div
                             v-if="cartItemsCount > 0"
-                            class="grid grid-cols-1 gap-5 xl:grid-cols-[3fr_1fr]"
+                            class="grid grid-cols-1 gap-3 sm:gap-6 xl:grid-cols-[3fr_1fr]"
                         >
                             <div class="flex flex-col gap-3">
                                 <div
@@ -260,76 +260,152 @@
                                 </div>
                             </div>
 
-                            <div
-                                class="flex self-start rounded-xl bg-[rgba(204,204,204,0.2)] p-3"
-                            >
-                                <div class="flex w-full flex-col gap-2">
-                                    <p
-                                        class="line-clamp-3 font-serif text-[18px] font-medium text-gray-900 lg:text-2xl"
-                                    >
-                                        Rezumat comandă
-                                    </p>
-                                    <div class="flex justify-between px-2">
-                                        <span
-                                            class="flex-1 font-serif text-[17px] lg:text-xl"
+                            <div>
+                                <div
+                                    class="mb-3 flex self-start rounded-xl bg-[rgba(204,204,204,0.2)] p-3 sm:mb-6"
+                                >
+                                    <div class="flex w-full flex-col gap-2">
+                                        <p
+                                            class="line-clamp-3 font-serif text-[18px] font-medium text-gray-900 lg:text-2xl"
                                         >
-                                            Produse ({{ store.cartCount }})
-                                        </span>
-                                        <span
-                                            class="font-serif text-[17px] font-semibold lg:text-xl"
+                                            Rezumat comandă
+                                        </p>
+                                        <div class="flex justify-between px-2">
+                                            <span
+                                                class="flex-1 font-serif text-[17px] lg:text-xl"
+                                            >
+                                                Produse ({{ store.cartCount }})
+                                            </span>
+                                            <span
+                                                class="font-serif text-[17px] font-semibold lg:text-xl"
+                                            >
+                                                {{ store.cartTotal }} RON
+                                            </span>
+                                        </div>
+                                        <div
+                                            class="flex justify-between border-t border-gray-400 px-2 pt-2"
                                         >
-                                            {{ store.cartTotal }} RON
-                                        </span>
-                                    </div>
-                                    <div
-                                        class="flex justify-between border-t border-gray-400 px-2 pt-2"
-                                    >
-                                        <span
-                                            class="flex-1 font-serif text-[17px] lg:text-xl"
-                                        >
-                                            Transport
-                                        </span>
-                                        <span
-                                            v-if="transport === 0"
-                                            class="font-serif text-[17px] font-semibold text-green-600 lg:text-xl"
-                                        >
-                                            GRATIS
-                                        </span>
-                                        <span
-                                            v-else
-                                            class="font-serif text-[17px] font-semibold lg:text-xl"
-                                        >
-                                            {{ transport }} RON
-                                        </span>
-                                    </div>
+                                            <span
+                                                class="flex-1 font-serif text-[17px] lg:text-xl"
+                                            >
+                                                Transport
+                                            </span>
+                                            <span
+                                                v-if="transport === 0"
+                                                class="font-serif text-[17px] font-semibold text-green-600 lg:text-xl"
+                                            >
+                                                GRATIS
+                                            </span>
+                                            <span
+                                                v-else
+                                                class="font-serif text-[17px] font-semibold lg:text-xl"
+                                            >
+                                                {{ transport }} RON
+                                            </span>
+                                        </div>
 
-                                    <div
-                                        class="mt-2 flex w-full justify-between rounded-lg bg-[rgba(168,168,168,0.2)] p-2 font-semibold"
-                                    >
-                                        <span
-                                            class="font-serif text-lg lg:text-xl"
+                                        <div
+                                            v-if="discount > 0"
+                                            class="flex items-center justify-between gap-2 px-2"
                                         >
-                                            Total:
-                                        </span>
-                                        <span
-                                            class="font-serif text-lg lg:text-xl"
-                                        >
-                                            {{ total }} RON
-                                        </span>
-                                    </div>
+                                            <span
+                                                class="flex-1 font-serif text-[17px] lg:text-xl"
+                                            >
+                                                Discount
+                                                <span class="font-semibold">{{
+                                                    store.couponCode
+                                                }}</span>
+                                            </span>
+                                            <span
+                                                class="font-serif text-[17px] font-semibold text-green-600 lg:text-xl"
+                                            >
+                                                - {{ discount }} RON
+                                            </span>
+                                            <X
+                                                class="h-4 w-4 cursor-pointer hover:text-gray-500 sm:h-5 sm:w-5"
+                                                @click="store.clearCoupon()"
+                                            />
+                                        </div>
 
-                                    <button
-                                        class="bg-rosegold-700 hover:bg-rosegold-500 mt-3 w-full rounded-lg border border-gray-300 py-1 font-semibold text-white transition-colors"
-                                        style="border-radius: 10px"
-                                        @click="redirectNextStep"
-                                    >
-                                        <span
-                                            class="font-serif text-lg lg:text-xl"
+                                        <div
+                                            class="mt-2 flex w-full justify-between rounded-lg bg-[rgba(168,168,168,0.2)] p-2 font-semibold"
                                         >
-                                            Către plată
-                                        </span>
-                                    </button>
+                                            <span
+                                                class="font-serif text-lg lg:text-xl"
+                                            >
+                                                Total:
+                                            </span>
+                                            <span
+                                                class="font-serif text-lg lg:text-xl"
+                                            >
+                                                {{ total }} RON
+                                            </span>
+                                        </div>
+
+                                        <div>
+                                            <span
+                                                v-if="transport > 0"
+                                                class="text-[16px] font-thin text-gray-500"
+                                            >
+                                                (adaugă produse în valoare de
+                                                <span class="font-semibold"
+                                                    >{{ 300 - cartTotal }} RON
+                                                </span>
+                                                pentru transport gratuit)
+                                            </span>
+                                        </div>
+
+                                        <button
+                                            class="bg-rosegold-700 hover:bg-rosegold-500 mt-3 w-full rounded-lg border border-gray-300 py-1 font-semibold text-white transition-colors"
+                                            style="border-radius: 10px"
+                                            @click="redirectNextStep"
+                                        >
+                                            <span
+                                                class="font-serif text-lg lg:text-xl"
+                                            >
+                                                Către plată
+                                            </span>
+                                        </button>
+                                    </div>
                                 </div>
+
+                                <div
+                                    class="flex self-start rounded-xl bg-[rgba(204,204,204,0.2)] p-3"
+                                >
+                                    <div class="flex w-full flex-col gap-3">
+                                        <div class="">
+                                            <p
+                                                class="mb-1 ml-1 font-serif text-lg"
+                                            >
+                                                Cod promoțional
+                                            </p>
+                                            <div class="flex w-full gap-3">
+                                                <input
+                                                    id="coupon"
+                                                    v-model="coupon"
+                                                    class="focus:ring-rosegold-500 hover:ring-rosegold-500 w-full flex-1 rounded-lg border border-gray-300 bg-gray-50 hover:ring-1"
+                                                    name="coupon"
+                                                    style="font-size: 15px"
+                                                    type="text"
+                                                    @input="couponError = null"
+                                                /><button
+                                                    class="hover:bg-rosegold-300 rounded-lg border border-gray-300 bg-gray-50 px-4 py-1"
+                                                    type="button"
+                                                    @click="handleCoupon"
+                                                >
+                                                    <span
+                                                        class="font-sans text-[15px] sm:text-lg"
+                                                        >Aplică</span
+                                                    >
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <ErrorAlert
+                                    v-if="couponError"
+                                    :message="couponError"
+                                />
                             </div>
                         </div>
 
@@ -357,7 +433,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useToast } from '../utils/myToast.js'
 import { useAppStore } from '../store/index.js'
 import {
@@ -370,20 +446,43 @@ import {
     SirenIcon,
     SparklesIcon,
     Trash2Icon,
+    X,
 } from 'lucide-vue-next'
 import CheckoutSteps from '../components/core/checkout-page/CheckoutSteps.vue'
+import ErrorAlert from '../components/core/ErrorAlert.vue'
 
 const store = useAppStore()
 const router = useRouter()
 const { showToast } = useToast()
 
+const coupon = ref('')
+const couponError = ref(null)
+
 const cartItemsCount = computed(() => store.cartCount)
 const cartTotal = computed(() => store.cartTotal)
 const transport = computed(() => (cartTotal.value > 300 ? 0 : 25))
-const discount = computed(() => 0)
+const discount = computed(() => store.discount)
 
 const total = computed(() => cartTotal.value + transport.value - discount.value)
 
+async function handleCoupon() {
+    const res = await store.applyCoupon(coupon.value)
+    couponError.value = res.success ? null : res.message
+
+    if (res.success) {
+        showToast(res.message, 'success')
+    }
+}
+
+watch(
+    () => store.cartTotal,
+    async () => {
+        if (store.couponCode) {
+            await store.applyCoupon(store.couponCode)
+        }
+    },
+    { immediate: true },
+)
 function redirectHome() {
     router.push({ name: 'app.home' })
 }

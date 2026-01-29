@@ -1,11 +1,11 @@
 <template>
     <th
         :class="field === sortField ? 'bg-rosegold-300' : ''"
-        class="cursor-pointer border-b-2 bg-gray-100 p-2 text-left"
+        class="cursor-pointer border-b-2 border-gray-300 bg-gray-100 p-2 text-left"
         @click="emit('click')"
     >
-        <div class="flex justify-between text-lg">
-            <slot> </slot>
+        <div class="flex items-center justify-between text-lg">
+            <slot></slot>
             <div v-if="sortField === field" class="ml-2">
                 <svg
                     v-if="sortDirection === 'asc'"
